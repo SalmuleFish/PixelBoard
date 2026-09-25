@@ -5,6 +5,7 @@
       "name": "AI Writing Tools",
       "description": "Enable AI writing tools with support for all languages.",
       "use": true,
+      "default": true,
       "dependencies": [],
       "compatiblePackages": {
         "com.google.android.inputmethod.latin": [
@@ -19,6 +20,7 @@
       "name": "Add Gboard Signature Bypass",
       "description": "Bypass Gboard signature whitelist checks and force them to pass.",
       "use": true,
+      "default": true,
       "dependencies": [],
       "compatiblePackages": {
         "com.google.android.inputmethod.latin": [
@@ -33,6 +35,7 @@
       "name": "Advanced Voice Typing",
       "description": "Enable Advanced Voice Typing with automatic punctuation and rambler mode.",
       "use": true,
+      "default": true,
       "dependencies": [],
       "compatiblePackages": {
         "com.google.android.inputmethod.latin": [
@@ -47,6 +50,7 @@
       "name": "Package Rename",
       "description": "Rename the package to com.akshaykadam.pixelboard and allow a custom app name so it can be installed alongside the official Gboard.",
       "use": true,
+      "default": true,
       "dependencies": [],
       "compatiblePackages": {
         "com.google.android.inputmethod.latin": [
