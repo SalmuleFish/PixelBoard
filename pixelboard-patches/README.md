@@ -84,5 +84,6 @@ Run tests to verify all patch contracts and bytecode transformations:
 
 - **Original Gboard Patches**: Developed by Jason Wu ([@jasonwu1994](https://github.com/jasonwu1994)).
 - **Rambler ASR Lifecycle Optimization**: Discovered and benchmarked by Paolo Del Casale ([@PaoloDelCasale](https://github.com/PaoloDelCasale)).
+- **Inline Autofill & Password Manager Support**: Investigated and resolved by Alin Cornel ([@alincornel](https://github.com/alincornel)) for renamed package coexistence ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).
 - **Patch Tooling & Runtime Framework**: PixelBoard Patch Engine / Open-Source Patcher Toolchain.
 - **License**: GNU General Public License v3.0 ([LICENSE](../LICENSE)).
