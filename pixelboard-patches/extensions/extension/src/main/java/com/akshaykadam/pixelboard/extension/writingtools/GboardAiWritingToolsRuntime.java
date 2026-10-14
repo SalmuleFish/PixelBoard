@@ -72,6 +72,80 @@ public final class GboardAiWritingToolsRuntime {
             "enable_device_intelligence";
     static final String FLAG_EMOJI_SCALE_SUPPORTED =
             "emoji_scale_supported";
+    static final String FLAG_ENABLE_ACCESS_POINTS_MENU_REDESIGN =
+            "enable_access_points_menu_redesign";
+    static final String FLAG_ENABLE_ACCESS_POINT_KEYBOARD =
+            "enable_access_point_keyboard";
+    static final String FLAG_ENABLE_AUTOFILL_IME_INTEGRATION =
+            "enable_autofill_ime_integration";
+    static final String FLAG_ENABLE_SPELLCHECKER_CHIPS_UI =
+            "enable_spellchecker_chips_ui";
+    static final String FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW =
+            "enable_spellchecker_chips_ui_web_view";
+    static final String FLAG_ENABLE_SPELL_CHECKER_EXTENSION =
+            "enable_spell_checker_extension";
+
+    // Fast user history learning and prefix predictions
+    static final String FLAG_INTENDED_OOV_MIN_COUNT =
+            "intended_oov_min_count";
+    static final Long ENFORCED_INTENDED_OOV_MIN_COUNT = 1L;
+    static final String FLAG_ENABLE_PC_USER_HISTORY_NGRAM_COUNT =
+            "enable_pc_user_history_ngram_count";
+    static final String FLAG_POPULATE_NGRAM_COUNT_WITH_CONTEXT =
+            "populate_ngram_count_with_context";
+    static final String FLAG_POPULATE_NGRAM_TIMESTAMP_IN_USER_HISTORY =
+            "populate_ngram_timestamp_in_user_history";
+    static final String FLAG_ENABLE_MULTIWORD_PREDICTIONS_FROM_USER_HISTORY =
+            "enable_multiword_predictions_from_user_history";
+    static final String FLAG_ENABLE_MULTIWORD_SUGGESTIONS_FROM_USER_HISTORY =
+            "enable_multiword_suggestions_from_user_history";
+    static final String FLAG_ENABLE_DYNAMIC_LM_UNIGRAM_CONTINUATION_SCORING =
+            "enable_dynamic_lm_unigram_continuation_scoring";
+    static final String FLAG_PRESERVE_CONTEXT_IN_DYNAMIC_LM_COMPUTE_HISTORY =
+            "preserve_context_in_dynamic_lm_compute_history";
+    static final String FLAG_ENABLE_DYNAMIC_LM_NOISE_FILTER =
+            "enable_dynamic_lm_noise_filter";
+    static final String FLAG_ENABLE_OOV_DEDUPLICATION =
+            "enable_oov_deduplication";
+
+    // Emoji suggestions & shortcuts
+    static final String FLAG_CONFIG_EXPRESSION =
+            "config_expression";
+    static final String FLAG_ENABLE_CONCEPT_PREDICTION_ENGINE =
+            "enable_concept_prediction_engine";
+    static final String FLAG_ENABLE_RULE_BASED_CONCEPT_PREDICTION =
+            "enable_rule_based_concept_prediction";
+    static final String FLAG_ENABLE_LAST_WORD_RULE_BASED_CONCEPT_PREDICTION =
+            "enable_last_word_rule_based_concept_prediction";
+    static final String FLAG_ENABLE_SUFFIX_RULE_BASED_CONCEPT_PREDICTION =
+            "enable_suffix_rule_based_concept_prediction";
+    static final String FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE =
+            "enable_emoji_suggestion_from_top_candidate";
+    static final String FLAG_ENABLE_PREDICTIONS_FROM_EMOJI_SHORTCUTS =
+            "enable_predictions_from_emoji_shortcuts";
+    static final String FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS =
+            "enable_ngram_emoji_shortcuts_by_spans";
+    static final String FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_FOR_PREDICTION =
+            "enable_ngram_emoji_shortcuts_for_prediction";
+    static final String FLAG_RETAIN_EMOJI_SHORTCUT_CANDIDATES_ON_SELECTION =
+            "retain_emoji_shortcut_candidates_on_selection";
+
+    // Autocorrect and glide typing consistency
+    static final String FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE =
+            "update_streaming_touch_data_set_is_gesture";
+    static final String FLAG_ENABLE_TWO_STAGE_DECODER =
+            "enable_two_stage_decoder";
+    static final String FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION =
+            "enable_space_transposition_post_correction";
+    static final String FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES =
+            "enable_pk_spatial_model_features";
+    static final String FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR =
+            "enable_pk_auto_correction_trigger_predictor";
+    static final String FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR =
+            "enable_post_correction_trigger_predictor";
+    static final String FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS =
+            "populate_preemptive_next_key_predictions";
+
     static final String ALL_LANGUAGES_ALLOWLIST_VALUE = "*";
     static final String MODELESS_SMART_EDIT_REGEX_VERSION = "v3";
     static final String RENAMED_GBOARD_PACKAGE =
@@ -100,9 +174,48 @@ public final class GboardAiWritingToolsRuntime {
     private static final ThreadLocal<Integer> SETTINGS_CONTROLLER_SCOPE_DEPTH =
             new ThreadLocal<Integer>();
 
+    private static final java.util.concurrent.atomic.AtomicBoolean DEFAULT_PREFERENCES_INITIALIZED =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
     private static volatile Context applicationContext;
 
     private GboardAiWritingToolsRuntime() {
+    }
+
+    static boolean isStockPhenotypeEnforcedFlag(String flagName) {
+        return FLAG_ENABLE_DEVICE_INTELLIGENCE.equals(flagName)
+                || FLAG_EMOJI_SCALE_SUPPORTED.equals(flagName)
+                || FLAG_ENABLE_ACCESS_POINTS_MENU_REDESIGN.equals(flagName)
+                || FLAG_ENABLE_ACCESS_POINT_KEYBOARD.equals(flagName)
+                || FLAG_ENABLE_AUTOFILL_IME_INTEGRATION.equals(flagName)
+                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
+                || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
+                || FLAG_ENABLE_SPELL_CHECKER_EXTENSION.equals(flagName)
+                || FLAG_ENABLE_PC_USER_HISTORY_NGRAM_COUNT.equals(flagName)
+                || FLAG_POPULATE_NGRAM_COUNT_WITH_CONTEXT.equals(flagName)
+                || FLAG_POPULATE_NGRAM_TIMESTAMP_IN_USER_HISTORY.equals(flagName)
+                || FLAG_ENABLE_MULTIWORD_PREDICTIONS_FROM_USER_HISTORY.equals(flagName)
+                || FLAG_ENABLE_MULTIWORD_SUGGESTIONS_FROM_USER_HISTORY.equals(flagName)
+                || FLAG_ENABLE_DYNAMIC_LM_UNIGRAM_CONTINUATION_SCORING.equals(flagName)
+                || FLAG_PRESERVE_CONTEXT_IN_DYNAMIC_LM_COMPUTE_HISTORY.equals(flagName)
+                || FLAG_ENABLE_DYNAMIC_LM_NOISE_FILTER.equals(flagName)
+                || FLAG_ENABLE_OOV_DEDUPLICATION.equals(flagName)
+                || FLAG_CONFIG_EXPRESSION.equals(flagName)
+                || FLAG_ENABLE_CONCEPT_PREDICTION_ENGINE.equals(flagName)
+                || FLAG_ENABLE_RULE_BASED_CONCEPT_PREDICTION.equals(flagName)
+                || FLAG_ENABLE_LAST_WORD_RULE_BASED_CONCEPT_PREDICTION.equals(flagName)
+                || FLAG_ENABLE_SUFFIX_RULE_BASED_CONCEPT_PREDICTION.equals(flagName)
+                || FLAG_ENABLE_EMOJI_SUGGESTION_FROM_TOP_CANDIDATE.equals(flagName)
+                || FLAG_ENABLE_PREDICTIONS_FROM_EMOJI_SHORTCUTS.equals(flagName)
+                || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_BY_SPANS.equals(flagName)
+                || FLAG_ENABLE_NGRAM_EMOJI_SHORTCUTS_FOR_PREDICTION.equals(flagName)
+                || FLAG_RETAIN_EMOJI_SHORTCUT_CANDIDATES_ON_SELECTION.equals(flagName)
+                || FLAG_UPDATE_STREAMING_TOUCH_DATA_SET_IS_GESTURE.equals(flagName)
+                || FLAG_ENABLE_TWO_STAGE_DECODER.equals(flagName)
+                || FLAG_ENABLE_SPACE_TRANSPOSITION_POST_CORRECTION.equals(flagName)
+                || FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES.equals(flagName)
+                || FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
+                || FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
+                || FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -111,11 +224,23 @@ public final class GboardAiWritingToolsRuntime {
                 return originalResult;
             }
             String flagName = readFlagName(receiver);
-            // The renamed package receives no server-side Phenotype config, so the
-            // DeviceIntelligence module (inline autofill chips for password managers
-            // such as Bitwarden) stays disabled unless its default is overridden.
-            if ((FLAG_ENABLE_DEVICE_INTELLIGENCE.equals(flagName)
-                    || FLAG_EMOJI_SCALE_SUPPORTED.equals(flagName))
+            Context context = resolveContext();
+            // The renamed package receives no server-side Phenotype config, so stock
+            // features that default to false in decompiled code (such as Device Intelligence
+            // autofill chips, emoji scaling, access points menu redesign, autofill quick settings
+            // tile, spell checker suggestion chips, rapid user history learning, emoji suggestions,
+            // two-stage decoding, and gesture streaming fixes) stay disabled unless overridden.
+            if (FLAG_INTENDED_OOV_MIN_COUNT.equals(flagName)
+                    && originalResult instanceof Long) {
+                if (!ENFORCED_INTENDED_OOV_MIN_COUNT.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(ENFORCED_INTENDED_OOV_MIN_COUNT));
+                }
+                return ENFORCED_INTENDED_OOV_MIN_COUNT;
+            }
+            if (isStockPhenotypeEnforcedFlag(flagName)
                     && originalResult instanceof Boolean) {
                 if (!Boolean.TRUE.equals(originalResult)) {
                     logLimited(FLAG_LOG_COUNT,
@@ -125,7 +250,6 @@ public final class GboardAiWritingToolsRuntime {
                 }
                 return Boolean.TRUE;
             }
-            Context context = resolveContext();
             if (context == null) {
                 return originalResult;
             }
@@ -374,6 +498,7 @@ public final class GboardAiWritingToolsRuntime {
     static Context resolveContext() {
         Context cached = applicationContext;
         if (cached != null) {
+            ensureDefaultPreferencesInitialized(cached);
             return cached;
         }
         Context reflected = reflectedApplicationContext(
@@ -384,8 +509,23 @@ public final class GboardAiWritingToolsRuntime {
         }
         if (reflected != null) {
             applicationContext = reflected;
+            ensureDefaultPreferencesInitialized(reflected);
         }
         return reflected;
+    }
+
+    private static void ensureDefaultPreferencesInitialized(Context context) {
+        if (context == null || !DEFAULT_PREFERENCES_INITIALIZED.compareAndSet(false, true)) {
+            return;
+        }
+        try {
+            android.content.SharedPreferences prefs =
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+            if (!prefs.contains("pref_key_enable_emoji_suggestion")) {
+                prefs.edit().putBoolean("pref_key_enable_emoji_suggestion", true).apply();
+            }
+        } catch (Throwable ignored) {
+        }
     }
 
     static Context reflectedApplicationContext(String className, String methodName) {

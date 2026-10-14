@@ -72,4 +72,10 @@ internal fun NodeList.elements(): Sequence<Element> =
     (0 until length).asSequence().mapNotNull { item(it) as? Element }
 
 internal fun Element.childElements(tagName: String? = null): Sequence<Element> =
-    childNodes.elements().filter { tagName == null || it.tagName == tagName }
+    childNodes.elements().filter {
+        tagName == null || it.tagName == tagName || it.localName == tagName || it.tagName.substringAfter(':') == tagName
+    }
+
+internal fun org.w3c.dom.NamedNodeMap.asSequence(): Sequence<org.w3c.dom.Node> =
+    (0 until length).asSequence().map(::item)
+

@@ -70,7 +70,7 @@
         <translation locale="en">Unable to load feature</translation>
     </string>
     <string name="gboard_patches_error_row_summary">
-        <translation locale="en">The host app stayed alive. Reopen Gboard settings and try again.</translation>
+        <translation locale="en">The host app stayed alive. Reopen PixelBoard settings and try again.</translation>
     </string>
     <string name="gboard_patches_fatal_fallback_title">
         <translation locale="en">Patches temporarily unavailable</translation>
@@ -88,7 +88,7 @@
         <translation locale="en">Restart Gboard</translation>
     </string>
     <string name="gboard_patches_restart_failed">
-        <translation locale="en">Gboard could not be restarted. Reopen Gboard settings and try again.</translation>
+        <translation locale="en">Gboard could not be restarted. Reopen PixelBoard settings and try again.</translation>
     </string>
     <string name="gboard_patches_language_title">
         <translation locale="en">Language</translation>
@@ -145,7 +145,7 @@
         <translation locale="en">AI Writing Tools unavailable</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_error_summary">
-        <translation locale="en">The AI Writing Tools settings screen failed to load. Reopen Gboard settings and try again.</translation>
+        <translation locale="en">The AI Writing Tools settings screen failed to load. Reopen PixelBoard settings and try again.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_enabled_title">
         <translation locale="en">Enable AI Writing Tools</translation>
@@ -193,7 +193,7 @@
         <translation locale="en">Advanced Voice Typing unavailable</translation>
     </string>
     <string name="gboard_patches_advanced_voice_error_summary">
-        <translation locale="en">The Advanced Voice Typing settings screen failed to load. Reopen Gboard settings and try again.</translation>
+        <translation locale="en">The Advanced Voice Typing settings screen failed to load. Reopen PixelBoard settings and try again.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_enabled_title">
         <translation locale="en">Enable Advanced Voice Typing</translation>

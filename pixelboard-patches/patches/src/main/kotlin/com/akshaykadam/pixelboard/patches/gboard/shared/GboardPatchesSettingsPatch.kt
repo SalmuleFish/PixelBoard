@@ -10,6 +10,7 @@ package com.akshaykadam.pixelboard.patches.gboard.shared
 import com.akshaykadam.pixelboard.patches.shared.ResourcePatchContext
 import com.akshaykadam.pixelboard.patches.shared.resourcePatch
 import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
+import org.w3c.dom.Attr
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
@@ -64,6 +65,9 @@ private fun applyPatchesSettingsPatch() = with(context) {
             }
         }
     }
+    applySpellCheckerXmlOverride()
+    applyEmojiSuggestionXmlOverride()
+    applyPixelboardStringsOverride()
 }
 
 internal fun applyGboardPatchesSettings(
@@ -74,6 +78,8 @@ internal fun applyGboardPatchesSettings(
     require(settingsDocuments.size == GBOARD_SETTINGS_XML_PATHS.size) {
         "Expected both Gboard settings documents"
     }
+
+    applyPixelboardBranding(manifestDocument, settingsDocuments)
 
     val manifest = manifestDocument.documentElement
     val application = manifest.childElements("application").firstOrNull()
@@ -92,8 +98,8 @@ internal fun applyGboardPatchesSettings(
         activity.setAndroidAttribute("exported", "false")
     }
     val settingsActivity = application.childElements("activity").firstOrNull {
-        it.getAttributeNS(ANDROID_NS, "name") == "com.google.android.apps.inputmethod.latin.preference.SettingsActivity" ||
-            it.getAttribute("android:name") == "com.google.android.apps.inputmethod.latin.preference.SettingsActivity"
+        it.getAttributeNS(ANDROID_NS, "name") == GBOARD_SETTINGS_ACTIVITY_CLASS ||
+            it.getAttribute("android:name") == GBOARD_SETTINGS_ACTIVITY_CLASS
     }
     val settingsTheme = settingsActivity?.let {
         it.getAttributeNS(ANDROID_NS, "theme").takeIf { t -> t.isNotBlank() }
@@ -179,7 +185,155 @@ internal fun applyGboardPatchesSettings(
     }
 }
 
+internal fun applyPixelboardBranding(
+    manifestDocument: Document,
+    settingsDocuments: List<Document>,
+) {
+    val manifest = manifestDocument.documentElement
+    val application = manifest.childElements("application").firstOrNull() ?: return
+
+    val settingsActivity = application.childElements("activity").firstOrNull {
+        it.androidAttribute("name") == GBOARD_SETTINGS_ACTIVITY_CLASS
+    }
+    settingsActivity?.setAndroidAttribute("label", PIXELBOARD_SETTINGS_TITLE)
+
+    val spellCheckerService = application.childElements("service").firstOrNull {
+        it.androidAttribute("name") == GBOARD_SPELL_CHECKER_SERVICE_CLASS
+    }
+    spellCheckerService?.setAndroidAttribute("label", PIXELBOARD_SPELL_CHECKER_LABEL)
+
+    val spellCheckerActivity = application.childElements("activity").firstOrNull {
+        it.androidAttribute("name") == GBOARD_SPELL_CHECKER_SETTINGS_ACTIVITY_CLASS
+    }
+    spellCheckerActivity?.setAndroidAttribute("label", PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL)
+
+    settingsDocuments.forEach { document ->
+        document.documentElement.setAndroidAttribute("title", PIXELBOARD_SETTINGS_TITLE)
+    }
+}
+
+context(context: ResourcePatchContext)
+internal fun applySpellCheckerXmlOverride() = with(context) {
+    try {
+        document(GBOARD_SPELL_CHECKER_XML_PATH).use { document ->
+            val root = document.documentElement ?: return@use
+            val currentLabel = root.androidAttribute("label")
+            // Android's SpellCheckerInfo requires android:label in spell_checker.xml to be a resource ID reference (@string/...).
+            // If it is a string literal (or missing), ensure it points to @string/string_0x7f140d61.
+            // If it is already a resource reference, keep it so TypedArray.getResourceId() succeeds.
+            if (currentLabel == null || !currentLabel.startsWith("@string/")) {
+                root.setAndroidAttribute("label", "@string/string_0x7f140d61")
+            }
+        }
+    } catch (_: Throwable) {
+    }
+}
+
+context(context: ResourcePatchContext)
+internal fun applyEmojiSuggestionXmlOverride() = with(context) {
+    try {
+        document("res/xml/setting_expression.xml").use { doc ->
+            val switches = doc.getElementsByTagName("SwitchPreferenceCompat")
+            for (i in 0 until switches.length) {
+                val element = switches.item(i) as? Element ?: continue
+                val key = element.androidAttribute("key")
+                if (key == "@string/string_0x7f14093e" || key == "pref_key_enable_emoji_suggestion") {
+                    if (element.androidAttribute("defaultValue").isNullOrBlank()) {
+                        element.setAndroidAttribute("defaultValue", "true")
+                    }
+                }
+            }
+        }
+    } catch (_: Throwable) {
+    }
+}
+
+context(context: ResourcePatchContext)
+internal fun applyPixelboardStringsOverride() = with(context) {
+    val resDir = try {
+        this.get("res")
+    } catch (_: Throwable) {
+        return@with
+    }
+    if (!resDir.exists() || !resDir.isDirectory) return@with
+
+    val stringFiles = resDir.walkTopDown()
+        .filter { it.isFile && it.name == "strings.xml" }
+        .toList()
+
+    val spellCheckerStringNames = setOf("string_0x7f140d61", "string_0x7f140d5e")
+    val spellCheckerSettingsStringNames = setOf("string_0x7f140d6b", "string_0x7f140d68")
+    val settingsStringNames = setOf("string_0x7f140c9a")
+
+    for (file in stringFiles) {
+        var text = file.readText()
+        var modified = false
+
+        for (name in spellCheckerStringNames) {
+            val regex = Regex("""<string name="$name">.*?</string>""")
+            if (regex.containsMatchIn(text)) {
+                text = regex.replace(text, """<string name="$name">$PIXELBOARD_SPELL_CHECKER_LABEL</string>""")
+                modified = true
+            }
+        }
+        for (name in spellCheckerSettingsStringNames) {
+            val regex = Regex("""<string name="$name">.*?</string>""")
+            if (regex.containsMatchIn(text)) {
+                text = regex.replace(text, """<string name="$name">$PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL</string>""")
+                modified = true
+            }
+        }
+        for (name in settingsStringNames) {
+            val regex = Regex("""<string name="$name">.*?</string>""")
+            if (regex.containsMatchIn(text)) {
+                text = regex.replace(text, """<string name="$name">$PIXELBOARD_SETTINGS_TITLE</string>""")
+                modified = true
+            }
+        }
+
+        if (text.contains(">Gboard settings<")) {
+            text = text.replace(">Gboard settings<", ">$PIXELBOARD_SETTINGS_TITLE<")
+            modified = true
+        }
+        if (text.contains(">Gboard spell checker<")) {
+            text = text.replace(">Gboard spell checker<", ">$PIXELBOARD_SPELL_CHECKER_LABEL<")
+            modified = true
+        }
+        if (text.contains(">Gboard spellchecker<")) {
+            text = text.replace(">Gboard spellchecker<", ">$PIXELBOARD_SPELL_CHECKER_LABEL<")
+            modified = true
+        }
+        if (text.contains(">Gboard spell checker settings<")) {
+            text = text.replace(">Gboard spell checker settings<", ">$PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL<")
+            modified = true
+        }
+        if (text.contains(">Gboard spellchecker settings<")) {
+            text = text.replace(">Gboard spellchecker settings<", ">$PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL<")
+            modified = true
+        }
+
+        if (modified) {
+            file.writeText(text)
+        }
+    }
+}
+
+private fun Element.findAndroidAttr(localName: String): Attr? =
+    attributes?.asSequence()?.filterIsInstance<Attr>()?.firstOrNull { attribute ->
+        (
+            attribute.namespaceURI == ANDROID_NS &&
+                attribute.localName == localName
+            ) ||
+            attribute.nodeName == "android:$localName" ||
+            attribute.name == "android:$localName" ||
+            attribute.localName == localName
+    }
+
 private fun Element.androidAttribute(localName: String): String? {
+    val attr = findAndroidAttr(localName)
+    if (attr != null && attr.value.isNotBlank()) {
+        return attr.value
+    }
     val namespaced = getAttributeNS(ANDROID_NS, localName)
     if (namespaced.isNotBlank()) {
         return namespaced
@@ -192,9 +346,29 @@ private fun Element.removeAndroidAttribute(localName: String) {
     removeAttribute("android:$localName")
 }
 
-private fun Element.setAndroidAttribute(localName: String, value: String) {
-    setAttributeNS(ANDROID_NS, "android:$localName", value)
+internal fun Element.setAndroidAttribute(localName: String, value: String) {
+    val attr = findAndroidAttr(localName)
+    if (attr != null) {
+        attr.value = value
+    } else {
+        try {
+            setAttributeNS(ANDROID_NS, "android:$localName", value)
+        } catch (_: Throwable) {
+            setAttribute("android:$localName", value)
+        }
+    }
 }
+
+internal const val PIXELBOARD_SETTINGS_TITLE = "PixelBoard Settings"
+internal const val PIXELBOARD_SPELL_CHECKER_LABEL = "PixelBoard Spell Checker"
+internal const val PIXELBOARD_SPELL_CHECKER_SETTINGS_LABEL = "PixelBoard Spell Checker Settings"
+internal const val GBOARD_SETTINGS_ACTIVITY_CLASS =
+    "com.google.android.apps.inputmethod.latin.preference.SettingsActivity"
+internal const val GBOARD_SPELL_CHECKER_SERVICE_CLASS =
+    "com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService"
+internal const val GBOARD_SPELL_CHECKER_SETTINGS_ACTIVITY_CLASS =
+    "com.google.android.apps.inputmethod.latin.spelling.LatinSpellCheckerSettingsActivity"
+internal const val GBOARD_SPELL_CHECKER_XML_PATH = "res/xml/spell_checker.xml"
 
 internal const val GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS =
     "com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsActivity"

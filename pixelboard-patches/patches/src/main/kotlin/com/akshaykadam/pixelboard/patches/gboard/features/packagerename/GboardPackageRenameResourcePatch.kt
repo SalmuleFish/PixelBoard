@@ -16,6 +16,9 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.GBOARD_PATCHES_SETTINGS_
 import com.akshaykadam.pixelboard.patches.gboard.shared.GBOARD_SETTINGS_XML_PATHS
 import com.akshaykadam.pixelboard.patches.gboard.shared.childElements
 import com.akshaykadam.pixelboard.patches.gboard.shared.elements
+import com.akshaykadam.pixelboard.patches.gboard.shared.applyPixelboardBranding
+import com.akshaykadam.pixelboard.patches.gboard.shared.applySpellCheckerXmlOverride
+import com.akshaykadam.pixelboard.patches.gboard.shared.applyPixelboardStringsOverride
 import com.akshaykadam.pixelboard.patches.shared.Constants.GBOARD_PACKAGE_NAME
 import com.akshaykadam.pixelboard.patches.shared.Constants.GBOARD_PATCHED_PACKAGE_NAME
 import org.w3c.dom.Attr
@@ -40,9 +43,15 @@ private fun applyManifestPackageOverride() = with(context) {
                     manifestDocument = manifestDocument,
                     settingsDocuments = listOf(settingsDocument, legacySettingsDocument),
                 )
+                applyPixelboardBranding(
+                    manifestDocument = manifestDocument,
+                    settingsDocuments = listOf(settingsDocument, legacySettingsDocument),
+                )
             }
         }
     }
+    applySpellCheckerXmlOverride()
+    applyPixelboardStringsOverride()
     sanitizeMissingSplitResources()
 }
 

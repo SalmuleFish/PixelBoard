@@ -5,8 +5,8 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download-v18.4.1_V2_Stable_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download-v18.4.1_V3_Stable_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/">
@@ -96,6 +96,14 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 ### 9. Empty Clipboard History Fix for Samsung One UI & Vivo ([#17](https://github.com/Akshayykadam/PixelBoard/issues/17))
 - **Foreground Clipboard Sync**: Hooks `onStartInputView` to guarantee `ClipboardManager` listener initialization and sync copied text into clipboard drawer history when typing, overcoming OEM background clipboard suppression on Samsung One UI and Vivo devices.
 
+### 10. Instant Word Learning & Contextual Emoji Suggestions ([#33](https://github.com/Akshayykadam/PixelBoard/issues/33))
+- **Instant Word Learning & 2-Letter Prefix Suggestions**: Lowered out-of-vocabulary learning threshold from 4 to 1 (`intended_oov_min_count = 1`) and activated Delight5 language model user history n-gram frequency, continuation scoring, and timestamp tracking (`enable_pc_user_history_ngram_count`, `populate_ngram_count_with_context`, `enable_dynamic_lm_unigram_continuation_scoring`). Frequently used words are learned instantly and suggested after typing just the first two letters.
+- **Automatic Emoji Suggestions**: Enabled the Delight5 concept prediction engine and emoji shortcut candidates (`enable_concept_prediction_engine`, `enable_rule_based_concept_prediction`, `enable_emoji_suggestion_from_top_candidate`, `enable_predictions_from_emoji_shortcuts`, `config_expression`). Matching emojis are automatically suggested directly in the suggestion strip when typing relevant words.
+
+### 11. Accurate Autocorrect & Consistent Glide Typing ([#33](https://github.com/Akshayykadam/PixelBoard/issues/33))
+- **Streaming Gesture Touch Tagging**: Enabled `update_streaming_touch_data_set_is_gesture` so continuous swipe/glide trajectories are correctly identified and processed as gestures without stroke stutter or incorrect word outputs.
+- **Two-Stage Beam Decoder & Spatial Rescoring**: Activated Google's advanced Delight5 two-stage beam decoder (`enable_two_stage_decoder`), spatial model features, and auto-correction trigger predictors (`enable_space_transposition_post_correction`, `enable_pk_spatial_model_features`, `enable_pk_auto_correction_trigger_predictor`), delivering rock-solid autocorrection accuracy and fluid glide typing.
+
 > [!NOTE]
 > **Google Pixel Device Requirement**: New advanced features (such as **Writing Tools V2** and the **On-Device AI Inference Backend Selector**) are available **only on Google Pixel devices** (e.g., Pixel 8 Pro / Pixel 9 series) due to system AICore and hardware model requirements. On non-Pixel Android devices, these specific options are automatically hidden or gated to ensure complete stability, while core features like **Gemini Rambler Natural Voice Typing**, **AI Proofread**, and **Tone Rewriting** work across all supported devices.
 
@@ -162,10 +170,11 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download directly from the [**PixelBoard v18.4.1-V2 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V2):
-   - [**PixelBoard Stable APK (v18.4.1 V2, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk) — ready-to-install signed APK.
+1. Download directly from the [**PixelBoard v18.4.1-V3 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V3):
+   - [**PixelBoard Stable APK (v18.4.1 V3, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk) — ready-to-install signed APK.
+   - [**PixelBoard Standalone Patch Bundle (patches-1.0.7.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/patches-1.0.7.mpp) — versioned patch for Morphe Manager.
    - [**Stock Gboard Base APK (122 MB)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) — download the official bundle from APKMirror for patching.
-   - [**PixelBoard Patch Bundle (PixelBoard.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) — for patching via Morphe Manager.
+   - [**PixelBoard Latest Patch Bundle (PixelBoard.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) — for patching via Morphe Manager.
 2. Tap the downloaded `.apk` in your notification drawer or File Manager (e.g., **Files by Google**).
 3. If prompted, toggle **"Allow from this source"** to permit installation.
 4. Tap **Install**.
