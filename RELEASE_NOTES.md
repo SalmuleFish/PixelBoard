@@ -37,16 +37,16 @@ PixelBoard v18.4.1-V2 (Patch Bundle v1.0.6) brings key quality-of-life enhanceme
 
 | File | Size | Description |
 | :--- | :--- | :--- |
-| **PixelBoard-18.4.1-V2.apk** | ~127 MB | Ready-to-install signed Stable APK (v18.4.1 release base, versionCode 176027079) |
-| **PixelBoard.mpp** | ~1.5 MB | Standalone patch bundle (v1.0.6) for Morphe Manager |
-| **patches-1.0.6.mpp** | ~1.5 MB | Versioned standalone patch bundle (v1.0.6) |
+| [**PixelBoard-18.4.1-V2.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk) | ~127 MB | Ready-to-install signed Stable APK (v18.4.1 release base, versionCode 176027079) |
+| [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) | ~1.5 MB | Standalone patch bundle (v1.0.6) for Morphe Manager |
+| [**patches-1.0.6.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/patches-1.0.6.mpp) | ~1.5 MB | Versioned standalone patch bundle (v1.0.6) |
 
 ---
 
 ## Installation
 
 ### Option 1: Direct APK Installation (Recommended)
-1. Download `PixelBoard-18.4.1-V2.apk` directly to your Android device.
+1. Download [**PixelBoard-18.4.1-V2.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk) directly to your Android device.
 2. Tap the downloaded APK in your file manager or browser downloads.
 3. Allow installation from unknown sources if prompted, and complete installation (supports updating in-place over earlier v18.4.1 builds).
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
@@ -62,7 +62,7 @@ Add the custom patch source in Morphe Manager:
 ```text
 https://raw.githubusercontent.com/Akshayykadam/PixelBoard/main/patches-bundle.json
 ```
-Select stock Gboard `v18.4.1.985164140-release-arm64-v8a` (or `v18.3.1`) and apply patches.
+Select stock Gboard [**v18.4.1.985164140-release-arm64-v8a**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) (or `v18.3.1`) and apply patches.
 
 ---
 
