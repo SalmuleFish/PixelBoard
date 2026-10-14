@@ -5,7 +5,7 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1-V2.apk">
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk">
     <img src="https://img.shields.io/badge/📥_Direct_Download-v18.4.1_V2_Stable_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
@@ -162,8 +162,8 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download directly from the [**PixelBoard v18.4.1 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable):
-   - [**PixelBoard Stable APK (v18.4.1 V2, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1-V2.apk) — ready-to-install signed APK.
+1. Download directly from the [**PixelBoard v18.4.1-V2 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V2):
+   - [**PixelBoard Stable APK (v18.4.1 V2, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V2/PixelBoard-18.4.1-V2.apk) — ready-to-install signed APK.
    - [**Stock Gboard Base APK (122 MB)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) — download the official bundle from APKMirror for patching.
    - [**PixelBoard Patch Bundle (PixelBoard.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) — for patching via Morphe Manager.
 2. Tap the downloaded `.apk` in your notification drawer or File Manager (e.g., **Files by Google**).
