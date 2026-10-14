@@ -170,14 +170,9 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 ## Installation Guide
 
 ### Option A: Direct Download on Your Phone (Easiest)
-1. Download directly from the [**PixelBoard v18.4.1-V3 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable-V3):
-   - [**PixelBoard Stable APK (v18.4.1 V3, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk) — ready-to-install signed APK.
-   - [**PixelBoard Standalone Patch Bundle (patches-1.0.7.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/patches-1.0.7.mpp) — versioned patch for Morphe Manager.
-   - [**Stock Gboard Base APK (122 MB)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) — download the official bundle from APKMirror for patching.
-   - [**PixelBoard Latest Patch Bundle (PixelBoard.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) — for patching via Morphe Manager.
-2. Tap the downloaded `.apk` in your notification drawer or File Manager (e.g., **Files by Google**).
-3. If prompted, toggle **"Allow from this source"** to permit installation.
-4. Tap **Install**.
+1. Download [**PixelBoard Stable APK (v18.4.1 V3, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk).
+2. Tap the downloaded `.apk` in your notification drawer or Downloads folder.
+3. If prompted, toggle **"Allow from this source"** and tap **Install**.
 
 ### Option B: Sideload via ADB (For Developers)
 Connect your Android phone via USB with USB Debugging enabled:
@@ -189,7 +184,7 @@ adb install -r output/PixelBoard.apk
 You can patch your stock Gboard APK directly on your phone using **Morphe Manager**:
 1. Install **Morphe Manager** on your Android device.
 2. Get the two required files:
-   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp)
+   - **Patch Bundle**: [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) (or versioned [**patches-1.0.7.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/patches-1.0.7.mpp))
    - **Stock Base APK**: Download the official base bundle from [**APKMirror (Gboard v18.4.1 Release)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/).
 3. In Morphe Manager, select **Storage**, choose the stock Gboard APK, and load `PixelBoard.mpp` as the patch source.
 4. Tap **Patch** and then **Install**!
