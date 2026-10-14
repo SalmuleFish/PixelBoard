@@ -42,11 +42,11 @@ public final class GboardAiWritingToolsSettingsFeatureTest {
         Assert.assertEquals(3, screen.getRows().size());
         Assert.assertEquals(
                 "Show AI writing tools in the suggestion strip for instant proofreading, "
-                        + "text rewriting, and smart suggestions. Restart Gboard to apply changes.",
+                        + "text rewriting, and smart suggestions.",
                 enabledRow.getSummary());
         Assert.assertEquals(
                 "Enable AI Writing Tools across all language layouts and input fields without "
-                        + "restrictions. Restart Gboard to apply changes.",
+                        + "restrictions.",
                 allKeyboardsRow.getSummary());
         Assert.assertEquals(
                 "Choose between Google Cloud processing or private on-device inference (AICore / Astrea).",

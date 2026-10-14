@@ -5,8 +5,8 @@
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
 
 <p>
-  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1.apk">
-    <img src="https://img.shields.io/badge/📥_Direct_Download-v18.4.1_Stable_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
+  <a href="https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1-V2.apk">
+    <img src="https://img.shields.io/badge/📥_Direct_Download-v18.4.1_V2_Stable_(127_MB)-00C853?style=for-the-badge&logo=android&logoColor=white" height="42" alt="Download PixelBoard Stable APK"/>
   </a>
   &nbsp;&nbsp;
   <a href="https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/">
@@ -40,7 +40,7 @@
 
 ## Overview
 
-**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Writing Tools V2 Gating**, **Device-Gated Inference Backend Selection**, and **Automatic Zero-Restart Instant Activation**.
+**PixelBoard** is a sleek, ultra-clean enhancement of Google's flagship keyboard. Tailored for pure productivity, PixelBoard strips away unnecessary bloatware and focuses strictly on powerhouse capabilities: **Gemini Rambler Natural Voice Dictation**, **AI Writing Assistant**, **Material 3 Expressive Rounded Keys**, **Restored Emoji Size Slider & Vibrant Emojis**, **Samsung & Vivo Clipboard History Sync**, and **Automatic Zero-Restart Instant Activation**.
 
 PixelBoard is engineered with an independent coexistence package ID (`com.akshaykadam.pixelboard`), allowing you to install and use it **side-by-side with your factory Gboard** without replacing, uninstalling, or risking system keyboard stability.
 
@@ -64,10 +64,9 @@ Access Google's Gemini-driven writing suite directly above your keys across any 
 - **Smart Edit**: Context-aware editing and quick rephrasing tailored to your conversation.
 - **Universal Support**: Works across all keyboard languages and input modes.
 
-### 3. Writing Tools V2 Gating (New in v18.4)
-- **Suggested Style Chips & Prompt Bar**: Unlocks Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
+### 3. Writing Tools V2 Support (Experimental)
+- **Suggested Style Chips & Prompt Bar**: Pre-configured architecture for Google's modern "Suggested" style chips and the freeform "Describe your edit" prompt bar.
 - **Intelligent Hardware Gating**: Integrated with hardware/model eligibility checks to prevent unexpected errors or crashes on unsupported devices.
-- **Dedicated In-App Control**: Toggle Writing Tools V2 on/off directly inside Advanced Settings with a clean Material You **BETA** badge.
 
 ### 4. Device-Gated AI Inference Backend Selector (New in v18.4)
 On supported devices (such as Google Pixel 8 Pro / 9 series), choose your preferred inference pipeline directly under Advanced Settings:
@@ -85,6 +84,17 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 - **Side-by-Side Installation**: Installs with app label `PixelBoard` alongside stock Google Keyboard.
 - **Signature Whitelist Bypass**: Pre-patched bytecode ensures Google Play signature checks and integrity verifications pass cleanly without root.
 - **Inline Autofill & Password Manager Suggestions**: Enables Android's `DeviceIntelligence` inline autofill chips for password managers (Bitwarden, 1Password, KeePass, etc.) in the renamed package ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).
+
+### 7. Material 3 Expressive Rounded Keys (Belka UI) ([#14](https://github.com/Akshayykadam/PixelBoard/issues/14))
+- **Modern Rounded Keycaps**: Toggle Google's expressive Material 3 Belka pill-shaped keycaps on/off under Advanced Settings.
+- **Dynamic Flag Management**: Automatically forces `belka_rounded_keyboard`, `belka_ui`, `belka_background`, `more_pill_keys`, and `enable_rounded_keys` flags at runtime.
+
+### 8. Restored Emoji Size Slider & Vibrant Candidate Emojis ([#26](https://github.com/Akshayykadam/PixelBoard/issues/26))
+- **Restored Emoji Size Slider**: Unlocked the missing "Emoji size" slider preference and interactive preview row under **Emojis, stickers & GIFs** settings.
+- **Vibrant Suggestion Strip Emojis**: Hooked candidate text view rendering to enforce full 100% paint opacity for emoji glyphs, eliminating dull or washed-out emoji suggestions in the suggestion strip.
+
+### 9. Empty Clipboard History Fix for Samsung One UI & Vivo ([#17](https://github.com/Akshayykadam/PixelBoard/issues/17))
+- **Foreground Clipboard Sync**: Hooks `onStartInputView` to guarantee `ClipboardManager` listener initialization and sync copied text into clipboard drawer history when typing, overcoming OEM background clipboard suppression on Samsung One UI and Vivo devices.
 
 > [!NOTE]
 > **Google Pixel Device Requirement**: New advanced features (such as **Writing Tools V2** and the **On-Device AI Inference Backend Selector**) are available **only on Google Pixel devices** (e.g., Pixel 8 Pro / Pixel 9 series) due to system AICore and hardware model requirements. On non-Pixel Android devices, these specific options are automatically hidden or gated to ensure complete stability, while core features like **Gemini Rambler Natural Voice Typing**, **AI Proofread**, and **Tone Rewriting** work across all supported devices.
@@ -120,7 +130,6 @@ Google's **AI Writing Tools** allow you to proofread, rephrase, and adjust the t
 - **In Advanced Settings**:
   - Open **★ Advanced settings** from the bottom of PixelBoard Settings.
   - Make sure **Enable AI Writing Tools** and **Support All Keyboards** are toggled **ON** (both ON by default).
-  - For supported hardware, optionally toggle **Writing Tools V2 (Beta)**.
 - **In Corrections & Suggestions**:
   - In PixelBoard Settings, go to **Corrections & suggestions > Writing tools**.
   - Ensure **Show writing tools icon in suggestion strip while typing** is enabled.
@@ -133,7 +142,6 @@ Google's **AI Writing Tools** allow you to proofread, rephrase, and adjust the t
 - **Actions Available**:
   - **Proofread**: One-tap fix for grammar and spelling.
   - **Rewrite / Rephrase**: Adjust tone between *Professional*, *Casual*, *Concise*, and *Emotive*.
-  - **Suggested & Custom Edit (V2)**: Tap quick suggestions or describe edits in freeform.
 
 ---
 
@@ -143,10 +151,10 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 
 - **Enable AI Writing Tools**: Force-shows the Writing tools icon in the suggestion strip across all apps and text views.
 - **Support All Keyboards**: Extends AI writing assistance beyond English to all keyboard layouts.
-- **Writing Tools V2 (Beta)**: Enables modern "Suggested" style chips and freeform edit prompts with device safety gating.
 - **Inference Backend Type**: On supported hardware, select between `GBOARD_SERVER`, `PRIVATE_INFERENCE_AICORE`, and `PRIVATE_INFERENCE_ASTREA`.
 - **Enable Advanced Voice Typing**: Unlocks the *Rambler* dictation engine in Voice typing settings.
-- **Toolbar Restart Button (`↻`)**: Optional one-tap process reload utility in the toolbar if you ever want to force a refresh, though all settings and toggles now apply automatically in real time.
+- **Rounded Keys**: Enable Google's Material 3 Expressive Belka pill-shaped keycaps.
+- **Toolbar Restart Button (`↻`)**: Optional one-tap process reload utility in the toolbar if you ever want to force a refresh, though all settings and toggles apply automatically in real time without restarts.
 - **Custom Attribution**: Dedicated credit footer (*Akshay Kadam*).
 
 ---
@@ -155,7 +163,7 @@ PixelBoard features a clean, minimal preference screen modeled directly after th
 
 ### Option A: Direct Download on Your Phone (Easiest)
 1. Download directly from the [**PixelBoard v18.4.1 Release**](https://github.com/Akshayykadam/PixelBoard/releases/tag/v18.4.1-Stable):
-   - [**PixelBoard Stable APK (v18.4.1, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1.apk) — ready-to-install signed APK.
+   - [**PixelBoard Stable APK (v18.4.1 V2, 127 MB)**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable/PixelBoard-18.4.1-V2.apk) — ready-to-install signed APK.
    - [**Stock Gboard Base APK (122 MB)**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) — download the official bundle from APKMirror for patching.
    - [**PixelBoard Patch Bundle (PixelBoard.mpp, 1.5 MB)**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) — for patching via Morphe Manager.
 2. Tap the downloaded `.apk` in your notification drawer or File Manager (e.g., **Files by Google**).

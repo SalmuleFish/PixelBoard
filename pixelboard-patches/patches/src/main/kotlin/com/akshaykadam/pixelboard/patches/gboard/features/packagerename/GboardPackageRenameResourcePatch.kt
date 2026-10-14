@@ -300,6 +300,8 @@ internal fun applyGboardPackageRename(
         val currentCode = versionCodeAttr.value.toLongOrNull() ?: 0L
         if (currentCode in 176004200..176004237) {
             versionCodeAttr.value = "176004240"
+        } else if (currentCode == 176027078L) {
+            versionCodeAttr.value = "176027079"
         }
     }
 

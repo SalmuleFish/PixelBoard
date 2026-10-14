@@ -21,3 +21,6 @@ input/splits*/
 
 # Log files
 *.log
+
+# Scratch directory
+scratch/

@@ -13,13 +13,18 @@ import com.akshaykadam.pixelboard.patches.shared.Constants.COMPATIBILITY_GBOARD
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
+import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
+
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
 ) {
     compatibleWith(COMPATIBILITY_GBOARD)
 
     dependsOn(
-        gboardPatchesExtensionCarrierPatch
+        gboardPatchesExtensionCarrierPatch,
+        gboardCandidateEmojiVibrancyPatch,
+        gboardClipboardSyncPatch,
     )
 
     finalize {

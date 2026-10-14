@@ -2898,21 +2898,6 @@ public final class GboardPatchesSettingsActivity extends Activity
                                     }
                                 });
                     }));
-
-            boolean v2Enabled = writingPrefs != null
-                    && GboardAiWritingToolsSettings.readV2Enabled(writingPrefs);
-            rows.add(new GboardPatchesSettingsContract.ToggleRow(
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_title),
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_summary),
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_v2_badge),
-                    aiWritingToolsEnabled,
-                    v2Enabled,
-                    value -> {
-                        if (writingPrefs != null) {
-                            GboardAiWritingToolsSettings.writeV2Enabled(writingPrefs, value);
-                            renderCurrentScreenSafely();
-                        }
-                    }));
         }
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
@@ -2923,6 +2908,22 @@ public final class GboardPatchesSettingsActivity extends Activity
                 value -> {
                     if (voicePrefs != null) {
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
+                    }
+                }));
+
+        SharedPreferences patchesPrefs = GboardPatchesSettings.preferences(context);
+        boolean roundedKeysEnabled = GboardRoundedKeysSettings.readEnabled(patchesPrefs);
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_summary),
+                true,
+                roundedKeysEnabled,
+                value -> {
+                    if (patchesPrefs != null) {
+                        GboardRoundedKeysSettings.writeEnabled(patchesPrefs, value);
+                        GboardRoundedKeysSettings.applyToGboardPreferences(context, value);
+                        renderCurrentScreenSafely();
                     }
                 }));
 

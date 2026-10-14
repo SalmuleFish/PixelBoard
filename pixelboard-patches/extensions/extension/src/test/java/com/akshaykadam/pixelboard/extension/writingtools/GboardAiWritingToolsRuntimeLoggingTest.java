@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 
+import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -129,6 +131,89 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 "safeLog(\"failed to evaluate signal\", throwable)"));
     }
 
+    @Test
+    public void deviceIntelligenceFlagEnforcesTrueAndLogsDiagnostics() throws Exception {
+        DeviceIntelligenceFlagReceiver receiver = new DeviceIntelligenceFlagReceiver();
+
+        // 1. Overriding Boolean.FALSE -> returns Boolean.TRUE and logs to GboardPatches tag
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE);
+        Assert.assertSame(Boolean.TRUE, enforced);
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_device_intelligence, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 2. Already Boolean.TRUE -> returns Boolean.TRUE without redundant logging
+        Object unchanged = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.TRUE);
+        Assert.assertSame(Boolean.TRUE, unchanged);
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_device_intelligence, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 3. Non-boolean values are preserved
+        Object wrongType = "disabled";
+        Assert.assertSame(wrongType, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, wrongType));
+
+        // 4. Logging is bounded (at most 80 warnings)
+        for (int index = 0; index < 85; index++) {
+            GboardAiWritingToolsRuntime.applyOverriddenFlagValue(receiver, Boolean.FALSE);
+        }
+        Assert.assertEquals(80L, warningCount(
+                "flag=enable_device_intelligence, original=Boolean(false), enforced=Boolean(true)"));
+    }
+
+    @Test
+    public void roundedKeysFlagsEnforceTrueWhenEnabledAndLogDiagnostics() throws Exception {
+        Context context = RuntimeEnvironment.getApplication();
+        staticField("applicationContext").set(null, context);
+        SharedPreferences preferences = GboardRoundedKeysSettings.preferences(context);
+        GboardRoundedKeysSettings.writeEnabled(preferences, false);
+
+        RoundedKeysFlagReceiver receiver = new RoundedKeysFlagReceiver();
+
+        // 1. When disabled, original value is preserved
+        Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE));
+        Assert.assertEquals(0L, warningCount(
+                "flag=belka_rounded_keyboard, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 2. When enabled, Boolean.FALSE is overridden to Boolean.TRUE with diagnostics log
+        GboardRoundedKeysSettings.writeEnabled(preferences, true);
+        ShadowLog.clear();
+
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE);
+        Assert.assertSame(Boolean.TRUE, enforced);
+        Assert.assertEquals(1L, warningCount(
+                "flag=belka_rounded_keyboard, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 3. When already Boolean.TRUE, returns Boolean.TRUE without diagnostic warning
+        ShadowLog.clear();
+        Object unchanged = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.TRUE);
+        Assert.assertSame(Boolean.TRUE, unchanged);
+        Assert.assertEquals(0L, warningCount(
+                "flag=belka_rounded_keyboard, original=Boolean(false), enforced=Boolean(true)"));
+
+        // 4. Non-boolean values are preserved
+        Object wrongType = "invalid";
+        Assert.assertSame(wrongType, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, wrongType));
+    }
+
+    @Test
+    public void emojiScaleFlagEnforcesTrue() throws Exception {
+        Object receiver = new EmojiScaleFlagReceiver();
+
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE);
+        Assert.assertSame(Boolean.TRUE, enforced);
+
+        Object alreadyTrue = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.TRUE);
+        Assert.assertSame(Boolean.TRUE, alreadyTrue);
+    }
+
     private static long warningCount(String message) {
         String expected = "[gboard-writing-tools-18.0.3] " + message;
         return ShadowLog.getLogsForTag(TAG).stream()
@@ -146,6 +231,21 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     private static final class FlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS;
+    }
+
+    private static final class DeviceIntelligenceFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_DEVICE_INTELLIGENCE;
+    }
+
+    private static final class EmojiScaleFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_EMOJI_SCALE_SUPPORTED;
+    }
+
+    private static final class RoundedKeysFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardRoundedKeysSettings.FLAG_BELKA_ROUNDED_KEYBOARD;
     }
 
     private static final class ThrowingSharedPreferencesContext extends ContextWrapper {

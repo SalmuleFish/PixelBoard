@@ -3,6 +3,7 @@ package com.akshaykadam.pixelboard.extension.writingtools;
 import android.content.Context;
 import android.util.Log;
 
+import com.akshaykadam.pixelboard.extension.settings.GboardRoundedKeysSettings;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -69,6 +70,8 @@ public final class GboardAiWritingToolsRuntime {
             "nga_lab_modeless_smartedit_regex_version";
     static final String FLAG_ENABLE_DEVICE_INTELLIGENCE =
             "enable_device_intelligence";
+    static final String FLAG_EMOJI_SCALE_SUPPORTED =
+            "emoji_scale_supported";
     static final String ALL_LANGUAGES_ALLOWLIST_VALUE = "*";
     static final String MODELESS_SMART_EDIT_REGEX_VERSION = "v3";
     static final String RENAMED_GBOARD_PACKAGE =
@@ -111,13 +114,32 @@ public final class GboardAiWritingToolsRuntime {
             // The renamed package receives no server-side Phenotype config, so the
             // DeviceIntelligence module (inline autofill chips for password managers
             // such as Bitwarden) stays disabled unless its default is overridden.
-            if (FLAG_ENABLE_DEVICE_INTELLIGENCE.equals(flagName)
+            if ((FLAG_ENABLE_DEVICE_INTELLIGENCE.equals(flagName)
+                    || FLAG_EMOJI_SCALE_SUPPORTED.equals(flagName))
                     && originalResult instanceof Boolean) {
+                if (!Boolean.TRUE.equals(originalResult)) {
+                    logLimited(FLAG_LOG_COUNT,
+                            "flag=" + flagName
+                                    + ", original=" + describe(originalResult)
+                                    + ", enforced=" + describe(Boolean.TRUE));
+                }
                 return Boolean.TRUE;
             }
             Context context = resolveContext();
             if (context == null) {
                 return originalResult;
+            }
+            if (GboardRoundedKeysSettings.isRoundedKeyPhenotypeFlag(flagName)
+                    && originalResult instanceof Boolean) {
+                if (GboardRoundedKeysSettings.isEnabled(context)) {
+                    if (!Boolean.TRUE.equals(originalResult)) {
+                        logLimited(FLAG_LOG_COUNT,
+                                "flag=" + flagName
+                                        + ", original=" + describe(originalResult)
+                                        + ", enforced=" + describe(Boolean.TRUE));
+                    }
+                    return Boolean.TRUE;
+                }
             }
             GboardAiWritingToolsSettings.Snapshot settings =
                     GboardAiWritingToolsSettings.snapshot(context);

@@ -56,6 +56,7 @@ fi
 JAVA_BIN=""
 for candidate in \
     "${JAVA_HOME:-}/bin/java" \
+    "/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java" \
     "/opt/homebrew/opt/openjdk@21/bin/java" \
     /opt/homebrew/Cellar/openjdk@21/*/libexec/openjdk.jdk/Contents/Home/bin/java \
     "/opt/homebrew/opt/openjdk/bin/java" \
