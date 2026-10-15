@@ -46,10 +46,11 @@ PixelBoard v18.4.1-V4 (Patch Bundle v1.0.8) brings major feature unlocks, system
 
 ## Release Assets
 
-| File | Size | Description |
-| :--- | :--- | :--- |
-| [**PixelBoard-18.4.1-V4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/PixelBoard-18.4.1-V4.apk) | ~127 MB | Ready-to-install signed Stable APK (v18.4.1 release base, versionCode 176027079) |
-| [**patches-1.0.8.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/patches-1.0.8.mpp) | ~1.5 MB | Standalone patch bundle (v1.0.8) for Morphe Manager |
+| Package | Type | Size | Description |
+| :--- | :--- | :--- | :--- |
+| [**PixelBoard-18.4.1-V4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/PixelBoard-18.4.1-V4.apk) | **Signed APK** *(Recommended)* | ~127 MB | **Ready to install.** Signed stable APK (v18.4.1 release base, versionCode 176027079, side-by-side coexistence). |
+| [**patches-1.0.8.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/patches-1.0.8.mpp) | **Morphe Patch Bundle** | ~1.5 MB | Standalone patch file (v1.0.8) for [Morphe Manager](#option-3-patch-via-morphe-manager) to patch your own base APK. |
+| [**Stock Gboard v18.4.1**](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-4-1-985164140-release/) | **Base APK** | ~67 MB | Official unmodified base APK from APKMirror *(only required if patching manually with Morphe)*. |
 
 ---
 
