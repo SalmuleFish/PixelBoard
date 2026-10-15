@@ -78,6 +78,7 @@ Traditional voice-to-text transcribes every hesitation literally. PixelBoard unl
 - **Thought Completion**: Seamlessly fixes self-corrections on the fly (e.g., *"let's meet at two no, three PM"* &rarr; *"Let's meet at 3:00 PM"*).
 - **Auto-Punctuation & Capitalization**: Adds context-aware periods, commas, and proper noun capitalization without requiring voice commands.
 - **Multilingual Fluidity**: Mix and match languages seamlessly in a single sentence.
+- **Gboard 18.4.1 & Standalone Support**: Seamlessly hooked into Gboard 18.4.1's obfuscated `VoiceSettingsFragment` selector, with automatic preference initialization (`enable_jetson = true`) ensuring Rambler works out-of-the-box on the standalone package (`com.akshaykadam.pixelboard`) without relying on Google Play Services Phenotype flag sync.
 - **Battery-Friendly Lifecycle**: Cleanly releases speech recognition bindings (`GoogleAsrService`) as soon as the keyboard is hidden, eliminating screen-off battery drain ([#3](https://github.com/Akshayykadam/PixelBoard/issues/3)).
 - **Cold Boot & Direct Boot Readiness**: Powered by Device-Protected Storage (DE), ensuring Rambler voice typing is ready immediately after device reboots without needing manual Gboard restarts ([#4](https://github.com/Akshayykadam/PixelBoard/issues/4)).
 
@@ -86,6 +87,7 @@ Access Google's Gemini-driven writing suite directly above your keys across any 
 - **One-Tap Proofread**: Correct spelling, grammatical quirks, and punctuation in an instant.
 - **Tone & Style Switcher**: Rephrase sentences into *Professional*, *Casual*, *Concise*, or *Emotive* tones.
 - **Smart Edit**: Context-aware editing and quick rephrasing tailored to your conversation.
+- **Android 16 Quick Insert Safeguard**: Robust null-safety protection when expanding AI writing tool suggestions and quick-insert spans on Android 16.
 - **Universal Support**: Works across all keyboard languages and input modes.
 
 ### 3. Modern Spell Checker Suggestion Chips & Grammar Checking
@@ -144,6 +146,7 @@ On supported devices (such as Google Pixel 8 Pro / 9 series), choose your prefer
 
 ### 15. Safe Coexistence & Instant Bypass
 - **Side-by-Side Installation**: Installs with app label `PixelBoard` alongside stock Google Keyboard.
+- **Custom Adaptive Icon**: Bundles PixelBoard's custom high-resolution Material You adaptive app icon for home launcher and settings.
 - **Signature Whitelist Bypass**: Pre-patched bytecode ensures Google Play signature checks and integrity verifications pass cleanly without root.
 - **Inline Autofill & Password Manager Suggestions**: Enables Android's `DeviceIntelligence` inline autofill chips for password managers (Bitwarden, 1Password, KeePass, etc.) in the renamed package ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24)).
 
