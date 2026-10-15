@@ -384,6 +384,11 @@ public final class GboardAiWritingToolsRuntime {
             }
             if (isStockPhenotypeEnforcedFlag(flagName)
                     && originalResult instanceof Boolean) {
+                if ((FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS.equals(flagName)
+                        || FLAG_SUPER_INSERT_NESTA_RESULTS.equals(flagName))
+                        && !isPersonalContextHintSupported()) {
+                    return Boolean.FALSE;
+                }
                 if (!Boolean.TRUE.equals(originalResult)) {
                     logLimited(FLAG_LOG_COUNT,
                             "flag=" + flagName
@@ -599,6 +604,25 @@ public final class GboardAiWritingToolsRuntime {
                     "failed to evaluate settings removal", throwable);
             return false;
         }
+    }
+
+    private static volatile Boolean personalContextHintSupportedForTesting = null;
+
+    static boolean isPersonalContextHintSupported() {
+        Boolean override = personalContextHintSupportedForTesting;
+        if (override != null) {
+            return override.booleanValue();
+        }
+        try {
+            Class.forName("android.service.personalcontext.hint.BundleHint$Builder");
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    static void setPersonalContextHintSupportedForTesting(Boolean supported) {
+        personalContextHintSupportedForTesting = supported;
     }
 
     private static String readFlagName(Object receiver) throws Throwable {

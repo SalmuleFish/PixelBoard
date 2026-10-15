@@ -22,6 +22,8 @@ class GboardRambler1803PatchSourceTest {
         assertTrue(source.contains("VoiceSettingsFragment"))
         assertTrue(source.contains("method(\"Lmqk;\", \"a\""))
         assertTrue(source.contains("method(\"Lfbl;\", \"hN\""))
+        assertTrue(source.contains("method(\"Lmvq;\", \"a\""))
+        assertTrue(source.contains("method(\"Lfde;\", \"hT\""))
         assertEquals(6, Regex("findMutableMethodOrThrow\\(").findAll(source).count())
         assertFalse(source.contains("ramblerSwitcherLaunch"))
         assertFalse(source.contains("ramblerSwitcherFallback"))

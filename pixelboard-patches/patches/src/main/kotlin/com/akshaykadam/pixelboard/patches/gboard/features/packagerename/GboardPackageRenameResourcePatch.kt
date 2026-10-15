@@ -21,6 +21,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.applySpellCheckerXmlOver
 import com.akshaykadam.pixelboard.patches.gboard.shared.applyPixelboardStringsOverride
 import com.akshaykadam.pixelboard.patches.shared.Constants.GBOARD_PACKAGE_NAME
 import com.akshaykadam.pixelboard.patches.shared.Constants.GBOARD_PATCHED_PACKAGE_NAME
+import java.io.File
 import org.w3c.dom.Attr
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -52,7 +53,61 @@ private fun applyManifestPackageOverride() = with(context) {
     }
     applySpellCheckerXmlOverride()
     applyPixelboardStringsOverride()
+    applyPixelboardAppIcon()
     sanitizeMissingSplitResources()
+}
+
+context(context: ResourcePatchContext)
+internal fun applyPixelboardAppIcon() = with(context) {
+    val resDir = try {
+        this.get("res")
+    } catch (_: Throwable) {
+        return@with
+    }
+    if (!resDir.exists() || !resDir.isDirectory) return@with
+
+    val densities = listOf("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi")
+    for (density in densities) {
+        for (index in listOf("01", "02")) {
+            val resName = "mipmap_0x7f1100$index.webp"
+            val targetFile = File(resDir, "mipmap-$density/$resName")
+            val resourcePath = "icons/mipmap-$density/$resName"
+            val stream = GboardPackageRenameMapping::class.java.classLoader.getResourceAsStream(resourcePath)
+                ?: continue
+            stream.use { input ->
+                targetFile.parentFile?.mkdirs()
+                targetFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+    }
+
+    // Replace monochrome vector for Android 13+ Material You themed icons
+    val monoBytes = GboardPackageRenameMapping::class.java.classLoader
+        .getResourceAsStream("icons/drawable_0x7f080516.xml")
+        ?.use { it.readBytes() }
+
+    if (monoBytes != null && monoBytes.isNotEmpty()) {
+        val monochromeTargets = mutableSetOf("drawable_0x7f080516.xml", "drawable_0x7f08054d.xml")
+        val mipmapDirs = resDir.listFiles { f -> f.isDirectory && f.name.startsWith("mipmap") } ?: emptyArray()
+        for (mipmapDir in mipmapDirs) {
+            val xmlFiles = mipmapDir.listFiles { f -> f.isFile && f.extension == "xml" } ?: emptyArray()
+            for (xmlFile in xmlFiles) {
+                val content = xmlFile.readText()
+                Regex("""<monochrome[^>]*android:drawable="@drawable/([^"]+)"""")
+                    .findAll(content)
+                    .forEach { match ->
+                        monochromeTargets.add("${match.groupValues[1]}.xml")
+                    }
+            }
+        }
+        for (targetName in monochromeTargets) {
+            val monochromeTarget = File(resDir, "drawable/$targetName")
+            monochromeTarget.parentFile?.mkdirs()
+            monochromeTarget.writeBytes(monoBytes)
+        }
+    }
 }
 
 context(context: ResourcePatchContext)

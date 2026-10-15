@@ -76,6 +76,27 @@ private val RAMBLER_1831_TARGETS = RamblerTargets(
     defaultSelection = method("Lkcm;", "ge", emptyList(), "V"),
 )
 
+private val RAMBLER_1841_TARGETS = RamblerTargets(
+    layout = method(VOICE_SETTINGS, "aC", emptyList(), "I"),
+    setup = method(VOICE_SETTINGS, "ac", emptyList(), "V"),
+    create = method(VOICE_SETTINGS, "f", listOf("Landroid/os/Bundle;"), "V"),
+    selectionWrite = method(
+        VOICE_SETTINGS,
+        "aE",
+        listOf(
+            "Z",
+            "Lqou;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+        ),
+        "V",
+    ),
+    selectionRead = method("Lmvq;", "a", listOf("Landroid/content/Context;"), "Z"),
+    defaultSelection = method("Lfde;", "hT", emptyList(), "V"),
+)
+
 private fun method(
     owner: String,
     name: String,
@@ -91,8 +112,9 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
 
     execute {
         val targets = when {
-            findMutableMethodOrNull(RAMBLER_1803_TARGETS.layout) != null -> RAMBLER_1803_TARGETS
+            findMutableMethodOrNull(RAMBLER_1841_TARGETS.layout) != null -> RAMBLER_1841_TARGETS
             findMutableMethodOrNull(RAMBLER_1831_TARGETS.layout) != null -> RAMBLER_1831_TARGETS
+            findMutableMethodOrNull(RAMBLER_1803_TARGETS.layout) != null -> RAMBLER_1803_TARGETS
             else -> return@execute
         }
         findMutableMethodOrThrow(targets.layout)

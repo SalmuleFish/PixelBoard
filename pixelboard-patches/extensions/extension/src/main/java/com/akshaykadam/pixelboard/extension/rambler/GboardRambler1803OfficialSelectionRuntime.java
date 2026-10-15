@@ -90,13 +90,35 @@ public final class GboardRambler1803OfficialSelectionRuntime {
                 return null;
             }
             SharedPreferences prefs = resolveStockPreferences(context);
-            if (prefs != null && prefs.contains("enable_jetson")) {
-                boolean val = prefs.getBoolean("enable_jetson", true);
-                officialRamblerSelected = Boolean.valueOf(val);
-                return officialRamblerSelected;
+            if (prefs != null) {
+                if (prefs.contains("enable_jetson")) {
+                    boolean val = prefs.getBoolean("enable_jetson", true);
+                    officialRamblerSelected = Boolean.valueOf(val);
+                    return officialRamblerSelected;
+                } else {
+                    try {
+                        prefs.edit().putBoolean("enable_jetson", true).apply();
+                    } catch (Throwable ignored) {
+                    }
+                    officialRamblerSelected = Boolean.TRUE;
+                    return Boolean.TRUE;
+                }
             }
 
             ClassLoader loader = context.getClassLoader();
+
+            // 0. In 18.4.1+: check mvq.a(Context) only if it confirms true
+            try {
+                Class<?> support = Class.forName("mvq", false, loader);
+                Method selection = support.getDeclaredMethod("a", Context.class);
+                selection.setAccessible(true);
+                Object value = selection.invoke(null, context);
+                if (Boolean.TRUE.equals(value)) {
+                    officialRamblerSelected = Boolean.TRUE;
+                    return Boolean.TRUE;
+                }
+            } catch (Throwable ignored) {
+            }
 
             // 1. In 18.3.1+: check aaeo.a(Context) only if it confirms true
             try {

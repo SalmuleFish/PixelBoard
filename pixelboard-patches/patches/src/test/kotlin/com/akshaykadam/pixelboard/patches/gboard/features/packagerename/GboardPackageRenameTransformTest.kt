@@ -540,6 +540,24 @@ class GboardPackageRenameTransformTest {
         }
     }
 
+    @Test
+    fun `bundled icon resources exist for all target densities`() {
+        val densities = listOf("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi")
+        for (density in densities) {
+            for (index in listOf("01", "02")) {
+                val resourcePath = "icons/mipmap-$density/mipmap_0x7f1100$index.webp"
+                val stream = javaClass.classLoader.getResourceAsStream(resourcePath)
+                org.junit.Assert.assertNotNull("Missing $resourcePath", stream)
+                val bytes = stream!!.use { it.readBytes() }
+                assertTrue("Empty $resourcePath", bytes.isNotEmpty())
+            }
+        }
+        val monoStream = javaClass.classLoader.getResourceAsStream("icons/drawable_0x7f080516.xml")
+        org.junit.Assert.assertNotNull("Missing icons/drawable_0x7f080516.xml", monoStream)
+        val monoBytes = monoStream!!.use { it.readBytes() }
+        assertTrue("Empty icons/drawable_0x7f080516.xml", monoBytes.isNotEmpty())
+    }
+
     private fun assertFinalSettingsIdentity(
         manifest: Document,
         settings: List<Document>,

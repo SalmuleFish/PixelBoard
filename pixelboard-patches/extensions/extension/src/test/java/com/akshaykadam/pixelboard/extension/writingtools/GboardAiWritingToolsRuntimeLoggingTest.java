@@ -341,6 +341,36 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     }
 
     @Test
+    public void superInsertPersonalContextFlagsGuardAgainstMissingBundleHint() throws Exception {
+        SuperInsertBrowsingHistoryFlagReceiver browsingHistoryReceiver =
+                new SuperInsertBrowsingHistoryFlagReceiver();
+        SuperInsertNestaFlagReceiver nestaReceiver =
+                new SuperInsertNestaFlagReceiver();
+
+        try {
+            // When PersonalContext BundleHint is not supported on the platform (e.g. Android 16 and lower)
+            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(Boolean.FALSE);
+            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    browsingHistoryReceiver, Boolean.FALSE));
+            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    browsingHistoryReceiver, Boolean.TRUE));
+            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    nestaReceiver, Boolean.FALSE));
+            Assert.assertSame(Boolean.FALSE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    nestaReceiver, Boolean.TRUE));
+
+            // When PersonalContext BundleHint is supported (e.g. future Android 17+)
+            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(Boolean.TRUE);
+            Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    browsingHistoryReceiver, Boolean.FALSE));
+            Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                    nestaReceiver, Boolean.FALSE));
+        } finally {
+            GboardAiWritingToolsRuntime.setPersonalContextHintSupportedForTesting(null);
+        }
+    }
+
+    @Test
     public void isStockPhenotypeEnforcedFlagMatchesOnlyTargetFlags() {
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_DEVICE_INTELLIGENCE));
@@ -681,6 +711,16 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     private static final class SmartComposeStatusFlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardAiWritingToolsRuntime.FLAG_SMART_COMPOSE_STATUS;
+    }
+
+    private static final class SuperInsertBrowsingHistoryFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS;
+    }
+
+    private static final class SuperInsertNestaFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_NESTA_RESULTS;
     }
 
     private static final class RoundedKeysFlagReceiver {
