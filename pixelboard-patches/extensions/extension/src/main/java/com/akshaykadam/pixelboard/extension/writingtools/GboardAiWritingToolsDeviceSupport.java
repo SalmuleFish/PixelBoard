@@ -62,7 +62,20 @@ public final class GboardAiWritingToolsDeviceSupport {
         if (forcedDeviceSupportForTesting != null) {
             return forcedDeviceSupportForTesting.booleanValue();
         }
+        if (isEmulator()) {
+            return true;
+        }
         return isSupportedDevice(Build.MANUFACTURER, Build.MODEL, Build.DEVICE);
+    }
+
+    private static boolean isEmulator() {
+        try {
+            return (Build.FINGERPRINT != null && (Build.FINGERPRINT.startsWith("generic") || Build.FINGERPRINT.startsWith("unknown")))
+                    || (Build.MODEL != null && (Build.MODEL.contains("google_sdk") || Build.MODEL.contains("Emulator") || Build.MODEL.contains("Android SDK built for") || Build.MODEL.contains("sdk_gphone")))
+                    || (Build.HARDWARE != null && (Build.HARDWARE.contains("goldfish") || Build.HARDWARE.contains("ranchu")));
+        } catch (Throwable ignored) {
+            return false;
+        }
     }
 
     /**

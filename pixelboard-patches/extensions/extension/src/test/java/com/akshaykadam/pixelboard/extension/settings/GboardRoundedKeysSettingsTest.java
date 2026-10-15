@@ -13,14 +13,14 @@ import org.robolectric.RuntimeEnvironment;
 public final class GboardRoundedKeysSettingsTest {
 
     @Test
-    public void defaultRoundedKeysIsFalse() {
+    public void defaultRoundedKeysIsTrue() {
         Context context = RuntimeEnvironment.getApplication();
         SharedPreferences preferences = GboardRoundedKeysSettings.preferences(context);
         preferences.edit().clear().commit();
         GboardRoundedKeysSettings.invalidateCache();
 
-        Assert.assertFalse(GboardRoundedKeysSettings.readEnabled(preferences));
-        Assert.assertFalse(GboardRoundedKeysSettings.isEnabled(context));
+        Assert.assertTrue(GboardRoundedKeysSettings.readEnabled(preferences));
+        Assert.assertTrue(GboardRoundedKeysSettings.isEnabled(context));
     }
 
     @Test

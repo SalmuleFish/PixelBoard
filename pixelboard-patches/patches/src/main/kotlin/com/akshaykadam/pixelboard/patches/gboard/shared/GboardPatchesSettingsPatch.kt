@@ -16,6 +16,7 @@ import org.w3c.dom.Element
 
 import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateEmojiVibrancyPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
+import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
 
 internal val gboardPatchesSettingsPatch = resourcePatch(
     description = "Add Patches entry to the bottom of Gboard settings."
@@ -26,6 +27,7 @@ internal val gboardPatchesSettingsPatch = resourcePatch(
         gboardPatchesExtensionCarrierPatch,
         gboardCandidateEmojiVibrancyPatch,
         gboardClipboardSyncPatch,
+        gboardSpellCheckerChipsPatch,
     )
 
     finalize {
@@ -86,6 +88,10 @@ internal fun applyGboardPatchesSettings(
         ?: error("Could not find application element in AndroidManifest.xml")
     val packageName = manifest.getAttribute("package")
 
+    ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.CAMERA")
+    ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.READ_MEDIA_IMAGES")
+    ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.READ_EXTERNAL_STORAGE")
+
     val activity = application.childElements("activity").firstOrNull {
         it.getAttributeNS(ANDROID_NS, "name") == GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS ||
             it.getAttribute("android:name") == GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS
@@ -140,6 +146,40 @@ internal fun applyGboardPatchesSettings(
             it.tagName == RATE_US_PREFERENCE_TAG
         }
         val iconValue = iconOverride ?: rateUsPreference?.androidAttribute("icon")
+
+        // Remove "Rate Gboard" and "Help & feedback" from settings
+        var foundAbout = false
+        candidateEntries.forEach { entry ->
+            val tag = entry.tagName
+            val key = entry.androidAttribute("key") ?: ""
+            val title = entry.androidAttribute("title") ?: ""
+            val fragment = entry.androidAttribute("fragment") ?: ""
+            if (fragment.contains("AboutSettingsFragment")) {
+                foundAbout = true
+            }
+            val isRateGboard = tag == RATE_US_PREFERENCE_TAG ||
+                tag.endsWith("RateUsPreference") ||
+                key.contains("0x7f140b59") ||
+                key.contains("0x7f140a77") ||
+                key.contains("rate", ignoreCase = true) ||
+                title.contains("0x7f140d4e") ||
+                title.contains("0x7f140d4f") ||
+                title.contains("0x7f140c34") ||
+                title.contains("Rate Gboard", ignoreCase = true)
+            val isHelpFeedback = entry.tagName == HEADER_PREFERENCE_TAG && (
+                key.contains("0x7f140b50") ||
+                key.contains("0x7f140a6e") ||
+                key.contains("feedback", ignoreCase = true) ||
+                title.contains("0x7f140cd3") ||
+                title.contains("0x7f140bd7") ||
+                title.contains("Help & feedback", ignoreCase = true) ||
+                title.contains("Help and feedback", ignoreCase = true) ||
+                (foundAbout && fragment.isBlank() && key != PATCHES_SETTINGS_ENTRY_KEY)
+            )
+            if (isRateGboard || isHelpFeedback) {
+                entry.parentNode?.removeChild(entry)
+            }
+        }
         val existingEntry = candidateEntries.firstOrNull {
             it.androidAttribute("key") == PATCHES_SETTINGS_ENTRY_KEY
         }
@@ -312,6 +352,21 @@ internal fun applyPixelboardStringsOverride() = with(context) {
             modified = true
         }
 
+        val parentDirName = file.parentFile?.name ?: ""
+        val lang = if (parentDirName == "values") "en" else {
+            parentDirName.removePrefix("values-").split("-", "_").firstOrNull()?.lowercase() ?: "en"
+        }
+        val localizedTitle = SETTINGS_TITLE_TRANSLATIONS[lang] ?: "Advanced settings"
+        if (!text.contains("name=\"pixelboard_patches_settings_title\"")) {
+            val endResourcesIndex = text.lastIndexOf("</resources>")
+            if (endResourcesIndex >= 0) {
+                text = text.substring(0, endResourcesIndex) +
+                    "    <string name=\"pixelboard_patches_settings_title\">$localizedTitle</string>\n" +
+                    text.substring(endResourcesIndex)
+                modified = true
+            }
+        }
+
         if (modified) {
             file.writeText(text)
         }
@@ -376,7 +431,7 @@ internal const val GBOARD_PATCHES_SETTINGS_PROVIDER_CLASS =
     "com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettingsProvider"
 internal const val GBOARD_PATCHES_SETTINGS_PROVIDER_AUTHORITY_SUFFIX = ".gboard_patches"
 private const val PATCHES_SETTINGS_ENTRY_KEY = "gboard_patches_entry"
-private const val PATCHES_SETTINGS_ENTRY_TITLE = "Advanced settings"
+private const val PATCHES_SETTINGS_ENTRY_TITLE = "@string/pixelboard_patches_settings_title"
 private const val HEADER_PREFERENCE_TAG =
     "com.google.android.libraries.inputmethod.settings.widget.HeaderPreference"
 private const val RATE_US_PREFERENCE_TAG =
@@ -384,4 +439,27 @@ private const val RATE_US_PREFERENCE_TAG =
 internal val GBOARD_SETTINGS_XML_PATHS = listOf(
     "res/xml/settings.xml",
     "res/xml/settings_legacy.xml",
+)
+
+private val SETTINGS_TITLE_TRANSLATIONS = mapOf(
+    "en" to "Advanced settings",
+    "es" to "Ajustes avanzados",
+    "fr" to "Paramètres avancés",
+    "de" to "Erweiterte Einstellungen",
+    "it" to "Impostazioni avanzate",
+    "pt" to "Configurações avançadas",
+    "ru" to "Расширенные настройки",
+    "hi" to "उन्नत सेटिंग्स",
+    "ja" to "詳細設定",
+    "ko" to "고급 설정",
+    "zh" to "高级设置",
+    "ar" to "الإعدادات المتقدمة",
+    "in" to "Setelan lanjutan",
+    "id" to "Setelan lanjutan",
+    "tr" to "Gelişmiş ayarlar",
+    "vi" to "Cài đặt nâng cao",
+    "pl" to "Ustawienia zaawansowane",
+    "nl" to "Geavanceerde instellingen",
+    "th" to "การตั้งค่าขั้นสูง",
+    "uk" to "Розширені налаштування",
 )

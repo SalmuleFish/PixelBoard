@@ -29,7 +29,7 @@ import android.util.Log;
 public final class GboardRoundedKeysSettings {
     private static final String TAG = "GboardPatches";
     public static final String PREF_KEY_ENABLED = "rounded_keys_enabled";
-    public static final boolean DEFAULT_ENABLED = false;
+    public static final boolean DEFAULT_ENABLED = true;
 
     /** Gboard's internal preference key read at theme-application time. */
     static final String GBOARD_PREF_KEY_ENABLE_ROUNDED_KEYS =
@@ -63,6 +63,22 @@ public final class GboardRoundedKeysSettings {
             return DEFAULT_ENABLED;
         }
         return preferences.getBoolean(PREF_KEY_ENABLED, DEFAULT_ENABLED);
+    }
+
+    public static void ensureDefaults(Context context, SharedPreferences preferences) {
+        if (preferences == null) {
+            return;
+        }
+        if (!preferences.contains(PREF_KEY_ENABLED)
+                || !preferences.getBoolean("pref_defaults_migrated_v4", false)) {
+            preferences.edit()
+                    .putBoolean(PREF_KEY_ENABLED, DEFAULT_ENABLED)
+                    .putBoolean("pref_defaults_migrated_v4", true)
+                    .apply();
+            if (context != null) {
+                applyToGboardPreferences(context, DEFAULT_ENABLED);
+            }
+        }
     }
 
     public static boolean isEnabled(Context context) {

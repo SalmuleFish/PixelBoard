@@ -1,45 +1,46 @@
-# PixelBoard Stable Release (v18.4.1-V3 / Patch v1.0.7)
+# PixelBoard Stable Release (v18.4.1-V4 / Patch v1.0.8)
 
 ## Summary
-PixelBoard v18.4.1-V3 (Patch Bundle v1.0.7) brings key quality-of-life enhancements, typing engine fixes, and customization features directly to Google's latest **Gboard v18.4.1 Release** (`18.4.1.985164140-release-arm64-v8a`). This update introduces **Instant Word Learning & 2-Letter Prefix Suggestions**, **Contextual Emoji Suggestions**, **Stable Autocorrect & Fluid Glide Typing**, **PixelBoard Spell Checker & Settings Branding**, **Inline Autofill / Password Manager Support**, **Restored Emoji Size Slider**, **Vibrant Candidate Strip Emojis**, **Samsung & Vivo Clipboard History Sync**, **Material 3 Expressive Rounded Keys**, and a streamlined Advanced Settings experience with zero required restarts.
+PixelBoard v18.4.1-V4 (Patch Bundle v1.0.8) brings major feature unlocks, system text integration, and keyboard productivity tools directly to Google's latest **Gboard v18.4.1 Release** (`18.4.1.985164140-release-arm64-v8a`). This update introduces **Modern Spell Checker Suggestion Chips & Grammar Checking**, **Scan Text / Camera OCR**, **Screenshot & Clipboard Image Floating Banner**, **Emoji Palette V2 & Dedicated Frequent Tabs**, **Super Insert / Rich In-Line Completion**, **Multilingual UI (20+ Locales)**, **Bloatware-Free Settings**, and **Instant Learning & Material 3 Rounded Keys** with zero required restarts.
 
 ---
 
-## What's New & Fixed in This Release
+## What's New & Unlocked in This Release
 
-### 1. Improved Autocorrect, Fast Word Learning, Emoji Suggestions & Glide Typing ([#33](https://github.com/Akshayykadam/PixelBoard/issues/33))
-- **Instant Word Learning & 2-Letter Prefix Suggestions**: Lowered `intended_oov_min_count` threshold from 4 to 1 and enabled Delight5 language model user history n-gram frequency, continuation scoring, and timestamp tracking (`enable_pc_user_history_ngram_count`, `populate_ngram_count_with_context`, `enable_dynamic_lm_unigram_continuation_scoring`, `enable_multiword_predictions_from_user_history`). Frequently typed words are learned immediately and suggested after typing just the first two letters.
-- **Contextual Emoji Suggestions**: Activated the Delight5 concept prediction engine and emoji shortcut candidates (`enable_concept_prediction_engine`, `enable_rule_based_concept_prediction`, `enable_emoji_suggestion_from_top_candidate`, `enable_predictions_from_emoji_shortcuts`, `config_expression`). In addition, `res/xml/setting_expression.xml` defaults `pref_key_enable_emoji_suggestion` to `true`, displaying relevant emojis directly in the suggestion strip when typing associated words.
-- **Stable Autocorrect & Consistent Glide Typing**: Enabled streaming touch gesture tagging (`update_streaming_touch_data_set_is_gesture`) so continuous glide paths are accurately recognized as gestures without stroke stutter. Activated the Delight5 two-stage beam decoder (`enable_two_stage_decoder`), spatial model features, and auto-correction trigger predictors (`enable_space_transposition_post_correction`, `enable_pk_spatial_model_features`, `enable_pk_auto_correction_trigger_predictor`), providing accurate, consistent word completions and auto-corrections.
+### 1. Modern Spell Checker Suggestion Chips & Grammar Checking
+- **Android 12+ Inline Suggestion Chips (`GboardSpellCheckerChipsPatch`)**: Bytecode-level transformation hooking Gboard's spell checker utility class (`rcq.m` and `rcq.o`), forcing modern inline spellcheck suggestion chips and add-to-dictionary UI on all Android 12+ devices.
+- **Always-On Grammar & Suggestion Strip**: Automatically initializes `spellchecker_enable_chips_ui=true`, `enable_mark_misspelled_words=true`, `pref_key_enable_grammar_checker=true`, and `show_suggestion_strip=true` across standard SharedPreferences and Device Protected Storage.
+- **Spell Checker Phenotype Flags**: Enforces `spellchecker_enable_chips_ui`, `spellchecker_enable_chips_ui_web_view`, `enable_spell_checker_extension`, `writing_helper_chip_in_spellchecker`, `enable_spell_checker_highlight_on_web_input`, and `enable_spell_checker_training_cache`.
+- **System Rebranding**: Full system spell checker service rebrand to **PixelBoard Spell Checker** across all system locales.
 
-### 2. PixelBoard Spell Checker & Settings Rebranding
-- **PixelBoard Spell Checker**: Rebranded the text services spell checker component to **PixelBoard Spell Checker** with full multi-locale support across all 100+ language resource directories.
-- **Valid Resource ID Resolution**: Preserved compiled XML resource references (`@string/string_0x7f140d61`) in `res/xml/spell_checker.xml` to ensure Android's OS `SpellCheckerInfo` framework correctly retrieves the display label in the system "Choose spellchecker" selector.
-- **PixelBoard Settings Branding**: Updated main settings header, activity label, and preferences screens (`res/xml/settings.xml`, `res/xml/settings_legacy.xml`) from *Gboard settings* to **PixelBoard Settings**.
+### 2. Scan Text / Camera OCR Toolbar Integration
+- **Direct Optical Character Recognition**: Unlocks Gboard's hidden **Scan text** access point in the keyboard toolbar, allowing users to capture text directly through the device camera into any text field.
+- **All Languages Supported**: Automatically overrides `enabled_ocr_language_tags` to `*` to enable OCR for all languages without device or region restrictions.
+- **Camera Permission Added**: Enforces `android.permission.CAMERA` in `AndroidManifest.xml` to prevent security exceptions when opening the camera OCR viewfinder.
 
-### 3. Inline Autofill & Password Manager Support ([#24](https://github.com/Akshayykadam/PixelBoard/pull/24))
-- **Fix Password Manager Chips**: Resolved an issue where password manager suggestions (Bitwarden, 1Password, KeePass, Proton Pass, etc.) failed to show inline above the keyboard on the renamed package.
-- **DeviceIntelligence Module Activation**: The renamed package does not receive server-side Phenotype configuration, leaving Android's `DeviceIntelligence` module disabled. Overriding `enable_device_intelligence=true` at runtime allows `onCreateInlineSuggestionsRequest` to load and render inline autofill credentials seamlessly (credits: @alincornel).
+### 3. Screenshot & Image Floating Suggestion Banner
+- **Floating Screenshot Chips**: Unlocks `enable_clipboard_image_suggestion`, `enable_screenshot_notification_flow`, `enable_screenshot_chip`, `enable_clipboard_recent_screenshot`, and `clipboard_screenshot_enabled_at_least_once`.
+- **Media Permissions**: Enforces `android.permission.READ_MEDIA_IMAGES` and `android.permission.READ_EXTERNAL_STORAGE` in `AndroidManifest.xml`.
+- **Seamless Pasting**: When the user toggles on **"Save recent screenshots in clipboard"** under **PixelBoard Settings > Clipboard**, recently captured screenshots appear instantly as a floating suggestion chip above the keyboard.
 
-### 4. Restored Emoji Size Slider Preference ([#26](https://github.com/Akshayykadam/PixelBoard/issues/26))
-- **Unlocked Native Slider**: Overrides the `emoji_scale_supported` Phenotype flag to restore the missing interactive **Emoji size** slider and live row preview under **PixelBoard Settings > Emojis, stickers & GIFs**.
-- **Adjustable Key Scale**: Freely adjust the size and number of emojis displayed in a row directly within native Gboard preferences.
+### 4. Emoji Palette V2 & Frequent Emoji Tabs
+- **Refined Emoji Drawer Layout**: Unlocks `emoji_palette_v2`, `enable_frequent_emoji_recent_tab`, and `enable_emoji_frequent_recent_switch_option`.
+- **Dynamic Density & Grid**: Enhances emoji grid responsiveness and provides a dedicated tab switch between recent emojis and frequent emojis.
 
-### 5. Vibrant Suggestion Strip Emojis ([#26](https://github.com/Akshayykadam/PixelBoard/issues/26))
-- **100% Paint Vibrancy**: Fixed faded, washed-out emojis appearing in the candidate suggestion strip while typing.
-- **Candidate View Hook**: Hooked `AutoCenterScaleTextView.onDraw` to ensure candidate text paint renders with full 100% opacity (`alpha = 255`) when emojis are present, eliminating secondary candidate dimming and matching the vibrant look of the emoji drawer.
+### 5. Super Insert / Quick Insert & Smart Compose
+- **Rich Multi-View Results**: Unlocks `super_insert`, `super_insert_vk`, `super_insert_enable_dynamic_multi_view`, `super_insert_contacts`, `super_insert_clipboard_query_results`, `super_insert_expression_query_results`, `super_insert_local_image_results`, `super_insert_browsing_history_results`, and `super_insert_below_cursor`.
+- **Ghost Autocompletion**: Forces `enable_smart_compose`, `enable_inline_suggestions_on_all_fields`, `enable_inline_completion`, `enable_delight5_smart_compose`, and `smart_compose_status=1L` for in-line completion across text fields.
 
-### 6. Clipboard History Sync for Samsung One UI & Vivo Devices ([#17](https://github.com/Akshayykadam/PixelBoard/issues/17))
-- **Empty Clipboard Fix**: Fixed the issue where copied text appeared in the immediate suggestion chip but failed to save into the clipboard drawer history on Samsung One UI and Vivo (OriginOS / FuntouchOS) devices.
-- **Foreground Clip Sync**: Hooked `onStartInputView` to guarantee `ClipboardManager` listener initialization and sync copied text into clipboard drawer history when typing, overcoming OEM background clipboard suppression on Samsung and Vivo devices.
+### 6. Instant Word Learning, 2-Letter Suggestions & Vibrancy
+- **Instant Learning (OOV Threshold = 1)**: Typings are learned immediately and suggested after just the first 2 letters (`intended_oov_min_count = 1L`, `enable_pc_user_history_ngram_count`, `populate_ngram_count_with_context`, `enable_dynamic_lm_unigram_continuation_scoring`).
+- **Contextual Emoji Suggestions**: Enabled the Delight5 concept prediction engine and emoji shortcut candidates (`enable_concept_prediction_engine`, `enable_rule_based_concept_prediction`, `enable_emoji_suggestion_from_top_candidate`).
+- **Vibrant Suggestion Strip Emojis**: 100% alpha opacity hooked on candidate views (#26).
+- **Material 3 Belka Rounded Keys**: Expressive pill-shaped keycaps toggle in Advanced Settings (#14).
+- **Samsung & Vivo Clipboard Sync**: Foreground clipboard synchronization fix (#17).
 
-### 7. Material 3 Expressive Rounded Keys (Belka UI) ([#14](https://github.com/Akshayykadam/PixelBoard/issues/14))
-- **Pill-Shaped Keycaps**: Added a toggle under **★ Advanced settings** to activate Google's expressive Material 3 Belka rounded keyboard styling.
-- **Dynamic Flag Management**: Automatically forces `belka_rounded_keyboard`, `belka_ui`, `belka_background`, `more_pill_keys`, and `enable_rounded_keys` flags at runtime without restarting.
-
-### 8. Clean Advanced Settings & Hot-Reload
-- **Streamlined Preferences Screen**: Cleaned up Advanced Settings to focus on rock-solid core toggles (**Enable AI Writing Tools**, **Support All Keyboards**, **Inference Backend Type**, **Enable Advanced Voice Typing**, and **Rounded Keys**); the experimental V2 toggle has been hidden.
-- **Zero-Restart Architecture**: All changes take effect immediately on the fly without restarting Gboard, force-closing the app, or rebooting your device.
+### 7. Multilingual UI (20+ Locales) & Clean Settings Bloatware Removal
+- **Native Localization**: Fully translated Advanced Settings across English, Spanish, French, German, Italian, Portuguese, Russian, Hindi, Japanese, Korean, Chinese, Arabic, Indonesian, Turkish, Vietnamese, Polish, Dutch, Thai, and Ukrainian (`@string/pixelboard_patches_settings_title`).
+- **Cleaned Settings Tree**: Removed unwanted promotional bloatware ("Rate Gboard" / "Help & feedback") for a clean, distraction-free Material You preferences experience.
 
 ---
 
@@ -47,23 +48,22 @@ PixelBoard v18.4.1-V3 (Patch Bundle v1.0.7) brings key quality-of-life enhanceme
 
 | File | Size | Description |
 | :--- | :--- | :--- |
-| [**PixelBoard-18.4.1-V3.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk) | ~127 MB | Ready-to-install signed Stable APK (v18.4.1 release base, versionCode 176027079) |
-| [**PixelBoard.mpp**](https://github.com/Akshayykadam/PixelBoard/raw/main/patches/PixelBoard.mpp) | ~1.5 MB | Standalone patch bundle (v1.0.7) for Morphe Manager |
-| [**patches-1.0.7.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/patches-1.0.7.mpp) | ~1.5 MB | Versioned standalone patch bundle (v1.0.7) |
+| [**PixelBoard-18.4.1-V4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/PixelBoard-18.4.1-V4.apk) | ~127 MB | Ready-to-install signed Stable APK (v18.4.1 release base, versionCode 176027079) |
+| [**patches-1.0.8.mpp**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/patches-1.0.8.mpp) | ~1.5 MB | Standalone patch bundle (v1.0.8) for Morphe Manager |
 
 ---
 
 ## Installation
 
 ### Option 1: Direct APK Installation (Recommended)
-1. Download [**PixelBoard-18.4.1-V3.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V3/PixelBoard-18.4.1-V3.apk) directly to your Android device.
+1. Download [**PixelBoard-18.4.1-V4.apk**](https://github.com/Akshayykadam/PixelBoard/releases/download/v18.4.1-Stable-V4/PixelBoard-18.4.1-V4.apk) directly to your Android device.
 2. Tap the downloaded APK in your file manager or browser downloads.
-3. Allow installation from unknown sources if prompted, and complete installation (supports updating in-place over earlier v18.4.1 builds).
+3. Allow installation from unknown sources if prompted, and complete installation (supports updating in-place over earlier builds).
 4. Enable PixelBoard in **Settings > System > Languages & input > On-screen keyboard**.
 
 ### Option 2: ADB Sideload
 ```bash
-adb install -r PixelBoard-18.4.1-V3.apk
+adb install -r PixelBoard-18.4.1-V4.apk
 adb shell am force-stop com.akshaykadam.pixelboard
 ```
 
@@ -80,7 +80,7 @@ Select stock Gboard [**v18.4.1.985164140-release-arm64-v8a**](https://www.apkmir
 - Target Package: `com.google.android.inputmethod.latin`
 - Target Versions:
   - `18.4.1.985164140-release-arm64-v8a` (Primary Stable / Recommended)
-  - `18.4.1.985164140-beta-arm64-v8a`
   - `18.3.1.977415014-release-arm64-v8a`
 - Architecture: `arm64-v8a`
 - Minimum Android Version: Android 10 (API 29)+
+- Standalone Coexistence: Supported (package `com.akshaykadam.pixelboard` installs alongside factory Gboard)

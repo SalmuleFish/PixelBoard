@@ -303,6 +303,30 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertEquals(1L, warningCount(
                 "flag=enable_spell_checker_extension, original=Boolean(false), enforced=Boolean(true)"));
 
+        WritingHelperChipInSpellcheckerFlagReceiver writingHelperReceiver =
+                new WritingHelperChipInSpellcheckerFlagReceiver();
+        ShadowLog.clear();
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                writingHelperReceiver, Boolean.FALSE));
+        Assert.assertEquals(1L, warningCount(
+                "flag=writing_helper_chip_in_spellchecker, original=Boolean(false), enforced=Boolean(true)"));
+
+        SpellCheckerHighlightOnWebInputFlagReceiver webInputReceiver =
+                new SpellCheckerHighlightOnWebInputFlagReceiver();
+        ShadowLog.clear();
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                webInputReceiver, Boolean.FALSE));
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_spell_checker_highlight_on_web_input, original=Boolean(false), enforced=Boolean(true)"));
+
+        SpellCheckerTrainingCacheFlagReceiver trainingCacheReceiver =
+                new SpellCheckerTrainingCacheFlagReceiver();
+        ShadowLog.clear();
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                trainingCacheReceiver, Boolean.FALSE));
+        Assert.assertEquals(1L, warningCount(
+                "flag=enable_spell_checker_training_cache, original=Boolean(false), enforced=Boolean(true)"));
+
         // Already true
         ShadowLog.clear();
         Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
@@ -334,6 +358,12 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW));
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_EXTENSION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_TRAINING_CACHE));
 
         // Delight5 LM User History and Learning flags
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -393,6 +423,92 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS));
 
+        // Scan Text (OCR Camera Input) flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_OCR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_CONFIG_OCR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_CAMERA_PERMISSION_OVERLAY));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_OCR_PASSWORD_ALLOWLIST));
+
+        // Clipboard Screenshot & Image Floating Banner flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_CLIPBOARD_IMAGE_SUGGESTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SCREENSHOT_NOTIFICATION_FLOW));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SCREENSHOT_CHIP));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_CLIPBOARD_RECENT_SCREENSHOT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EXTENDED_CLIPBOARD_HISTORY));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SYSTEM_CLIPBOARD_DIRECT_PASTE_FOR_QUICK_PASTE));
+
+        // Emoji Picker Dedicated Recent/Frequent Tabs & Palette V2 flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_EMOJI_PALETTE_V2));
+
+        // Super Insert / Quick Insert Hub flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_VK));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_ENABLE_DYNAMIC_MULTI_VIEW));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_CONTACTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_CLIPBOARD_QUERY_RESULTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_EXPRESSION_QUERY_RESULTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_LOCAL_IMAGE_RESULTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_NESTA_RESULTS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_BELOW_CURSOR));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SI_SHORTCUT_KEYS));
+
+        // Smart Compose (In-Line Ghost Autocompletion) flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_SMART_COMPOSE));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_INLINE_SUGGESTIONS_ON_ALL_FIELDS));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_INLINE_COMPLETION));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_DELIGHT5_SMART_COMPOSE));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_SMART_COMPOSE_STATUS));
+
+        // Manual Incognito Mode Button flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_INCOGNITO_MODE_ENTRY_POINT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ALLOW_INCOGNITO_MODE_SWITCH));
+
+        // Emogen (Generative AI Emoji Maker) flags
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_ENABLE_EMOGEN));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_EMOGEN_ENTRY_POINT));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_EMOGEN_FEATURE_ENABLED));
+        Assert.assertTrue(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
+                GboardAiWritingToolsRuntime.FLAG_EMOGEN_IN_ACCESS_POINTS));
+
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
                 GboardAiWritingToolsRuntime.FLAG_WRITING_TOOLS));
         Assert.assertFalse(GboardAiWritingToolsRuntime.isStockPhenotypeEnforcedFlag(
@@ -443,6 +559,14 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
 
         Assert.assertTrue(defaultPrefs.contains("pref_key_enable_emoji_suggestion"));
         Assert.assertTrue(defaultPrefs.getBoolean("pref_key_enable_emoji_suggestion", false));
+        Assert.assertTrue(defaultPrefs.contains("spellchecker_enable_chips_ui"));
+        Assert.assertTrue(defaultPrefs.getBoolean("spellchecker_enable_chips_ui", false));
+        Assert.assertTrue(defaultPrefs.contains("enable_mark_misspelled_words"));
+        Assert.assertTrue(defaultPrefs.getBoolean("enable_mark_misspelled_words", false));
+        Assert.assertTrue(defaultPrefs.contains("pref_key_enable_grammar_checker"));
+        Assert.assertTrue(defaultPrefs.getBoolean("pref_key_enable_grammar_checker", false));
+        Assert.assertTrue(defaultPrefs.contains("show_suggestion_strip"));
+        Assert.assertTrue(defaultPrefs.getBoolean("show_suggestion_strip", false));
     }
 
     private static long warningCount(String message) {
@@ -507,6 +631,56 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
     private static final class SpellCheckerExtensionFlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_EXTENSION;
+    }
+
+    private static final class WritingHelperChipInSpellcheckerFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER;
+    }
+
+    private static final class SpellCheckerHighlightOnWebInputFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT;
+    }
+
+    private static final class SpellCheckerTrainingCacheFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_SPELL_CHECKER_TRAINING_CACHE;
+    }
+
+    @Test
+    public void ocrLanguageTagsEnforcesStar() throws Exception {
+        OcrLanguageTagsFlagReceiver receiver = new OcrLanguageTagsFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, "en-US");
+        Assert.assertEquals("*", enforced);
+
+        // Non-string preserved
+        Long nonString = 123L;
+        Assert.assertSame(nonString, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, nonString));
+    }
+
+    @Test
+    public void smartComposeStatusEnforcesOne() throws Exception {
+        SmartComposeStatusFlagReceiver receiver = new SmartComposeStatusFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Long.valueOf(0L));
+        Assert.assertEquals(Long.valueOf(1L), enforced);
+
+        // Boolean true also enforced via isStockPhenotypeEnforcedFlag
+        Assert.assertSame(Boolean.TRUE, GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE));
+    }
+
+    private static final class OcrLanguageTagsFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLED_OCR_LANGUAGE_TAGS;
+    }
+
+    private static final class SmartComposeStatusFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_SMART_COMPOSE_STATUS;
     }
 
     private static final class RoundedKeysFlagReceiver {

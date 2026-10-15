@@ -41,6 +41,15 @@ public final class GboardSettingsLocaleManager {
         if (LANGUAGE_ENGLISH.equals(normalizedPreference)) {
             return normalizedPreference;
         }
+        if (deviceLocale != null) {
+            String lang = deviceLocale.getLanguage();
+            if (lang != null && !lang.isEmpty()) {
+                if ("id".equalsIgnoreCase(lang)) {
+                    return "in";
+                }
+                return lang.toLowerCase(Locale.US);
+            }
+        }
         return LANGUAGE_ENGLISH;
     }
 
@@ -82,7 +91,10 @@ public final class GboardSettingsLocaleManager {
     }
 
     private static Locale toLocale(String languageTag) {
-        return Locale.ENGLISH;
+        if (languageTag == null || languageTag.isEmpty() || LANGUAGE_ENGLISH.equals(languageTag)) {
+            return Locale.ENGLISH;
+        }
+        return new Locale(languageTag);
     }
 
     private static String normalizePreferenceValue(String value) {

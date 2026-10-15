@@ -817,6 +817,37 @@ public final class GboardPatchesSettingsContract {
         }
     }
 
+    public static class RadioRow extends Row {
+        private final boolean checked;
+        private final Runnable selectAction;
+        private final android.graphics.drawable.Drawable iconDrawable;
+
+        public RadioRow(CharSequence title, String summary, boolean enabled, boolean checked,
+                Runnable selectAction) {
+            this(title, summary, enabled, checked, selectAction, null);
+        }
+
+        public RadioRow(CharSequence title, String summary, boolean enabled, boolean checked,
+                Runnable selectAction, android.graphics.drawable.Drawable iconDrawable) {
+            super(title, summary, enabled);
+            this.checked = checked;
+            this.selectAction = selectAction;
+            this.iconDrawable = iconDrawable;
+        }
+
+        public boolean isChecked() {
+            return checked;
+        }
+
+        public Runnable getSelectAction() {
+            return selectAction;
+        }
+
+        public android.graphics.drawable.Drawable getIconDrawable() {
+            return iconDrawable;
+        }
+    }
+
     public static class SelectorRow extends Row {
         private final String currentValue;
         private final Runnable action;

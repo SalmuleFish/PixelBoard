@@ -20,17 +20,18 @@ private fun Element.childElements(name: String? = null): List<Element> =
         }
         .map { it as Element }
 
-private fun Element.requiredTranslations(
+private fun Element.resolveTranslations(
     entryName: String,
-    requiredLocales: Set<String>,
+    declaredLocales: Set<String>,
 ): Map<String, String> {
     val translations = childElements("translation").associate { translation ->
         translation.getAttribute("locale") to translation.textContent
     }
-    require(translations.keys == requiredLocales) {
-        "$entryName must define exactly ${requiredLocales.joinToString()}"
+    val enText = translations["en"]
+        ?: throw IllegalArgumentException("$entryName must define an 'en' translation")
+    return declaredLocales.associateWith { locale ->
+        translations[locale]?.takeIf { it.isNotBlank() } ?: enText
     }
-    return translations
 }
 
 private fun escapeXmlText(value: String): String = value
@@ -98,7 +99,6 @@ val generateSettingsText = tasks.register("generateSettingsText") {
     outputs.dir(generatedSettingsTextJavaDir)
 
     doLast {
-        val requiredLocales = linkedSetOf("en")
         val documentBuilderFactory = DocumentBuilderFactory.newInstance().apply {
             setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
             setFeature("http://xml.org/sax/features/external-general-entities", false)
@@ -111,8 +111,9 @@ val generateSettingsText = tasks.register("generateSettingsText") {
         require(root.nodeName == "settings-text") {
             "Settings text authority must use a <settings-text> root"
         }
-        require(root.getAttribute("locales").split(Regex("\\s+")).toSet() == requiredLocales) {
-            "Settings text authority must declare exactly ${requiredLocales.joinToString()}"
+        val declaredLocales = root.getAttribute("locales").split(Regex("\\s+")).filter { it.isNotBlank() }.toSet()
+        require(declaredLocales.contains("en")) {
+            "Settings text authority must declare 'en'"
         }
 
         val seenNames = linkedSetOf<String>()
@@ -130,14 +131,14 @@ val generateSettingsText = tasks.register("generateSettingsText") {
                     type = type,
                     name = name,
                     formatted = entry.getAttribute("formatted") != "false",
-                    translations = entry.requiredTranslations(name, requiredLocales),
+                    translations = entry.resolveTranslations(name, declaredLocales),
                     quantities = emptyList(),
                 )
             } else {
                 val quantities = entry.childElements("item").map { item ->
                     val quantity = item.getAttribute("quantity")
                     require(quantity.isNotBlank()) { "$name has a plural item without quantity" }
-                    quantity to item.requiredTranslations("$name[$quantity]", requiredLocales)
+                    quantity to item.resolveTranslations("$name[$quantity]", declaredLocales)
                 }
                 require(quantities.isNotEmpty() && quantities.map { it.first }.distinct().size == quantities.size) {
                     "$name must define unique plural quantities"
@@ -154,7 +155,8 @@ val generateSettingsText = tasks.register("generateSettingsText") {
         require(entries.isNotEmpty()) { "Settings text authority must not be empty" }
 
         val resRoot = generatedSettingsTextResDir.get().asFile
-        mapOf("en" to "values").forEach { (locale, qualifier) ->
+        declaredLocales.forEach { locale ->
+            val qualifier = if (locale == "en") "values" else "values-$locale"
             val output = resRoot.resolve("$qualifier/gboard_settings_strings.xml")
             output.parentFile.mkdirs()
             output.writeText(buildString {
@@ -203,13 +205,23 @@ val generateSettingsText = tasks.register("generateSettingsText") {
             appendLine("import com.akshaykadam.pixelboard.extension.R;")
             appendLine()
             appendLine("final class GboardSettingsTextCatalog {")
-            appendLine("    private static final Map<Integer, String> ENGLISH = createEnglish();")
+            appendLine("    private static final Map<String, Map<Integer, String>> CATALOGS = createCatalogs();")
+            appendLine("    private static final Map<Integer, String> ENGLISH = CATALOGS.get(\"en\");")
             appendLine()
             appendLine("    private GboardSettingsTextCatalog() {")
             appendLine("    }")
             appendLine()
             appendLine("    static String template(int resId, String languageTag) {")
-            appendLine("        return ENGLISH.get(resId);")
+            appendLine("        if (languageTag != null) {")
+            appendLine("            Map<Integer, String> catalog = CATALOGS.get(languageTag);")
+            appendLine("            if (catalog != null) {")
+            appendLine("                String text = catalog.get(resId);")
+            appendLine("                if (text != null) {")
+            appendLine("                    return text;")
+            appendLine("                }")
+            appendLine("            }")
+            appendLine("        }")
+            appendLine("        return ENGLISH != null ? ENGLISH.get(resId) : null;")
             appendLine("    }")
             appendLine()
             appendLine("    static String quantityTemplate(int resId, String languageTag, int quantity) {")
@@ -231,16 +243,24 @@ val generateSettingsText = tasks.register("generateSettingsText") {
             appendLine("        return null;")
             appendLine("    }")
             appendLine()
-            appendLine("    private static Map<Integer, String> createEnglish() {")
-            appendLine("        Map<Integer, String> templates = new HashMap<Integer, String>();")
-            stringEntries.forEach { entry ->
-                append("        templates.put(R.string.")
-                append(entry.name)
-                append(", \"")
-                append(escapeJavaString(entry.translations.getValue("en")))
-                appendLine("\");")
+            appendLine("    private static Map<String, Map<Integer, String>> createCatalogs() {")
+            appendLine("        Map<String, Map<Integer, String>> catalogs = new HashMap<String, Map<Integer, String>>();")
+            declaredLocales.forEach { locale ->
+                appendLine("        {")
+                appendLine("            Map<Integer, String> map = new HashMap<Integer, String>();")
+                stringEntries.forEach { entry ->
+                    append("            map.put(R.string.")
+                    append(entry.name)
+                    append(", \"")
+                    append(escapeJavaString(entry.translations.getValue(locale)))
+                    appendLine("\");")
+                }
+                append("            catalogs.put(\"")
+                append(locale)
+                appendLine("\", map);")
+                appendLine("        }")
             }
-            appendLine("        return templates;")
+            appendLine("        return catalogs;")
             appendLine("    }")
             appendLine("}")
         })

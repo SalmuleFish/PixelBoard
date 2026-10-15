@@ -84,6 +84,12 @@ public final class GboardAiWritingToolsRuntime {
             "enable_spellchecker_chips_ui_web_view";
     static final String FLAG_ENABLE_SPELL_CHECKER_EXTENSION =
             "enable_spell_checker_extension";
+    static final String FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER =
+            "writing_helper_chip_in_spellchecker";
+    static final String FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT =
+            "enable_spell_checker_highlight_on_web_input";
+    static final String FLAG_ENABLE_SPELL_CHECKER_TRAINING_CACHE =
+            "enable_spell_checker_training_cache";
 
     // Fast user history learning and prefix predictions
     static final String FLAG_INTENDED_OOV_MIN_COUNT =
@@ -146,6 +152,94 @@ public final class GboardAiWritingToolsRuntime {
     static final String FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS =
             "populate_preemptive_next_key_predictions";
 
+    // Scan Text (OCR Camera Input)
+    static final String FLAG_ENABLE_OCR =
+            "enable_ocr";
+    static final String FLAG_CONFIG_OCR =
+            "config_ocr";
+    static final String FLAG_ENABLE_CAMERA_PERMISSION_OVERLAY =
+            "enable_camera_permission_overlay";
+    static final String FLAG_OCR_PASSWORD_ALLOWLIST =
+            "ocr_password_allowlist";
+    static final String FLAG_ENABLED_OCR_LANGUAGE_TAGS =
+            "enabled_ocr_language_tags";
+
+    // Clipboard Screenshot & Image Floating Banner
+    static final String FLAG_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE =
+            "clipboard_screenshot_enabled_at_least_once";
+    static final String FLAG_ENABLE_CLIPBOARD_IMAGE_SUGGESTION =
+            "enable_clipboard_image_suggestion";
+    static final String FLAG_ENABLE_SCREENSHOT_NOTIFICATION_FLOW =
+            "enable_screenshot_notification_flow";
+    static final String FLAG_ENABLE_SCREENSHOT_CHIP =
+            "enable_screenshot_chip";
+    static final String FLAG_ENABLE_CLIPBOARD_RECENT_SCREENSHOT =
+            "enable_clipboard_recent_screenshot";
+    static final String FLAG_ENABLE_EXTENDED_CLIPBOARD_HISTORY =
+            "enable_extended_clipboard_history";
+    static final String FLAG_ENABLE_SYSTEM_CLIPBOARD_DIRECT_PASTE_FOR_QUICK_PASTE =
+            "enable_system_clipboard_direct_paste_for_quick_paste";
+
+    // Emoji Picker Dedicated Recent/Frequent Tabs & Palette V2
+    static final String FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB =
+            "enable_frequent_emoji_recent_Tab";
+    static final String FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION =
+            "enable_emoji_frequent_recent_switch_option";
+    static final String FLAG_EMOJI_PALETTE_V2 =
+            "emoji_palette_v2";
+
+    // Super Insert / Quick Insert Hub
+    static final String FLAG_SUPER_INSERT =
+            "super_insert";
+    static final String FLAG_SUPER_INSERT_VK =
+            "super_insert_vk";
+    static final String FLAG_SUPER_INSERT_ENABLE_DYNAMIC_MULTI_VIEW =
+            "super_insert_enable_dynamic_multi_view";
+    static final String FLAG_SUPER_INSERT_CONTACTS =
+            "super_insert_contacts";
+    static final String FLAG_SUPER_INSERT_CLIPBOARD_QUERY_RESULTS =
+            "super_insert_clipboard_query_results";
+    static final String FLAG_SUPER_INSERT_EXPRESSION_QUERY_RESULTS =
+            "super_insert_expression_query_results";
+    static final String FLAG_SUPER_INSERT_LOCAL_IMAGE_RESULTS =
+            "super_insert_local_image_results";
+    static final String FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS =
+            "super_insert_browsing_history_results";
+    static final String FLAG_SUPER_INSERT_NESTA_RESULTS =
+            "super_insert_nesta_results";
+    static final String FLAG_SUPER_INSERT_BELOW_CURSOR =
+            "super_insert_below_cursor";
+    static final String FLAG_ENABLE_SI_SHORTCUT_KEYS =
+            "enable_si_shortcut_keys";
+
+    // Smart Compose (In-Line Ghost Autocompletion)
+    static final String FLAG_ENABLE_SMART_COMPOSE =
+            "enable_smart_compose";
+    static final String FLAG_ENABLE_INLINE_SUGGESTIONS_ON_ALL_FIELDS =
+            "enable_inline_suggestions_on_all_fields";
+    static final String FLAG_ENABLE_INLINE_COMPLETION =
+            "enable_inline_completion";
+    static final String FLAG_ENABLE_DELIGHT5_SMART_COMPOSE =
+            "enable_delight5_smart_compose";
+    static final String FLAG_SMART_COMPOSE_STATUS =
+            "smart_compose_status";
+
+    // Manual Incognito Mode Button
+    static final String FLAG_ENABLE_INCOGNITO_MODE_ENTRY_POINT =
+            "enable_incognito_mode_entry_point";
+    static final String FLAG_ALLOW_INCOGNITO_MODE_SWITCH =
+            "allow_incognito_mode_switch";
+
+    // Emogen (Generative AI Emoji Maker)
+    static final String FLAG_ENABLE_EMOGEN =
+            "enable_emogen";
+    static final String FLAG_EMOGEN_ENTRY_POINT =
+            "emogen_entry_point";
+    static final String FLAG_EMOGEN_FEATURE_ENABLED =
+            "emogen_feature_enabled";
+    static final String FLAG_EMOGEN_IN_ACCESS_POINTS =
+            "emogen_in_access_points";
+
     static final String ALL_LANGUAGES_ALLOWLIST_VALUE = "*";
     static final String MODELESS_SMART_EDIT_REGEX_VERSION = "v3";
     static final String RENAMED_GBOARD_PACKAGE =
@@ -190,6 +284,9 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI.equals(flagName)
                 || FLAG_ENABLE_SPELLCHECKER_CHIPS_UI_WEB_VIEW.equals(flagName)
                 || FLAG_ENABLE_SPELL_CHECKER_EXTENSION.equals(flagName)
+                || FLAG_WRITING_HELPER_CHIP_IN_SPELLCHECKER.equals(flagName)
+                || FLAG_ENABLE_SPELL_CHECKER_HIGHLIGHT_ON_WEB_INPUT.equals(flagName)
+                || FLAG_ENABLE_SPELL_CHECKER_TRAINING_CACHE.equals(flagName)
                 || FLAG_ENABLE_PC_USER_HISTORY_NGRAM_COUNT.equals(flagName)
                 || FLAG_POPULATE_NGRAM_COUNT_WITH_CONTEXT.equals(flagName)
                 || FLAG_POPULATE_NGRAM_TIMESTAMP_IN_USER_HISTORY.equals(flagName)
@@ -215,7 +312,43 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_PK_SPATIAL_MODEL_FEATURES.equals(flagName)
                 || FLAG_ENABLE_PK_AUTO_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
                 || FLAG_ENABLE_POST_CORRECTION_TRIGGER_PREDICTOR.equals(flagName)
-                || FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS.equals(flagName);
+                || FLAG_POPULATE_PREEMPTIVE_NEXT_KEY_PREDICTIONS.equals(flagName)
+                || FLAG_ENABLE_OCR.equals(flagName)
+                || FLAG_CONFIG_OCR.equals(flagName)
+                || FLAG_ENABLE_CAMERA_PERMISSION_OVERLAY.equals(flagName)
+                || FLAG_OCR_PASSWORD_ALLOWLIST.equals(flagName)
+                || FLAG_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE.equals(flagName)
+                || FLAG_ENABLE_CLIPBOARD_IMAGE_SUGGESTION.equals(flagName)
+                || FLAG_ENABLE_SCREENSHOT_NOTIFICATION_FLOW.equals(flagName)
+                || FLAG_ENABLE_SCREENSHOT_CHIP.equals(flagName)
+                || FLAG_ENABLE_CLIPBOARD_RECENT_SCREENSHOT.equals(flagName)
+                || FLAG_ENABLE_EXTENDED_CLIPBOARD_HISTORY.equals(flagName)
+                || FLAG_ENABLE_SYSTEM_CLIPBOARD_DIRECT_PASTE_FOR_QUICK_PASTE.equals(flagName)
+                || FLAG_ENABLE_FREQUENT_EMOJI_RECENT_TAB.equals(flagName)
+                || FLAG_ENABLE_EMOJI_FREQUENT_RECENT_SWITCH_OPTION.equals(flagName)
+                || FLAG_EMOJI_PALETTE_V2.equals(flagName)
+                || FLAG_SUPER_INSERT.equals(flagName)
+                || FLAG_SUPER_INSERT_VK.equals(flagName)
+                || FLAG_SUPER_INSERT_ENABLE_DYNAMIC_MULTI_VIEW.equals(flagName)
+                || FLAG_SUPER_INSERT_CONTACTS.equals(flagName)
+                || FLAG_SUPER_INSERT_CLIPBOARD_QUERY_RESULTS.equals(flagName)
+                || FLAG_SUPER_INSERT_EXPRESSION_QUERY_RESULTS.equals(flagName)
+                || FLAG_SUPER_INSERT_LOCAL_IMAGE_RESULTS.equals(flagName)
+                || FLAG_SUPER_INSERT_BROWSING_HISTORY_RESULTS.equals(flagName)
+                || FLAG_SUPER_INSERT_NESTA_RESULTS.equals(flagName)
+                || FLAG_SUPER_INSERT_BELOW_CURSOR.equals(flagName)
+                || FLAG_ENABLE_SI_SHORTCUT_KEYS.equals(flagName)
+                || FLAG_ENABLE_SMART_COMPOSE.equals(flagName)
+                || FLAG_ENABLE_INLINE_SUGGESTIONS_ON_ALL_FIELDS.equals(flagName)
+                || FLAG_ENABLE_INLINE_COMPLETION.equals(flagName)
+                || FLAG_ENABLE_DELIGHT5_SMART_COMPOSE.equals(flagName)
+                || FLAG_SMART_COMPOSE_STATUS.equals(flagName)
+                || FLAG_ENABLE_INCOGNITO_MODE_ENTRY_POINT.equals(flagName)
+                || FLAG_ALLOW_INCOGNITO_MODE_SWITCH.equals(flagName)
+                || FLAG_ENABLE_EMOGEN.equals(flagName)
+                || FLAG_EMOGEN_ENTRY_POINT.equals(flagName)
+                || FLAG_EMOGEN_FEATURE_ENABLED.equals(flagName)
+                || FLAG_EMOGEN_IN_ACCESS_POINTS.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -229,16 +362,25 @@ public final class GboardAiWritingToolsRuntime {
             // features that default to false in decompiled code (such as Device Intelligence
             // autofill chips, emoji scaling, access points menu redesign, autofill quick settings
             // tile, spell checker suggestion chips, rapid user history learning, emoji suggestions,
-            // two-stage decoding, and gesture streaming fixes) stay disabled unless overridden.
+            // two-stage decoding, gesture streaming fixes, OCR scan text, screenshot chips,
+            // frequent emoji tabs, super insert, and smart compose) stay disabled unless overridden.
             if (FLAG_INTENDED_OOV_MIN_COUNT.equals(flagName)
                     && originalResult instanceof Long) {
                 if (!ENFORCED_INTENDED_OOV_MIN_COUNT.equals(originalResult)) {
                     logLimited(FLAG_LOG_COUNT,
                             "flag=" + flagName
-                                    + ", original=" + describe(originalResult)
-                                    + ", enforced=" + describe(ENFORCED_INTENDED_OOV_MIN_COUNT));
+                                     + ", original=" + describe(originalResult)
+                                     + ", enforced=" + describe(ENFORCED_INTENDED_OOV_MIN_COUNT));
                 }
                 return ENFORCED_INTENDED_OOV_MIN_COUNT;
+            }
+            if (FLAG_ENABLED_OCR_LANGUAGE_TAGS.equals(flagName)
+                    && originalResult instanceof String) {
+                return ALL_LANGUAGES_ALLOWLIST_VALUE;
+            }
+            if (FLAG_SMART_COMPOSE_STATUS.equals(flagName)
+                    && originalResult instanceof Long) {
+                return 1L;
             }
             if (isStockPhenotypeEnforcedFlag(flagName)
                     && originalResult instanceof Boolean) {
@@ -518,11 +660,45 @@ public final class GboardAiWritingToolsRuntime {
         if (context == null || !DEFAULT_PREFERENCES_INITIALIZED.compareAndSet(false, true)) {
             return;
         }
+        initializeDefaultPreferences(context);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 24) {
+                Context dpsContext = context.createDeviceProtectedStorageContext();
+                if (dpsContext != null) {
+                    initializeDefaultPreferences(dpsContext);
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void initializeDefaultPreferences(Context context) {
         try {
             android.content.SharedPreferences prefs =
                     android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+            android.content.SharedPreferences.Editor editor = null;
             if (!prefs.contains("pref_key_enable_emoji_suggestion")) {
-                prefs.edit().putBoolean("pref_key_enable_emoji_suggestion", true).apply();
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("pref_key_enable_emoji_suggestion", true);
+            }
+            if (!prefs.getBoolean("spellchecker_enable_chips_ui", false)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("spellchecker_enable_chips_ui", true);
+            }
+            if (!prefs.contains("enable_mark_misspelled_words")) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("enable_mark_misspelled_words", true);
+            }
+            if (!prefs.contains("pref_key_enable_grammar_checker")) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("pref_key_enable_grammar_checker", true);
+            }
+            if (!prefs.contains("show_suggestion_strip")) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean("show_suggestion_strip", true);
+            }
+            if (editor != null) {
+                editor.apply();
             }
         } catch (Throwable ignored) {
         }

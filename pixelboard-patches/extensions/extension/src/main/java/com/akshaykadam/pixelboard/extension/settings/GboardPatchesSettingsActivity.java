@@ -34,6 +34,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -61,10 +62,15 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -152,6 +158,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     private ScrollView contentScrollView;
     private LinearLayout contentColumn;
     private LinearLayout screenActionContainer;
+    private TextView footerVersionView;
     private GboardKeyboardPreviewController keyboardPreviewController;
     private List<GboardPatchesSettingsContract.Feature> features;
     private final GboardPatchesSettingsOrchestrator<GboardPatchesSettingsContract.Feature,
@@ -449,9 +456,59 @@ public final class GboardPatchesSettingsActivity extends Activity
             GboardPatchesSettingsContract.StringValueConsumer valueConsumer) {
         int checkedIndex = resolveCheckedIndex(values, currentValue);
         final Runnable[] pendingSelectionAction = new Runnable[1];
+        ListAdapter adapter = new ArrayAdapter<String>(this, 0, labels) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LinearLayout row;
+                RadioButton radio;
+                TextView label;
+                if (convertView instanceof LinearLayout) {
+                    row = (LinearLayout) convertView;
+                    radio = (RadioButton) row.getChildAt(0);
+                    label = (TextView) row.getChildAt(1);
+                } else {
+                    row = new LinearLayout(getContext());
+                    row.setOrientation(LinearLayout.HORIZONTAL);
+                    row.setGravity(Gravity.CENTER_VERTICAL);
+                    row.setPadding(dp(20), dp(12), dp(20), dp(12));
+                    row.setMinimumHeight(dp(48));
+
+                    radio = new RadioButton(getContext());
+                    radio.setClickable(false);
+                    radio.setFocusable(false);
+                    ColorStateList radioTint = new ColorStateList(
+                            new int[][] {
+                                    new int[] { android.R.attr.state_checked },
+                                    new int[] { -android.R.attr.state_checked }
+                            },
+                            new int[] {
+                                    palette.accent,
+                                    blendAlpha(palette.textSecondary, 0.6f)
+                            });
+                    radio.setButtonTintList(radioTint);
+                    row.addView(radio, new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                    label = new TextView(getContext());
+                    label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
+                    label.setTextColor(palette.textPrimary);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            1f);
+                    lp.leftMargin = dp(16);
+                    label.setLayoutParams(lp);
+                    row.addView(label);
+                }
+                label.setText(getItem(position));
+                radio.setChecked(position == checkedIndex);
+                return row;
+            }
+        };
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(title)
-                .setSingleChoiceItems(labels, checkedIndex, (dialogInterface, which) -> {
+                .setSingleChoiceItems(adapter, checkedIndex, (dialogInterface, which) -> {
                     if (which < 0 || which >= values.length) {
                         return;
                     }
@@ -1570,27 +1627,6 @@ public final class GboardPatchesSettingsActivity extends Activity
         contentColumn.addView(buildHeaderCard());
         contentColumn.addView(buildPanelCard());
 
-        View spacer = new View(this);
-        LinearLayout.LayoutParams spacerParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0,
-                1f);
-        spacer.setLayoutParams(spacerParams);
-        contentColumn.addView(spacer);
-
-        TextView authorFooter = new TextView(this);
-        authorFooter.setText("Akshay Kadam");
-        authorFooter.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
-        authorFooter.setTextColor(palette.textSecondary);
-        authorFooter.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams footerParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        footerParams.topMargin = dp(16);
-        footerParams.bottomMargin = dp(24);
-        authorFooter.setLayoutParams(footerParams);
-        contentColumn.addView(authorFooter);
-
         contentScrollView.addView(contentColumn);
         shell.addView(contentScrollView);
 
@@ -1599,6 +1635,16 @@ public final class GboardPatchesSettingsActivity extends Activity
         screenActionContainer.setPadding(dp(16), dp(8), dp(16), dp(16));
         screenActionContainer.setVisibility(View.GONE);
         shell.addView(screenActionContainer, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        footerVersionView = new TextView(this);
+        footerVersionView.setText("PixelBoard " + resolvePatchVersion());
+        footerVersionView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
+        footerVersionView.setTextColor(palette.textSecondary);
+        footerVersionView.setGravity(Gravity.CENTER);
+        footerVersionView.setPadding(0, dp(12), 0, dp(24));
+        shell.addView(footerVersionView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         keyboardPreviewController = new GboardKeyboardPreviewController(
@@ -1610,6 +1656,23 @@ public final class GboardPatchesSettingsActivity extends Activity
                 palette.windowBackground);
         keyboardPreviewController.attachTo(root);
         return root;
+    }
+
+    private String resolvePatchVersion() {
+        try {
+            if (BuildConfig.PATCH_VERSION != null && !BuildConfig.PATCH_VERSION.trim().isEmpty()) {
+                return BuildConfig.PATCH_VERSION.trim();
+            }
+        } catch (Throwable ignored) {
+        }
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            if (packageInfo != null && packageInfo.versionName != null) {
+                return packageInfo.versionName;
+            }
+        } catch (Throwable ignored) {
+        }
+        return "1.0.8";
     }
 
     private View buildToolbar() {
@@ -2293,6 +2356,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                     screenActionContainer.setPadding(
                             dp(16), dp(8), dp(16), dp(16) + bottomInset);
                 }
+                if (footerVersionView != null) {
+                    footerVersionView.setPadding(0, dp(12), 0, dp(24) + bottomInset);
+                }
                 if (keyboardPreviewController != null) {
                     keyboardPreviewController.updateSafeAreaInsets(resolveRightInset(insets),
                             bottomInset);
@@ -2807,23 +2873,27 @@ public final class GboardPatchesSettingsActivity extends Activity
         Context context = this;
         SharedPreferences writingPrefs = GboardAiWritingToolsSettings.preferences(context);
         SharedPreferences voicePrefs = GboardAdvancedVoiceSettings.preferences(context);
+        SharedPreferences patchesPrefs = GboardPatchesSettings.preferences(context);
 
         if (writingPrefs != null) {
-            if (!writingPrefs.getBoolean("pref_defaults_migrated_v3", false)) {
+            if (!writingPrefs.getBoolean("pref_defaults_migrated_v4", false)) {
                 writingPrefs.edit()
                         .putBoolean(GboardAiWritingToolsSettings.PREF_KEY_ENABLED, true)
                         .putBoolean(GboardAiWritingToolsSettings.PREF_KEY_ALL_KEYBOARDS, true)
-                        .putBoolean("pref_defaults_migrated_v3", true)
+                        .putBoolean("pref_defaults_migrated_v4", true)
                         .apply();
             }
         }
         if (voicePrefs != null) {
-            if (!voicePrefs.getBoolean("pref_defaults_migrated_v3", false)) {
+            if (!voicePrefs.getBoolean("pref_defaults_migrated_v4", false)) {
                 voicePrefs.edit()
                         .putBoolean(GboardAdvancedVoiceSettings.PREF_KEY_ENABLED, true)
-                        .putBoolean("pref_defaults_migrated_v3", true)
+                        .putBoolean("pref_defaults_migrated_v4", true)
                         .apply();
             }
+        }
+        if (patchesPrefs != null) {
+            GboardRoundedKeysSettings.ensureDefaults(context, patchesPrefs);
         }
 
         boolean aiWritingToolsEnabled = writingPrefs == null
@@ -2832,6 +2902,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAiWritingToolsSettings.readAllKeyboardsEnabled(writingPrefs);
         boolean advancedVoiceEnabled = voicePrefs == null
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
+        boolean roundedKeysEnabled = patchesPrefs == null
+                || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
 
         List<GboardPatchesSettingsContract.Row> rows =
                 new ArrayList<GboardPatchesSettingsContract.Row>();
@@ -2859,47 +2931,6 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
-        if (com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsDeviceSupport.isSupportedDevice()) {
-            String backendType = writingPrefs != null
-                    ? GboardAiWritingToolsSettings.readBackendType(writingPrefs)
-                    : GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER;
-            String[] backendTypeValues = new String[]{
-                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER,
-                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE,
-                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA
-            };
-            String[] backendTypeLabels = new String[]{
-                    "Google Cloud (Server)",
-                    "Private Inference (AICore)",
-                    "Private Inference (Astrea)"
-            };
-            String currentLabel = GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType)
-                    ? "Private Inference (AICore)"
-                    : GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA.equals(backendType)
-                    ? "Private Inference (Astrea)"
-                    : "Google Cloud (Server)";
-            rows.add(new GboardPatchesSettingsContract.SelectorRow(
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_title),
-                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_summary),
-                    currentLabel,
-                    aiWritingToolsEnabled,
-                    () -> {
-                        showChoiceDialog(
-                                GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_dialog_title),
-                                backendTypeLabels,
-                                backendTypeValues,
-                                backendType,
-                                null,
-                                null,
-                                value -> {
-                                    if (writingPrefs != null) {
-                                        GboardAiWritingToolsSettings.writeBackendType(writingPrefs, value);
-                                        renderCurrentScreenSafely();
-                                    }
-                                });
-                    }));
-        }
-
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_advanced_voice_enabled_title),
                 GboardSettingsText.get(context, R.string.gboard_patches_advanced_voice_enabled_summary),
@@ -2910,9 +2941,6 @@ public final class GboardPatchesSettingsActivity extends Activity
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
                     }
                 }));
-
-        SharedPreferences patchesPrefs = GboardPatchesSettings.preferences(context);
-        boolean roundedKeysEnabled = GboardRoundedKeysSettings.readEnabled(patchesPrefs);
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
                 GboardSettingsText.get(context, R.string.gboard_patches_rounded_keys_enabled_title),
@@ -2927,16 +2955,74 @@ public final class GboardPatchesSettingsActivity extends Activity
                     }
                 }));
 
+        List<GboardPatchesSettingsContract.Section> sections =
+                new ArrayList<GboardPatchesSettingsContract.Section>();
+        sections.add(new GboardPatchesSettingsContract.Section(
+                GboardSettingsText.get(context, R.string.gboard_patches_section_features),
+                rows));
+
+        if (com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsDeviceSupport.isSupportedDevice()) {
+            String backendType = writingPrefs != null
+                    ? GboardAiWritingToolsSettings.readBackendType(writingPrefs)
+                    : GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER;
+
+            List<GboardPatchesSettingsContract.Row> backendRows =
+                    new ArrayList<GboardPatchesSettingsContract.Row>();
+
+            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
+                    "Google Cloud (Server)",
+                    "Cloud-based processing for text generation, rewriting, and smart suggestions.",
+                    aiWritingToolsEnabled,
+                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(backendType),
+                    () -> {
+                        if (writingPrefs != null) {
+                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
+                                    GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER);
+                            renderCurrentScreenSafely();
+                        }
+                    },
+                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER)));
+
+            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
+                    "Private Inference (AICore)",
+                    "Private on-device inference using Gemini Nano via Android AICore system service.",
+                    aiWritingToolsEnabled,
+                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType),
+                    () -> {
+                        if (writingPrefs != null) {
+                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
+                                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE);
+                            renderCurrentScreenSafely();
+                        }
+                    },
+                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE)));
+
+            backendRows.add(new GboardPatchesSettingsContract.RadioRow(
+                    "Private Inference (Astrea)",
+                    "Private on-device inference via Astrea isolated execution environment.",
+                    aiWritingToolsEnabled,
+                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA.equals(backendType),
+                    () -> {
+                        if (writingPrefs != null) {
+                            GboardAiWritingToolsSettings.writeBackendType(writingPrefs,
+                                    GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA);
+                            renderCurrentScreenSafely();
+                        }
+                    },
+                    createBackendIcon(GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_ASTREA)));
+
+            sections.add(new GboardPatchesSettingsContract.Section(
+                    GboardSettingsText.get(context, R.string.gboard_patches_ai_writing_tools_backend_type_title),
+                    backendRows));
+        }
+
         return new GboardPatchesSettingsContract.Screen(
                 GboardSettingsText.get(context, R.string.gboard_patches_activity_title),
                 null,
                 null,
                 null,
                 Collections.emptyList(),
-                Collections.singletonList(
-                        new GboardPatchesSettingsContract.Section(
-                                GboardSettingsText.get(context, R.string.gboard_patches_section_features),
-                                rows)),
+                sections,
                 GboardPatchesSettingsContract.RefreshPolicy.none(),
                 GboardPatchesSettingsContract.PanelStyle.FLAT);
     }
@@ -3081,6 +3167,9 @@ public final class GboardPatchesSettingsActivity extends Activity
         }
         if (row instanceof GboardPatchesSettingsContract.SelectorRow selectorRow) {
             return createSelectorRow(selectorRow);
+        }
+        if (row instanceof GboardPatchesSettingsContract.RadioRow radioRow) {
+            return createRadioRow(radioRow);
         }
         if (row instanceof GboardPatchesSettingsContract.DetailRow detailRow) {
             return createDetailRow(detailRow);
@@ -3247,6 +3336,171 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         });
         return row;
+    }
+
+    private View createRadioRow(GboardPatchesSettingsContract.RadioRow rowModel) {
+        LinearLayout row = buildBaseRow();
+
+        if (rowModel.getIconDrawable() != null) {
+            ImageView iconView = new ImageView(this);
+            iconView.setImageDrawable(rowModel.getIconDrawable());
+            LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(dp(24), dp(24));
+            iconParams.rightMargin = dp(16);
+            iconParams.gravity = Gravity.CENTER_VERTICAL;
+            row.addView(iconView, iconParams);
+        }
+
+        LinearLayout textColumn = buildRowTextColumn(true);
+        TextView titleView = buildRowTitle(rowModel.getTitle());
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        TextView summaryView = buildRowSummary(rowModel.getSummary(), false);
+        textColumn.addView(titleView);
+        textColumn.addView(summaryView);
+        row.addView(textColumn);
+
+        TextView chevronView = buildChevronView();
+        LinearLayout.LayoutParams chevronParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        chevronParams.gravity = Gravity.CENTER_VERTICAL;
+        chevronParams.rightMargin = dp(12);
+        row.addView(chevronView, chevronParams);
+
+        View verticalDivider = new View(this);
+        verticalDivider.setBackgroundColor(blendAlpha(palette.textSecondary, 0.25f));
+        LinearLayout.LayoutParams vDivParams = new LinearLayout.LayoutParams(dp(1), dp(28));
+        vDivParams.gravity = Gravity.CENTER_VERTICAL;
+        vDivParams.rightMargin = dp(16);
+        row.addView(verticalDivider, vDivParams);
+
+        RadioButton radioButton = new RadioButton(this);
+        radioButton.setClickable(false);
+        radioButton.setFocusable(false);
+        ColorStateList radioTint = new ColorStateList(
+                new int[][] {
+                        new int[] { android.R.attr.state_checked },
+                        new int[] { -android.R.attr.state_checked }
+                },
+                new int[] {
+                        palette.accent,
+                        blendAlpha(palette.textSecondary, 0.5f)
+                });
+        radioButton.setButtonTintList(radioTint);
+        radioButton.setChecked(rowModel.isChecked());
+        LinearLayout.LayoutParams radioParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        radioParams.gravity = Gravity.CENTER_VERTICAL;
+        row.addView(radioButton, radioParams);
+
+        row.setEnabled(rowModel.isEnabled());
+        row.setClickable(rowModel.isEnabled());
+        titleView.setTextColor(rowModel.isEnabled() ? palette.textPrimary : palette.textDisabled);
+        summaryView.setTextColor(rowModel.isEnabled() ? palette.textSecondary : palette.textDisabled);
+        chevronView.setAlpha(rowModel.isEnabled() ? 1f : 0.4f);
+        verticalDivider.setAlpha(rowModel.isEnabled() ? 1f : 0.4f);
+        radioButton.setEnabled(rowModel.isEnabled());
+        row.setAlpha(rowModel.isEnabled() ? 1f : 0.6f);
+
+        row.setOnClickListener(view -> {
+            if (row.isEnabled() && rowModel.getSelectAction() != null) {
+                runSafely("select radio row", rowModel.getSelectAction());
+            }
+        });
+
+        return row;
+    }
+
+    private Drawable createBackendIcon(String backendType) {
+        return new Drawable() {
+            private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            @Override
+            public void draw(Canvas canvas) {
+                Rect bounds = getBounds();
+                int width = bounds.width() > 0 ? bounds.width() : dp(24);
+                int height = bounds.height() > 0 ? bounds.height() : dp(24);
+
+                canvas.save();
+                canvas.translate(bounds.left, bounds.top);
+                float scale = Math.min(width, height) / 24f;
+                canvas.scale(scale, scale);
+
+                paint.setColor(palette.textPrimary);
+                paint.setStyle(Paint.Style.FILL);
+
+                if (GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(backendType)) {
+                    RectF baseRect = new RectF(4.5f, 13f, 19.5f, 18.5f);
+                    canvas.drawRoundRect(baseRect, 2.75f, 2.75f, paint);
+                    canvas.drawCircle(8.5f, 13.5f, 4f, paint);
+                    canvas.drawCircle(13.5f, 10.5f, 5.5f, paint);
+                    canvas.drawCircle(17.5f, 14.5f, 3.5f, paint);
+                } else if (GboardAiWritingToolsSettings.BACKEND_PRIVATE_INFERENCE_AICORE.equals(backendType)) {
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeWidth(1.8f);
+                    RectF chip = new RectF(6.5f, 6.5f, 17.5f, 17.5f);
+                    canvas.drawRoundRect(chip, 2.5f, 2.5f, paint);
+                    paint.setStyle(Paint.Style.FILL);
+                    RectF core = new RectF(9.5f, 9.5f, 14.5f, 14.5f);
+                    canvas.drawRoundRect(core, 1.5f, 1.5f, paint);
+                    paint.setStrokeWidth(1.6f);
+                    canvas.drawLine(10f, 3f, 10f, 6.5f, paint);
+                    canvas.drawLine(14f, 3f, 14f, 6.5f, paint);
+                    canvas.drawLine(10f, 17.5f, 10f, 21f, paint);
+                    canvas.drawLine(14f, 17.5f, 14f, 21f, paint);
+                    canvas.drawLine(3f, 10f, 6.5f, 10f, paint);
+                    canvas.drawLine(3f, 14f, 6.5f, 14f, paint);
+                    canvas.drawLine(17.5f, 10f, 21f, 10f, paint);
+                    canvas.drawLine(17.5f, 14f, 21f, 14f, paint);
+                } else {
+                    Path shieldPath = new Path();
+                    shieldPath.moveTo(12f, 3.5f);
+                    shieldPath.lineTo(19f, 6.2f);
+                    shieldPath.quadTo(19.2f, 13.5f, 12f, 20.5f);
+                    shieldPath.quadTo(4.8f, 13.5f, 5f, 6.2f);
+                    shieldPath.close();
+                    canvas.drawPath(shieldPath, paint);
+
+                    paint.setColor(palette.surfaceAlt);
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeWidth(1.8f);
+                    paint.setStrokeCap(Paint.Cap.ROUND);
+                    paint.setStrokeJoin(Paint.Join.ROUND);
+                    Path check = new Path();
+                    check.moveTo(9f, 11.5f);
+                    check.lineTo(11f, 13.8f);
+                    check.lineTo(15.5f, 9.2f);
+                    canvas.drawPath(check, paint);
+                }
+
+                canvas.restore();
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+                paint.setAlpha(alpha);
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+                paint.setColorFilter(colorFilter);
+            }
+
+            @Override
+            public int getOpacity() {
+                return PixelFormat.TRANSLUCENT;
+            }
+
+            @Override
+            public int getIntrinsicWidth() {
+                return dp(24);
+            }
+
+            @Override
+            public int getIntrinsicHeight() {
+                return dp(24);
+            }
+        };
     }
 
     private View createDetailRow(GboardPatchesSettingsContract.DetailRow rowModel) {
@@ -3590,7 +3844,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setMinimumHeight(dp(64));
-        row.setPadding(dp(18), dp(14), dp(18), dp(14));
+        row.setPadding(dp(16), dp(16), dp(16), dp(16));
         row.setBackground(buildRippleDrawable(0));
         row.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -3601,7 +3855,7 @@ public final class GboardPatchesSettingsActivity extends Activity
     private LinearLayout buildDetailRowContainer() {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.VERTICAL);
-        row.setPadding(dp(18), dp(14), dp(18), dp(14));
+        row.setPadding(dp(16), dp(16), dp(16), dp(16));
         row.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -3639,6 +3893,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         titleView.setTextColor(palette.textPrimary);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
         titleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        titleView.setLineSpacing(0f, 1.15f);
         titleView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -3650,10 +3905,11 @@ public final class GboardPatchesSettingsActivity extends Activity
         TextView summaryView = new TextView(this);
         summaryView.setTextColor(palette.textSecondary);
         summaryView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f);
+        summaryView.setLineSpacing(dp(2), 1.15f);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = dp(2);
+        params.topMargin = dp(4);
         summaryView.setLayoutParams(params);
         summaryView.setText(text);
         summaryView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
@@ -3896,9 +4152,41 @@ public final class GboardPatchesSettingsActivity extends Activity
                     buildCardDrawable(palette.surfaceAlt, palette.surfaceStroke, dp(28)));
         }
         if (dialog.getListView() != null) {
-            dialog.getListView().setDivider(null);
-            dialog.getListView().setSelector(buildRippleDrawable(dp(16)));
-            dialog.getListView().setOverScrollMode(View.OVER_SCROLL_NEVER);
+            ListView listView = dialog.getListView();
+            listView.setDivider(null);
+            listView.setSelector(buildRippleDrawable(dp(16)));
+            listView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            ColorStateList radioTint = new ColorStateList(
+                    new int[][] {
+                            new int[] { android.R.attr.state_checked },
+                            new int[] { -android.R.attr.state_checked }
+                    },
+                    new int[] {
+                            palette.accent,
+                            blendAlpha(palette.textSecondary, 0.6f)
+                    });
+            listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    if (child instanceof CheckedTextView) {
+                        CheckedTextView checkedView = (CheckedTextView) child;
+                        checkedView.setTextColor(palette.textPrimary);
+                        checkedView.setCheckMarkTintList(radioTint);
+                    }
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+                }
+            });
+            for (int i = 0; i < listView.getChildCount(); i++) {
+                View child = listView.getChildAt(i);
+                if (child instanceof CheckedTextView) {
+                    CheckedTextView checkedView = (CheckedTextView) child;
+                    checkedView.setTextColor(palette.textPrimary);
+                    checkedView.setCheckMarkTintList(radioTint);
+                }
+            }
         }
         try {
             int titleId = getResources().getIdentifier("alertTitle", "id", "android");
@@ -4067,7 +4355,9 @@ public final class GboardPatchesSettingsActivity extends Activity
                         surfaceStroke = blendAlpha(context.getColor(android.R.color.system_neutral2_700), 0.35f);
                         accent = context.getColor(android.R.color.system_accent1_200);
                         textPrimary = context.getColor(android.R.color.system_neutral1_100);
-                        textSecondary = context.getColor(android.R.color.system_neutral2_200);
+                        int rawSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
+                                context.getColor(android.R.color.system_neutral2_200));
+                        textSecondary = blendAlpha(rawSecondary, 0.70f);
                         textDisabled = blendAlpha(textSecondary, 0.45f);
                         infoContainer = context.getColor(android.R.color.system_accent1_800);
                         warningContainer = Color.parseColor("#3F2D16");
@@ -4075,16 +4365,18 @@ public final class GboardPatchesSettingsActivity extends Activity
                         pressedOverlay = blendAlpha(accent, 0.15f);
                     } else {
                         windowBackground = context.getColor(android.R.color.system_neutral1_50);
-                        surface = context.getColor(android.R.color.system_neutral1_50);
-                        surfaceAlt = context.getColor(android.R.color.system_neutral1_100);
+                        surface = Color.WHITE;
+                        surfaceAlt = Color.WHITE;
                         surfaceStroke = blendAlpha(context.getColor(android.R.color.system_neutral2_200), 0.5f);
                         accent = context.getColor(android.R.color.system_accent1_600);
                         textPrimary = context.getColor(android.R.color.system_neutral1_900);
-                        textSecondary = context.getColor(android.R.color.system_neutral2_700);
+                        int rawSecondary = resolveThemeColor(context, android.R.attr.textColorSecondary,
+                                context.getColor(android.R.color.system_neutral2_700));
+                        textSecondary = blendAlpha(rawSecondary, 0.72f);
                         textDisabled = blendAlpha(textSecondary, 0.45f);
                         infoContainer = context.getColor(android.R.color.system_accent1_100);
                         warningContainer = Color.parseColor("#FEF3C7");
-                        advancedContainer = surfaceAlt;
+                        advancedContainer = Color.WHITE;
                         pressedOverlay = blendAlpha(accent, 0.15f);
                     }
 
@@ -4105,17 +4397,17 @@ public final class GboardPatchesSettingsActivity extends Activity
                                     nightMode ? Color.parseColor("#D0BCFF") : Color.parseColor("#6750A4")));
                     int themeTextPri = resolveThemeColor(context, android.R.attr.textColorPrimary,
                             nightMode ? Color.parseColor("#E6E0E9") : Color.parseColor("#1D1B20"));
-                    int themeTextSec = resolveThemeColor(context, android.R.attr.textColorSecondary,
-                            nightMode ? Color.parseColor("#CAC4D0") : Color.parseColor("#49454F"));
+                    int themeTextSec = blendAlpha(resolveThemeColor(context, android.R.attr.textColorSecondary,
+                            nightMode ? Color.parseColor("#CAC4D0") : Color.parseColor("#49454F")), 0.72f);
 
                     return new Palette(
                             themeBg,
-                            themeBg,
-                            nightMode ? Color.parseColor("#2B243B") : Color.parseColor("#F3EDF7"),
+                            nightMode ? themeBg : Color.WHITE,
+                            nightMode ? Color.parseColor("#2B243B") : Color.WHITE,
                             nightMode ? Color.parseColor("#1FFFFFFF") : Color.parseColor("#00000000"),
                             nightMode ? Color.parseColor("#381E72") : Color.parseColor("#EADDFF"),
                             nightMode ? Color.parseColor("#3F2D16") : Color.parseColor("#FEF3C7"),
-                            nightMode ? Color.parseColor("#2B243B") : Color.parseColor("#F3EDF7"),
+                            nightMode ? Color.parseColor("#2B243B") : Color.WHITE,
                             themeTextPri,
                             themeTextSec,
                             blendAlpha(themeTextSec, 0.5f),
@@ -4142,12 +4434,12 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
             return new Palette(
                     Color.parseColor("#FEF7FF"),
-                    Color.parseColor("#FEF7FF"),
-                    Color.parseColor("#F3EDF7"),
+                    Color.WHITE,
+                    Color.WHITE,
                     Color.parseColor("#00000000"),
                     Color.parseColor("#EADDFF"),
                     Color.parseColor("#FEF3C7"),
-                    Color.parseColor("#F3EDF7"),
+                    Color.WHITE,
                     Color.parseColor("#1D1B20"),
                     Color.parseColor("#49454F"),
                     Color.parseColor("#79747E"),

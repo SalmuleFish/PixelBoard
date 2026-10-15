@@ -77,7 +77,8 @@ public final class GboardSettingsText {
     }
 
     private static String resolveLanguageTag(Context context) {
-        return LANGUAGE_ENGLISH;
+        Locale locale = extractLocale(context);
+        return normalizeLanguageTag(locale != null ? locale.getLanguage() : null);
     }
 
     private static Locale extractLocale(Context context) {
@@ -107,7 +108,22 @@ public final class GboardSettingsText {
     }
 
     private static String normalizeLanguageTag(String languageTag) {
-        return LANGUAGE_ENGLISH;
+        if (languageTag == null || languageTag.isEmpty()) {
+            return LANGUAGE_ENGLISH;
+        }
+        String lower = languageTag.toLowerCase(Locale.US).trim();
+        if ("id".equals(lower)) {
+            return "in";
+        }
+        int dashIndex = lower.indexOf('-');
+        if (dashIndex > 0) {
+            lower = lower.substring(0, dashIndex);
+        }
+        int underscoreIndex = lower.indexOf('_');
+        if (underscoreIndex > 0) {
+            lower = lower.substring(0, underscoreIndex);
+        }
+        return lower;
     }
 
     private static Context requireContext(Context context) {
