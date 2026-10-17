@@ -1672,7 +1672,7 @@ public final class GboardPatchesSettingsActivity extends Activity
             }
         } catch (Throwable ignored) {
         }
-        return "1.0.9";
+        return "1.1.0";
     }
 
     private View buildToolbar() {

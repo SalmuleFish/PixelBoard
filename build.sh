@@ -28,6 +28,7 @@ for arg in "$@"; do
     esac
 done
 
+PATCH_VERSION=$(grep -E "^version\s*=" pixelboard-patches/gradle.properties | cut -d'=' -f2 | tr -d ' ')
 MPP_PATH="patches/PixelBoard.mpp"
 
 if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
@@ -36,7 +37,6 @@ if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     ./gradlew :patches:buildAndroid
     cd "$SCRIPT_DIR"
 
-    PATCH_VERSION=$(grep -E "^version\s*=" pixelboard-patches/gradle.properties | cut -d'=' -f2 | tr -d ' ')
     COMPILED_MPP="pixelboard-patches/patches/build/libs/patches-${PATCH_VERSION}.mpp"
     if [[ ! -f "$COMPILED_MPP" ]]; then
         COMPILED_MPP=$(ls pixelboard-patches/patches/build/libs/patches-*.mpp 2>/dev/null | grep -v 'javadoc' | grep -v 'sources' | head -n 1)
@@ -47,6 +47,9 @@ if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     fi
     mkdir -p patches
     cp "$COMPILED_MPP" "$MPP_PATH"
+    if [[ -n "${PATCH_VERSION:-}" ]]; then
+        cp "$COMPILED_MPP" "patches/patches-${PATCH_VERSION}.mpp"
+    fi
     echo "✅ Patch bundle compiled & synced to: $MPP_PATH"
 else
     echo "📦 Using local patch bundle: $MPP_PATH (100% offline)"
@@ -116,4 +119,9 @@ fi
     -r=output/patching-result.json \
     input/gboard.apk
 
-echo "🎉 Successfully built output/PixelBoard.apk!"
+cp output/PixelBoard.apk output/PixelBoard-18.4.1-V6.apk
+if [[ -n "${PATCH_VERSION:-}" ]]; then
+    cp output/PixelBoard.apk "output/PixelBoard-${PATCH_VERSION}.apk"
+fi
+
+echo "🎉 Successfully built output/PixelBoard.apk and output/PixelBoard-18.4.1-V6.apk!"

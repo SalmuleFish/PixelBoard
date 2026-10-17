@@ -95,6 +95,23 @@ public final class GboardAiWritingToolsRuntime {
     static final String FLAG_INTENDED_OOV_MIN_COUNT =
             "intended_oov_min_count";
     static final Long ENFORCED_INTENDED_OOV_MIN_COUNT = 1L;
+    static final String FLAG_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS =
+            "min_char_num_limit_for_single_word_predictions";
+    static final Long ENFORCED_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS = 2L;
+    static final String FLAG_ENABLE_PK_AUTO_CORRECTION_LOCALES =
+            "enable_pk_auto_correction_locales";
+    static final String FLAG_ADD_PENDING_OOVS_ON_RESET_MAX_MS =
+            "add_pending_oovs_on_reset_max_ms";
+    static final String FLAG_ADD_PENDING_OOVS_ON_CREATE_MAX_MS =
+            "add_pending_oovs_on_create_max_ms";
+    static final Long ENFORCED_ADD_PENDING_OOVS_MAX_MS = 500L;
+    static final String FLAG_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY =
+            "threshold_for_candidates_from_user_history";
+    static final Double ENFORCED_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY = -5.0d;
+    static final String FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT =
+            "fix_first_auto_correction_commit";
+    static final String FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION =
+            "learning_for_editor_without_auto_correction";
     static final String FLAG_ENABLE_PC_USER_HISTORY_NGRAM_COUNT =
             "enable_pc_user_history_ngram_count";
     static final String FLAG_POPULATE_NGRAM_COUNT_WITH_CONTEXT =
@@ -240,6 +257,42 @@ public final class GboardAiWritingToolsRuntime {
     static final String FLAG_EMOGEN_IN_ACCESS_POINTS =
             "emogen_in_access_points";
 
+    // Access Points immediate population (prevents blank shortcuts on first launch)
+    static final String FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS =
+            "stop_deferring_access_points_tasks";
+
+    // Writing Helper & Imagen production backend hosts
+    static final String FLAG_WRITING_HELPER_SERVER_TARGET =
+            "writing_helper_server_target";
+    static final String FLAG_GBOARD_IMAGEN_API_HOST =
+            "gboard_imagen_api_host";
+    static final String FLAG_WRITING_HELPER_VOICE_INPUT_MODEL_VERSION =
+            "writing_helper_voice_input_model_version";
+    static final String PROD_GBOARD_IMAGEN_SERVER_TARGET =
+            "staging-gboard-imagen-pa.sandbox.googleapis.com";
+
+    // Clipboard suggestion chips preference keys
+    static final String PREF_KEY_ENABLE_AUTO_PASTE_CHIPS =
+            "enable_auto_paste_chips";
+    static final String PREF_KEY_ENABLE_SCREENSHOT_IN_CLIPBOARD =
+            "enable_screenshot_in_clipboard";
+    static final String PREF_KEY_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE =
+            "clipboard_screenshot_enabled_at_least_once";
+    static final String PREF_KEY_ENABLE_ENTITY_EXTRACTION =
+            "enable_entity_extraction";
+
+    // Writing Tools & Jarvis consent preference keys
+    static final String PREF_KEY_JARVIS_CONSENT_HISTORY =
+            "jarvis_consent_history";
+    static final String PREF_KEY_WRITING_TOOLS_OPT_IN =
+            "pref_key_writing_tools_opt_in";
+    static final String PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN =
+            "pref_key_writing_tools_screen_context_opt_in";
+    static final String PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1 =
+            "pref_key_writing_tools_screen_context_opt_in_v1";
+    static final String PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE =
+            "pref_key_writing_tools_enable_pi_override";
+
     static final String ALL_LANGUAGES_ALLOWLIST_VALUE = "*";
     static final String MODELESS_SMART_EDIT_REGEX_VERSION = "v3";
     static final String RENAMED_GBOARD_PACKAGE =
@@ -348,7 +401,10 @@ public final class GboardAiWritingToolsRuntime {
                 || FLAG_ENABLE_EMOGEN.equals(flagName)
                 || FLAG_EMOGEN_ENTRY_POINT.equals(flagName)
                 || FLAG_EMOGEN_FEATURE_ENABLED.equals(flagName)
-                || FLAG_EMOGEN_IN_ACCESS_POINTS.equals(flagName);
+                || FLAG_EMOGEN_IN_ACCESS_POINTS.equals(flagName)
+                || FLAG_FIX_FIRST_AUTO_CORRECTION_COMMIT.equals(flagName)
+                || FLAG_LEARNING_FOR_EDITOR_WITHOUT_AUTO_CORRECTION.equals(flagName)
+                || FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS.equals(flagName);
     }
 
     public static Object applyOverriddenFlagValue(Object receiver, Object originalResult) {
@@ -373,6 +429,28 @@ public final class GboardAiWritingToolsRuntime {
                                      + ", enforced=" + describe(ENFORCED_INTENDED_OOV_MIN_COUNT));
                 }
                 return ENFORCED_INTENDED_OOV_MIN_COUNT;
+            }
+            if (FLAG_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS.equals(flagName)
+                    && originalResult instanceof Long) {
+                return ENFORCED_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS;
+            }
+            if (FLAG_ENABLE_PK_AUTO_CORRECTION_LOCALES.equals(flagName)
+                    && originalResult instanceof String) {
+                return ALL_LANGUAGES_ALLOWLIST_VALUE;
+            }
+            if ((FLAG_ADD_PENDING_OOVS_ON_RESET_MAX_MS.equals(flagName)
+                    || FLAG_ADD_PENDING_OOVS_ON_CREATE_MAX_MS.equals(flagName))
+                    && originalResult instanceof Long) {
+                return ENFORCED_ADD_PENDING_OOVS_MAX_MS;
+            }
+            if (FLAG_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY.equals(flagName)
+                    && originalResult instanceof Double) {
+                return ENFORCED_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY;
+            }
+            if ((FLAG_WRITING_HELPER_SERVER_TARGET.equals(flagName)
+                    || FLAG_GBOARD_IMAGEN_API_HOST.equals(flagName))
+                    && originalResult instanceof String) {
+                return PROD_GBOARD_IMAGEN_SERVER_TARGET;
             }
             if (FLAG_ENABLED_OCR_LANGUAGE_TAGS.equals(flagName)
                     && originalResult instanceof String) {
@@ -463,7 +541,12 @@ public final class GboardAiWritingToolsRuntime {
                 && GboardAiWritingToolsSettings.BACKEND_GBOARD_SERVER.equals(
                         settings.backendType)
                 && originalResult instanceof String) {
-            if (FLAG_WRITING_HELPER_MODEL_VERSION.equals(flagName)) {
+            if (FLAG_WRITING_HELPER_SERVER_TARGET.equals(flagName)
+                    || FLAG_GBOARD_IMAGEN_API_HOST.equals(flagName)) {
+                return PROD_GBOARD_IMAGEN_SERVER_TARGET;
+            }
+            if (FLAG_WRITING_HELPER_MODEL_VERSION.equals(flagName)
+                    || FLAG_WRITING_HELPER_VOICE_INPUT_MODEL_VERSION.equals(flagName)) {
                 return PROOFREAD_MODEL_CONFIG;
             }
             if (FLAG_WRITING_HELPER_TEXT_STYLIZATION_MODEL_VERSION.equals(flagName)) {
@@ -720,6 +803,42 @@ public final class GboardAiWritingToolsRuntime {
             if (!prefs.contains("show_suggestion_strip")) {
                 if (editor == null) editor = prefs.edit();
                 editor.putBoolean("show_suggestion_strip", true);
+            }
+            if (!prefs.contains(PREF_KEY_ENABLE_AUTO_PASTE_CHIPS)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_ENABLE_AUTO_PASTE_CHIPS, true);
+            }
+            if (!prefs.contains(PREF_KEY_ENABLE_SCREENSHOT_IN_CLIPBOARD)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_ENABLE_SCREENSHOT_IN_CLIPBOARD, true);
+            }
+            if (!prefs.contains(PREF_KEY_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_CLIPBOARD_SCREENSHOT_ENABLED_AT_LEAST_ONCE, true);
+            }
+            if (!prefs.contains(PREF_KEY_ENABLE_ENTITY_EXTRACTION)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_ENABLE_ENTITY_EXTRACTION, true);
+            }
+            if (!prefs.contains(PREF_KEY_JARVIS_CONSENT_HISTORY)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putString(PREF_KEY_JARVIS_CONSENT_HISTORY, "Granted (Form)");
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_OPT_IN)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_OPT_IN, true);
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN, true);
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_SCREEN_CONTEXT_OPT_IN_V1, true);
+            }
+            if (!prefs.contains(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE)) {
+                if (editor == null) editor = prefs.edit();
+                editor.putBoolean(PREF_KEY_WRITING_TOOLS_ENABLE_PI_OVERRIDE, true);
             }
             if (editor != null) {
                 editor.apply();

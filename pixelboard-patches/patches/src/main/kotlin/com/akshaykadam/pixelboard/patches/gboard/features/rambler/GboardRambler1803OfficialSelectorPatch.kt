@@ -7,6 +7,7 @@
  */
 package com.akshaykadam.pixelboard.patches.gboard.features.rambler
 
+import com.akshaykadam.pixelboard.patches.shared.BytecodePatchContext
 import com.akshaykadam.pixelboard.patches.shared.addInstructions
 import com.akshaykadam.pixelboard.patches.shared.bytecodePatch
 import com.akshaykadam.pixelboard.patches.shared.MutableMethod
@@ -16,6 +17,7 @@ import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrThrow
 import com.akshaykadam.pixelboard.patches.gboard.shared.findMutableMethodOrNull
 import com.akshaykadam.pixelboard.patches.gboard.shared.gboardPatchesExtensionCarrierPatch
 import com.akshaykadam.pixelboard.patches.gboard.shared.isMethodReference
+import com.akshaykadam.pixelboard.patches.gboard.shared.isOpcode
 import com.akshaykadam.pixelboard.patches.gboard.shared.returnInstructionIndices
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeAbiCatalog
 import com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi.RuntimeCallEmitter
@@ -141,7 +143,42 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
                 RuntimeCallId.RAMBLER_RUNTIME_ENTER_DEFAULT_SELECTION_SUPPRESSION,
                 RuntimeCallId.RAMBLER_RUNTIME_EXIT_DEFAULT_SELECTION_SUPPRESSION,
             )
+        suppressRamblerFeedbackAccessPoint()
     }
+}
+
+private val ramblerFeedbackTargets = listOf(
+    method("Lfcx;", "a", listOf("Landroid/content/Context;"), "Z"),
+)
+
+private fun BytecodePatchContext.suppressRamblerFeedbackAccessPoint() {
+    val method = ramblerFeedbackTargets.firstNotNullOfOrNull { findMutableMethodOrNull(it) }
+        ?: run {
+            val providerDef = classDefByOrNull { classDef ->
+                classDef.directMethods.any { method ->
+                    method.implementation?.instructions?.any { inst ->
+                        inst.isOpcode("CONST_STRING") && (inst as? com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction)?.reference?.toString() ==
+                            "com/google/android/apps/inputmethod/libs/agenticdictation/compliance/AgenticDictationFeedbackAccessPointProvider"
+                    } == true
+                }
+            } ?: return@run null
+            val providerClass = mutableClassDefBy(providerDef)
+            val itemType = providerClass.methods
+                .flatMap { it.implementation?.instructions.orEmpty() }
+                .filter { it.isOpcode("NEW_INSTANCE") }
+                .mapNotNull { (it as? com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction)?.reference?.toString() }
+                .firstOrNull() ?: return@run null
+            val itemClass = mutableClassDefByOrNull(itemType) ?: return@run null
+            itemClass.methods.firstOrNull {
+                it.name == "a" && it.returnType == "Z" && it.parameterTypes == listOf("Landroid/content/Context;")
+            }
+        } ?: return
+
+    val instructions = method.implementation?.instructions ?: return
+    if (instructions.size >= 2 && instructions[0].isOpcode("CONST_4") && instructions[1].isOpcode("RETURN")) {
+        return
+    }
+    method.addInstructions(0, "const/4 p0, 0x0\nreturn p0")
 }
 
 private fun MutableMethod.applyScope(enter: RuntimeCallId, exit: RuntimeCallId) {

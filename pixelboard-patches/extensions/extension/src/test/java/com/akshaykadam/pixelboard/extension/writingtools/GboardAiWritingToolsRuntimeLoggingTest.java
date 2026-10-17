@@ -723,6 +723,127 @@ public final class GboardAiWritingToolsRuntimeLoggingTest {
         private final String a = GboardAiWritingToolsRuntime.FLAG_SUPER_INSERT_NESTA_RESULTS;
     }
 
+    @Test
+    public void minCharNumLimitForSingleWordPredictionsEnforcesTwo() throws Exception {
+        MinCharNumLimitFlagReceiver receiver = new MinCharNumLimitFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Long.valueOf(9L));
+        Assert.assertEquals(Long.valueOf(2L), enforced);
+    }
+
+    @Test
+    public void enablePkAutoCorrectionLocalesEnforcesStar() throws Exception {
+        EnablePkAutoCorrectionLocalesFlagReceiver receiver =
+                new EnablePkAutoCorrectionLocalesFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, "en-US");
+        Assert.assertEquals("*", enforced);
+    }
+
+    @Test
+    public void addPendingOovsMaxMsEnforces500() throws Exception {
+        AddPendingOovsOnResetFlagReceiver resetReceiver =
+                new AddPendingOovsOnResetFlagReceiver();
+        AddPendingOovsOnCreateFlagReceiver createReceiver =
+                new AddPendingOovsOnCreateFlagReceiver();
+        Assert.assertEquals(Long.valueOf(500L),
+                GboardAiWritingToolsRuntime.applyOverriddenFlagValue(resetReceiver, Long.valueOf(25L)));
+        Assert.assertEquals(Long.valueOf(500L),
+                GboardAiWritingToolsRuntime.applyOverriddenFlagValue(createReceiver, Long.valueOf(25L)));
+    }
+
+    @Test
+    public void thresholdForCandidatesFromUserHistoryEnforcesMinusFive() throws Exception {
+        ThresholdForCandidatesFlagReceiver receiver =
+                new ThresholdForCandidatesFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Double.valueOf(0.0d));
+        Assert.assertEquals(Double.valueOf(-5.0d), enforced);
+    }
+
+    @Test
+    public void writingHelperServerTargetEnforcesProduction() throws Exception {
+        WritingHelperServerTargetFlagReceiver receiver =
+                new WritingHelperServerTargetFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, "other-host.googleapis.com");
+        Assert.assertEquals("staging-gboard-imagen-pa.sandbox.googleapis.com", enforced);
+    }
+
+    @Test
+    public void gboardImagenApiHostEnforcesProduction() throws Exception {
+        GboardImagenApiHostFlagReceiver receiver =
+                new GboardImagenApiHostFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, "other-host.googleapis.com");
+        Assert.assertEquals("staging-gboard-imagen-pa.sandbox.googleapis.com", enforced);
+    }
+
+    @Test
+    public void stopDeferringAccessPointsTasksEnforcesTrue() throws Exception {
+        StopDeferringAccessPointsTasksFlagReceiver receiver =
+                new StopDeferringAccessPointsTasksFlagReceiver();
+        Object enforced = GboardAiWritingToolsRuntime.applyOverriddenFlagValue(
+                receiver, Boolean.FALSE);
+        Assert.assertEquals(Boolean.TRUE, enforced);
+    }
+
+    @Test
+    public void defaultPreferencesInitializeAutoPasteAndScreenshotKeys() throws Exception {
+        Context context = RuntimeEnvironment.getApplication();
+        SharedPreferences prefs =
+                android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().clear().commit();
+        staticField("applicationContext").set(null, context);
+
+        Context resolved = GboardAiWritingToolsRuntime.resolveContext();
+        Assert.assertNotNull(resolved);
+        Assert.assertTrue(prefs.getBoolean("enable_auto_paste_chips", false));
+        Assert.assertTrue(prefs.getBoolean("enable_screenshot_in_clipboard", false));
+        Assert.assertTrue(prefs.getBoolean("clipboard_screenshot_enabled_at_least_once", false));
+        Assert.assertTrue(prefs.getBoolean("enable_entity_extraction", false));
+    }
+
+    private static final class MinCharNumLimitFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_MIN_CHAR_NUM_LIMIT_FOR_SINGLE_WORD_PREDICTIONS;
+    }
+
+    private static final class EnablePkAutoCorrectionLocalesFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ENABLE_PK_AUTO_CORRECTION_LOCALES;
+    }
+
+    private static final class AddPendingOovsOnResetFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ADD_PENDING_OOVS_ON_RESET_MAX_MS;
+    }
+
+    private static final class AddPendingOovsOnCreateFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_ADD_PENDING_OOVS_ON_CREATE_MAX_MS;
+    }
+
+    private static final class ThresholdForCandidatesFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_THRESHOLD_FOR_CANDIDATES_FROM_USER_HISTORY;
+    }
+
+    private static final class WritingHelperServerTargetFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_WRITING_HELPER_SERVER_TARGET;
+    }
+
+    private static final class GboardImagenApiHostFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_GBOARD_IMAGEN_API_HOST;
+    }
+
+    private static final class StopDeferringAccessPointsTasksFlagReceiver {
+        @SuppressWarnings("unused")
+        private final String a = GboardAiWritingToolsRuntime.FLAG_STOP_DEFERRING_ACCESS_POINTS_TASKS;
+    }
+
     private static final class RoundedKeysFlagReceiver {
         @SuppressWarnings("unused")
         private final String a = GboardRoundedKeysSettings.FLAG_BELKA_ROUNDED_KEYBOARD;
