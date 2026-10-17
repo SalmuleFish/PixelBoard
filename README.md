@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="docs/images/icon.png" width="120" height="120" alt="PixelBoard App Icon" style="border-radius: 26px;" />
-
 # PixelBoard
 
 **Supercharged Gboard Mod featuring Google Pixel 11 series's Rambler Voice Typing, AI Writing Assistant & Writing Tools V2 [No Root].**
