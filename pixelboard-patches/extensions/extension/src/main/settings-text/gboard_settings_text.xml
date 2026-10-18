@@ -393,7 +393,7 @@
     </string>
     <string name="gboard_patches_language_system_value">
         <translation locale="en">System default (%1$s)</translation>
-        <translation locale="ar">الافتراضي للنظام (%1)</translation>
+        <translation locale="ar">الافتراضي للنظام (%1$s)</translation>
     </string>
     <string name="gboard_patches_group_ai_voice_title">
         <translation locale="en">AI &amp; Voice</translation>
@@ -421,7 +421,7 @@
     </string>
     <string name="gboard_patches_developer_options_package_warning_message">
         <translation locale="en">The current Gboard package is %1$s. PixelBoard Patches supports only the official package com.google.android.inputmethod.latin and com.akshaykadam.pixelboard. Mixing Gboard builds from multiple sources may cause instability.</translation>
-        <translation locale="ar">حزمة Gboard الحالية هي %1. تدعم ترقيعات PixelBoard الحزمة الرسمية com.google.android.inputmethod.latin وحزمة com.akshaykadam.pixelboard فقط. قد يؤدي خلط إصدارات Gboard من مصادر متعددة إلى عدم الاستقرار.</translation>
+        <translation locale="ar">حزمة Gboard الحالية هي %1$s. تدعم ترقيعات PixelBoard الحزمة الرسمية com.google.android.inputmethod.latin وحزمة com.akshaykadam.pixelboard فقط. قد يؤدي خلط إصدارات Gboard من مصادر متعددة إلى عدم الاستقرار.</translation>
     </string>
     <string name="gboard_patches_developer_options_try_anyway">
         <translation locale="en">Try anyway</translation>
@@ -429,7 +429,7 @@
     </string>
     <string name="gboard_patches_developer_options_launch_failed">
         <translation locale="en">Unable to open Developer options for %1$s.</translation>
-        <translation locale="ar">تعذّر فتح خيارات المطور لـ %1.</translation>
+        <translation locale="ar">تعذّر فتح خيارات المطور لـ %1$s.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_title">
         <translation locale="en">AI Writing Tools</translation>
@@ -553,7 +553,7 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_summary">
         <translation locale="en">Enable \'Suggested\' style chips and \'Describe your edit\' freeform instruction bar.</translation>
-        <translation locale="ar">تفعيل شرائح نمط 'المقترحة' وشريط التعليمات الحرة 'صف تعديلك'.</translation>
+        <translation locale="ar">تفعيل شرائح نمط \'المقترحة\' وشريط التعليمات الحرة \'صف تعديلك\'.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_badge">
         <translation locale="en">BETA</translation>
@@ -647,14 +647,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_supported_languages_summary">
         <translation locale="en">Only en-US supports the complete feature set.\n\nEnglish en-AU, en-CA, en-GB, en-IE, en-IN, en-SG, en-US\nGerman de-AT, de-BE, de-CH, de-DE\nFrench fr-BE, fr-CA, fr-CH, fr-FR\nItalian it-CH, it-IT\nJapanese ja-JP\nSpanish es-ES, es-US</translation>
-        <translation locale="ar">تدعم en-US فقط مجموعة الميزات الكاملة.
-
-الإنجليزية: en-AU، en-CA، en-GB، en-IE، en-IN، en-SG، en-US
-الألمانية: de-AT، de-BE، de-CH، de-DE
-الفرنسية: fr-BE، fr-CA، fr-CH، fr-FR
-الإيطالية: it-CH، it-IT
-اليابانية: ja-JP
-الإسبانية: es-ES، es-US</translation>
+        <translation locale="ar">تدعم en-US فقط مجموعة الميزات الكاملة.\n\nالإنجليزية: en-AU، en-CA، en-GB، en-IE، en-IN، en-SG، en-US\nالألمانية: de-AT، de-BE، de-CH، de-DE\nالفرنسية: fr-BE، fr-CA، fr-CH، fr-FR\nالإيطالية: it-CH، it-IT\nاليابانية: ja-JP\nالإسبانية: es-ES، es-US</translation>
     </string>
     <string name="gboard_patches_advanced_voice_github_star_title">
         <translation locale="en">Support this project on GitHub 😊</translation>
@@ -678,11 +671,11 @@
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_status_summary">
         <translation locale="en">Package: com.google.android.tts. Required for Advanced Voice Typing: install Speech Recognition &amp; Synthesis and download the offline speech recognition model for every language you use. Tap to open its Google Play page.</translation>
-        <translation locale="ar">الحزمة: com.google.android.tts. متطلب للكتابة الصوتية المتقدمة: تثبيت خدمات 'التعرف على الكلام وتحويل النص إلى كلام' وتنزيل نموذج التعرف الصوتي بلا اتصال لكل لغة تستخدمها. انقر لفتح صفحته على Google Play.</translation>
+        <translation locale="ar">الحزمة: com.google.android.tts. متطلب للكتابة الصوتية المتقدمة: تثبيت خدمات \'التعرف على الكلام وتحويل النص إلى كلام\' وتنزيل نموذج التعرف الصوتي بلا اتصال لكل لغة تستخدمها. انقر لفتح صفحته على Google Play.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_speech_services_open_failed">
         <translation locale="en">Unable to open the Speech Recognition &amp; Synthesis Google Play page.</translation>
-        <translation locale="ar">تعذّر فتح صفحة خدمات 'التعرف على الكلام وتحويل النص إلى كلام' على Google Play.</translation>
+        <translation locale="ar">تعذّر فتح صفحة خدمات \'التعرف على الكلام وتحويل النص إلى كلام\' على Google Play.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_downloaded_languages_title">
         <translation locale="en">Downloaded offline languages</translation>
@@ -718,8 +711,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_manage_summary">
         <translation locale="en">Use Google’s official Live Transcribe app to download the Speech Recognition &amp; Synthesis offline recognition models required for Advanced Voice Typing. In Live Transcribe, open Settings → More settings → Primary language.\nTap to open Live Transcribe.</translation>
-        <translation locale="ar">استخدم تطبيق الكتابة المباشرة (Live Transcribe) الرسمي من Google لتنزيل نماذج التعرف الصوتي بلا اتصال المطلوبة للكتابة الصوتية المتقدمة. في التطبيق، افتح الإعدادات ← المزيد من الإعدادات ← اللغة الأساسية.
-انقر لفتح التطبيق.</translation>
+        <translation locale="ar">استخدم تطبيق الكتابة المباشرة (Live Transcribe) الرسمي من Google لتنزيل نماذج التعرف الصوتي بلا اتصال المطلوبة للكتابة الصوتية المتقدمة. في التطبيق، افتح الإعدادات ← المزيد من الإعدادات ← اللغة الأساسية.\nانقر لفتح التطبيق.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_live_transcribe_open_failed">
         <translation locale="en">Unable to open Live Transcribe or its Google Play page.</translation>
@@ -731,7 +723,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_summary">
         <translation locale="en">The currently installed %1$s meets the APK payload requirement for Advanced Voice Typing.</translation>
-        <translation locale="ar">تفي حزمة %1 المثبتة حالياً بمتطلبات حزمة APK للكتابة الصوتية المتقدمة.</translation>
+        <translation locale="ar">تفي حزمة %1$s المثبتة حالياً بمتطلبات حزمة APK للكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_requirement_title">
         <translation locale="en">Installation requirement (currently met)</translation>
@@ -739,8 +731,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_present_requirement_summary">
         <translation locale="en">No download is needed right now. For future updates or reinstalls, you must still use a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
-        <translation locale="ar">لا يلزم أي تنزيل حالياً. بالنسبة للتحديثات المستقبلية أو إعادة التثبيت، يجب عليك استخدام حزمة مجمّعة (Bundle) أو حزم مجزأة (APKM) وتطبيق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.
-انقر لعرض صفحة التنزيل على APKMirror</translation>
+        <translation locale="ar">لا يلزم أي تنزيل حالياً. بالنسبة للتحديثات المستقبلية أو إعادة التثبيت، يجب عليك استخدام حزمة مجمّعة (Bundle) أو حزم مجزأة (APKM) وتطبيق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لعرض صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_title">
         <translation locale="en">Dictation payload (Not installed)</translation>
@@ -748,7 +739,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_summary">
         <translation locale="en">The currently installed %1$s does not contain libdictation_jni.so, which Advanced Voice Typing requires.</translation>
-        <translation locale="ar">لا تحتوي حزمة %1 المثبتة حالياً على مكتبة libdictation_jni.so المطلوبة للكتابة الصوتية المتقدمة.</translation>
+        <translation locale="ar">لا تحتوي حزمة %1$s المثبتة حالياً على مكتبة libdictation_jni.so المطلوبة للكتابة الصوتية المتقدمة.</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_title">
         <translation locale="en">Get a bundle or split APKM</translation>
@@ -756,8 +747,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_absent_requirement_summary">
         <translation locale="en">Get a bundle or split APKM and apply the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to open the APKMirror download page</translation>
-        <translation locale="ar">احصل على حزمة مجمّعة أو مجزأة (APKM) وطبّق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.
-انقر لفتح صفحة التنزيل على APKMirror</translation>
+        <translation locale="ar">احصل على حزمة مجمّعة أو مجزأة (APKM) وطبّق الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لفتح صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_title">
         <translation locale="en">Dictation payload (Unable to verify)</translation>
@@ -773,8 +763,7 @@
     </string>
     <string name="gboard_patches_advanced_voice_payload_unknown_requirement_summary">
         <translation locale="en">It is currently unclear whether another download is needed. Verify that you used a bundle or split APKM and applied the patch with PixelBoard Patcher; a standalone APK cannot work.\nTap to view the APKMirror download page</translation>
-        <translation locale="ar">من غير الواضح حالياً ما إذا كان يلزم تنزيل آخر. تأكد من أنك استخدمت حزمة مجمّعة أو مجزأة (APKM) وطبّقت الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.
-انقر لعرض صفحة التنزيل على APKMirror</translation>
+        <translation locale="ar">من غير الواضح حالياً ما إذا كان يلزم تنزيل آخر. تأكد من أنك استخدمت حزمة مجمّعة أو مجزأة (APKM) وطبّقت الترقيع عبر PixelBoard Patcher؛ فحزم APK المستقلة لن تعمل.\nانقر لعرض صفحة التنزيل على APKMirror</translation>
     </string>
     <string name="gboard_patches_rounded_keys_enabled_title">
         <translation locale="en">Rounded Keys</translation>
