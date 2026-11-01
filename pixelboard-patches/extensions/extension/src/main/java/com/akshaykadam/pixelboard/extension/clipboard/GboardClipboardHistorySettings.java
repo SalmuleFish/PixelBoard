@@ -21,7 +21,7 @@ import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettings;
  * preference:</p>
  * <ul>
  *   <li>{@link #DURATION_1_HOUR} ("1") – 1 hour</li>
- *   <li>{@link #DURATION_24_HOURS} ("24") – 24 hours (Current maximum)</li>
+ *   <li>{@link #DURATION_24_HOURS} ("24") – 24 hours</li>
  *   <li>{@link #DURATION_7_DAYS} ("168") – 7 days</li>
  *   <li>{@link #DURATION_30_DAYS} ("720") – 30 days</li>
  *   <li>{@link #DURATION_NEVER} ("876000") – Never (Unlimited / Manual deletion only, 100 years)</li>

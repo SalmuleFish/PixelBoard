@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * {@code setting_clipboard.xml} with discrete retention choices:</p>
  * <ol>
  *   <li>1 hour ("1")</li>
- *   <li>24 hours (Current maximum) ("24")</li>
+ *   <li>24 hours ("24")</li>
  *   <li>7 days ("168")</li>
  *   <li>30 days ("720")</li>
  *   <li>Never (Unlimited / Manual deletion only) ("876000", 100 years)</li>
@@ -32,7 +32,7 @@ public final class GboardClipboardHistoryRuntime {
 
     public static final CharSequence[] RETENTION_LABELS = new CharSequence[] {
             "1 hour",
-            "24 hours (Current maximum)",
+            "24 hours",
             "7 days",
             "30 days",
             "Never (Unlimited / Manual deletion only)"
