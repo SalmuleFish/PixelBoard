@@ -19,7 +19,7 @@ import com.akshaykadam.pixelboard.patches.gboard.features.emoji.gboardCandidateE
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardSyncPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardHistorySliderPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardRecentLimitPatch
-import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.addShortPinTip
+import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.addPinTips
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardRetentionTextPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.clipboard.gboardClipboardDefaultRetentionPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.spellchecker.gboardSpellCheckerChipsPatch
@@ -436,9 +436,9 @@ internal fun applyPixelboardStringsOverride() = with(context) {
         var text = file.readText()
         var modified = false
 
-        val withShortPinTip = addShortPinTip(text)
-        if (withShortPinTip != text) {
-            text = withShortPinTip
+        val withPinTips = addPinTips(text, file.parentFile.name)
+        if (withPinTips != text) {
+            text = withPinTips
             modified = true
         }
 

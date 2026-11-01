@@ -65,11 +65,24 @@ public class GboardClipboardRetentionTextRuntimeTest {
         assertEquals(GboardClipboardRetentionTextRuntime.DESCRIPTION,
                 GboardClipboardRetentionTextRuntime.resolveText(
                         GboardClipboardRetentionTextRuntime.EMPTY_SUBTITLE));
-        // Without the patched-in short tip (as in this test app), Google's tip stays.
+        // Without the patched-in tips (as in this test app), Google's tip stays.
         assertEquals(GboardClipboardRetentionTextRuntime.PIN_TIP,
                 GboardClipboardRetentionTextRuntime.resolveText(
                         GboardClipboardRetentionTextRuntime.PIN_TIP));
         assertEquals(0x7f140000, GboardClipboardRetentionTextRuntime.resolveText(0x7f140000));
+    }
+
+    @Test
+    public void pinTipNamesTheChosenDuration() {
+        assertEquals("pixelboard_clipboard_pin_tip_24h",
+                GboardClipboardRetentionTextRuntime.pinTipName("24"));
+        assertEquals("pixelboard_clipboard_pin_tip_7d",
+                GboardClipboardRetentionTextRuntime.pinTipName("168"));
+        assertEquals("pixelboard_clipboard_pin_tip_30d",
+                GboardClipboardRetentionTextRuntime.pinTipName("720"));
+        // Never-deleted clips need no duration, only how to pin.
+        assertEquals("pixelboard_clipboard_pin_tip_short",
+                GboardClipboardRetentionTextRuntime.pinTipName("876000"));
     }
 
     private void setRetention(String hours) {

@@ -49,7 +49,7 @@ class GboardClipboardRecentLimitPatchSourceTest {
                 "shared/GboardPatchesSettingsPatch.kt",
         )
         assertTrue(settings.contains("        gboardClipboardRetentionTextPatch,\n"))
-        assertTrue(settings.contains("val withShortPinTip = addShortPinTip(text)"))
+        assertTrue(settings.contains("val withPinTips = addPinTips(text, file.parentFile.name)"))
     }
 
     @Test

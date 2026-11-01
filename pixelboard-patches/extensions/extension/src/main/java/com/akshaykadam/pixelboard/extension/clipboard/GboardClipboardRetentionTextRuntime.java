@@ -8,8 +8,9 @@ import android.widget.TextView;
  * Keeps Gboard's clipboard texts honest about how long clips last.
  *
  * <p>Google's texts say clips are deleted after 1 hour, so they are shown unchanged only while
- * the retention is 1 hour. At any other retention, including PixelBoard's 24-hour default, each
- * text is swapped for Google's own translated wording that names no duration.</p>
+ * the retention is 1 hour. At any other retention, including PixelBoard's 24-hour default, the
+ * pin tip names the chosen duration instead, and the other texts are swapped for Google's own
+ * translated wording that names no duration.</p>
  */
 public final class GboardClipboardRetentionTextRuntime {
     // Gboard 18.5.3 resource ids.
@@ -25,6 +26,10 @@ public final class GboardClipboardRetentionTextRuntime {
     static final int INTRO_CARD_BODY_ID = 0x7f0b01ac;
     /** "Touch and hold a clip to pin it.", added to every locale by the resource patch. */
     static final String PIN_TIP_SHORT_NAME = "pixelboard_clipboard_pin_tip_short";
+    /** The pin tip saying "... deleted after 24 hours.", "7 days." or "30 days.", per locale. */
+    static final String PIN_TIP_24_HOURS_NAME = "pixelboard_clipboard_pin_tip_24h";
+    static final String PIN_TIP_7_DAYS_NAME = "pixelboard_clipboard_pin_tip_7d";
+    static final String PIN_TIP_30_DAYS_NAME = "pixelboard_clipboard_pin_tip_30d";
 
     private GboardClipboardRetentionTextRuntime() {
     }
@@ -59,13 +64,30 @@ public final class GboardClipboardRetentionTextRuntime {
 
     static int replacementFor(Context context, int resId) {
         if (resId == PIN_TIP) {
-            int shortTip = context.getResources().getIdentifier(
-                    PIN_TIP_SHORT_NAME, "string", context.getPackageName());
-            return shortTip != 0 ? shortTip : resId;
+            int tip = string(context, pinTipName(
+                    GboardClipboardHistorySettings.readGboardDuration(context)));
+            if (tip == 0) {
+                tip = string(context, PIN_TIP_SHORT_NAME);
+            }
+            return tip != 0 ? tip : resId;
         }
         if (resId == INTRO_CARD || resId == EMPTY_SUBTITLE) {
             return DESCRIPTION;
         }
         return resId;
+    }
+
+    /** The pin tip naming {@code duration}, or the short tip when clips are never deleted. */
+    static String pinTipName(String duration) {
+        switch (duration) {
+            case GboardClipboardHistorySettings.DURATION_24_HOURS: return PIN_TIP_24_HOURS_NAME;
+            case GboardClipboardHistorySettings.DURATION_7_DAYS:   return PIN_TIP_7_DAYS_NAME;
+            case GboardClipboardHistorySettings.DURATION_30_DAYS:  return PIN_TIP_30_DAYS_NAME;
+            default:                                               return PIN_TIP_SHORT_NAME;
+        }
+    }
+
+    private static int string(Context context, String name) {
+        return context.getResources().getIdentifier(name, "string", context.getPackageName());
     }
 }
