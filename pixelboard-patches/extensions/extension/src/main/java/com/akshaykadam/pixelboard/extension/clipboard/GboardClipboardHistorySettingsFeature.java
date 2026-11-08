@@ -22,18 +22,13 @@ import com.akshaykadam.pixelboard.extension.settings.GboardSettingsText;
 /**
  * Settings feature that exposes the Clipboard History Duration slider.
  *
- * <p>Presents five discrete retention steps:
+ * <p>Presents four bounded retention steps:
  * <ol>
- *   <li>1 hour</li>
- *   <li>24 hours (Gboard default / previous maximum)</li>
+ *   <li>1 hour (default)</li>
+ *   <li>24 hours</li>
  *   <li>7 days</li>
  *   <li>30 days</li>
- *   <li>Never (unlimited — manual deletion only)</li>
  * </ol>
- *
- * <p>The chosen value is stored via {@link GboardClipboardHistorySettings} and
- * is read at runtime by {@code GboardAiWritingToolsRuntime} to override the
- * {@code clipboard_history_duration_ms} Phenotype flag.</p>
  */
 public final class GboardClipboardHistorySettingsFeature
         implements GboardPatchesSettingsContract.Feature {
@@ -80,8 +75,6 @@ public final class GboardClipboardHistorySettingsFeature
                         R.string.gboard_patches_clipboard_history_duration_7d),
                 GboardSettingsText.get(context,
                         R.string.gboard_patches_clipboard_history_duration_30d),
-                GboardSettingsText.get(context,
-                        R.string.gboard_patches_clipboard_history_duration_never),
         };
         durationValues = GboardClipboardHistorySettings.ALL_DURATIONS.clone();
         sectionBehavior = GboardSettingsText.get(context,
@@ -179,7 +172,6 @@ public final class GboardClipboardHistorySettingsFeature
                 return durationLabels[i];
             }
         }
-        // Fallback: return the 24h label (matches DEFAULT_DURATION)
-        return durationLabels.length > 1 ? durationLabels[1] : duration;
+        return durationLabels.length > 0 ? durationLabels[0] : duration;
     }
 }

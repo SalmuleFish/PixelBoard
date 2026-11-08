@@ -20,10 +20,9 @@ import java.lang.reflect.Method;
  * {@code setting_clipboard.xml} with discrete retention choices:</p>
  * <ol>
  *   <li>1 hour ("1")</li>
- *   <li>24 hours (Current maximum) ("24")</li>
+ *   <li>24 hours ("24")</li>
  *   <li>7 days ("168")</li>
  *   <li>30 days ("720")</li>
- *   <li>Never (Unlimited / Manual deletion only) ("876000", 100 years)</li>
  * </ol>
  */
 public final class GboardClipboardHistoryRuntime {
@@ -31,22 +30,31 @@ public final class GboardClipboardHistoryRuntime {
     private static final String TAG = "PixelBoardClipboard";
 
     public static final CharSequence[] RETENTION_LABELS = new CharSequence[] {
-            "1 hour",
-            "24 hours (Current maximum)",
+            "1 hour (Default)",
+            "24 hours",
             "7 days",
-            "30 days",
-            "Never (Unlimited / Manual deletion only)"
+            "30 days"
     };
 
     public static final CharSequence[] RETENTION_VALUES = new CharSequence[] {
             GboardClipboardHistorySettings.DURATION_1_HOUR,
             GboardClipboardHistorySettings.DURATION_24_HOURS,
             GboardClipboardHistorySettings.DURATION_7_DAYS,
-            GboardClipboardHistorySettings.DURATION_30_DAYS,
-            GboardClipboardHistorySettings.DURATION_NEVER
+            GboardClipboardHistorySettings.DURATION_30_DAYS
     };
 
+    static final int DEFAULT_INDEX = indexOf(GboardClipboardHistorySettings.DEFAULT_DURATION);
+
     private GboardClipboardHistoryRuntime() {
+    }
+
+    private static int indexOf(String value) {
+        for (int i = 0; i < RETENTION_VALUES.length; i++) {
+            if (RETENTION_VALUES[i].equals(value)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -72,10 +80,16 @@ public final class GboardClipboardHistoryRuntime {
                 lField.set(preference, RETENTION_VALUES.clone());
             }
 
-            int maxIndex = RETENTION_VALUES.length - 1; // 4
+            Field pField = findField(preference.getClass(), "P");
+            if (pField != null) {
+                pField.setAccessible(true);
+                pField.setInt(preference, DEFAULT_INDEX);
+            }
 
-            // Determine target index from currently persisted string or fallback to index 1 ("24" / 24 hours)
-            int targetIndex = 1;
+            int maxIndex = RETENTION_VALUES.length - 1; // 3
+
+            // Determine target index from currently persisted string or fallback to DEFAULT_INDEX
+            int targetIndex = DEFAULT_INDEX;
             try {
                 Method wMethod = findMethod(preference.getClass(), "w", String.class);
                 if (wMethod != null) {

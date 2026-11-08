@@ -81,6 +81,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.VideoView;
 import com.akshaykadam.pixelboard.extension.advancedvoice.GboardAdvancedVoiceSettings;
+import com.akshaykadam.pixelboard.extension.calculator.GboardCalculatorSettings;
 import com.akshaykadam.pixelboard.extension.writingtools.GboardAiWritingToolsSettings;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -107,8 +108,6 @@ import java.util.concurrent.RejectedExecutionException;
 import com.akshaykadam.pixelboard.extension.R;
 import com.akshaykadam.pixelboard.extension.BuildConfig;
 import com.akshaykadam.pixelboard.extension.settings.keyboardpreview.GboardKeyboardPreviewController;
-import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateFeature;
-import com.akshaykadam.pixelboard.extension.updater.PixelBoardUpdateManager;
 
 public final class GboardPatchesSettingsActivity extends Activity
         implements GboardPatchesSettingsContract.Host {
@@ -156,8 +155,6 @@ public final class GboardPatchesSettingsActivity extends Activity
     private static final String DOCUMENT_PICKER_FAILED = "Unable to open file picker.";
     private static final String DOCUMENT_WRITE_FAILED = "Failed to export file.";
     private static final String DOCUMENT_READ_FAILED = "Failed to import file.";
-    public static final String ACTION_UPDATES =
-            "com.akshaykadam.pixelboard.action.UPDATES";
     private boolean standaloneFeatureMode;
     private Palette palette;
     private FrameLayout toolbarView;
@@ -2900,24 +2897,7 @@ public final class GboardPatchesSettingsActivity extends Activity
         if (intent == null) {
             return false;
         }
-        if (ACTION_UPDATES.equals(intent.getAction())) {
-            standaloneFeatureMode = true;
-            for (GboardPatchesSettingsContract.Feature feature : features) {
-                if (feature instanceof PixelBoardUpdateFeature) {
-                    List<GboardPatchesSettingsContract.Feature> path =
-                            Collections.singletonList(feature);
-                    runOnUiThread(() -> {
-                        scrollState.resetForDirectPath(0);
-                        requestScrollPositionOnNextScreenApply(0);
-                        applyOrchestration(settingsOrchestrator.accept(
-                                GboardPatchesSettingsOrchestrator.Event.replacePath(path)));
-                    });
-                    return true;
-                }
-            }
-        } else {
-            standaloneFeatureMode = false;
-        }
+        standaloneFeatureMode = false;
         if (restoreNavigationPathFromIntent(intent)) {
             return true;
         }
@@ -3094,6 +3074,8 @@ public final class GboardPatchesSettingsActivity extends Activity
                 || GboardAiWritingToolsSettings.readAllKeyboardsEnabled(writingPrefs);
         boolean advancedVoiceEnabled = voicePrefs == null
                 || GboardAdvancedVoiceSettings.readEnabled(voicePrefs);
+        boolean simpleCalculatorEnabled =
+                GboardCalculatorSettings.readEnabled(context);
         boolean roundedKeysEnabled = patchesPrefs == null
                 || GboardRoundedKeysSettings.readEnabled(patchesPrefs);
         boolean frequentEmojisEnabled = patchesPrefs != null
@@ -3134,6 +3116,15 @@ public final class GboardPatchesSettingsActivity extends Activity
                     if (voicePrefs != null) {
                         GboardAdvancedVoiceSettings.writeEnabled(voicePrefs, value);
                     }
+                }));
+
+        rows.add(new GboardPatchesSettingsContract.ToggleRow(
+                GboardSettingsText.get(context, R.string.gboard_patches_calculator_enable_title),
+                GboardSettingsText.get(context, R.string.gboard_patches_calculator_enable_summary),
+                true,
+                simpleCalculatorEnabled,
+                value -> {
+                    GboardCalculatorSettings.writeEnabled(context, value);
                 }));
 
         rows.add(new GboardPatchesSettingsContract.ToggleRow(
