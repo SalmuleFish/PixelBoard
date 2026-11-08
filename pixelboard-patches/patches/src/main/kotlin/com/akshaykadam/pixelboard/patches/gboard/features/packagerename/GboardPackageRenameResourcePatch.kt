@@ -537,7 +537,7 @@ private fun validateSettingsIdentity(
                     GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS
             }
             .toList()
-        check(matchingIntents.size <= 2) {
+        check(matchingIntents.size <= 1) {
             "Expected at most two Gboard patches settings intents, found ${matchingIntents.size}"
         }
         matchingIntents.map { intent ->
@@ -553,7 +553,7 @@ private fun validateSettingsIdentity(
 
     val hasProvider = providerAuthority != null
     val hasAllSettingsIntents =
-        settingsDocuments.isNotEmpty() && targetPackagesByDocument.all { it.size == 2 }
+        settingsDocuments.isNotEmpty() && targetPackagesByDocument.all { it.size == 1 }
     val hasAnySettingsIntent = targetPackagesByDocument.any { it.isNotEmpty() }
     check(
         (!hasProvider && !hasAnySettingsIntent) ||
@@ -561,7 +561,7 @@ private fun validateSettingsIdentity(
     ) {
         "Partial Gboard patches settings identity: provider=$hasProvider, " +
             "settingsIntents=${targetPackagesByDocument.sumOf { it.size }}/" +
-            (settingsDocuments.size * 2)
+            (settingsDocuments.size * 1)
     }
 
     return SettingsIdentity(

@@ -8,15 +8,23 @@ build/
 
 # Temporary & intermediate patcher files
 tools/patcher-data/
+tools/*keystore*/
 tools/APKEditor*.jar
+tools/morphe-data/*.keystore
+*.keystore
+*.jks
+*.pass
 # Binary APK files (binaries are hosted on GitHub Releases)
 *.apk
+*.apkm
+*.apks
+*.xapk
 *.apk.idsig
 output/patching-result*.json
 !output/.gitkeep
 
 # Local input files (do not commit stock APKs)
-input/splits*/
+input/*
 !input/.gitkeep
 
 # Log files

@@ -591,10 +591,12 @@
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_title">
         <translation locale="en">Writing Tools V2</translation>
+        <translation locale="es">Herramientas de escritura V2</translation>
         <translation locale="ar">أدوات الكتابة (الإصدار 2)</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_summary">
         <translation locale="en">Enable \'Suggested\' style chips and \'Describe your edit\' freeform instruction bar.</translation>
+        <translation locale="es">Habilita los chips de estilo sugerido y la barra de instrucciones libres para describir tu edición.</translation>
         <translation locale="ar">تفعيل شرائح نمط \'المقترحة\' وشريط التعليمات الحرة \'صف تعديلك\'.</translation>
     </string>
     <string name="gboard_patches_ai_writing_tools_v2_badge">
@@ -1012,8 +1014,8 @@
         <translation locale="ar">ساعة واحدة</translation>
     </string>
     <string name="gboard_patches_clipboard_history_duration_24h">
-        <translation locale="en">24 hours (Current maximum)</translation>
-        <translation locale="ar">24 ساعة (الحد الأقصى الحالي)</translation>
+        <translation locale="en">24 hours</translation>
+        <translation locale="ar">24 ساعة</translation>
     </string>
     <string name="gboard_patches_clipboard_history_duration_7d">
         <translation locale="en">7 days</translation>
@@ -1023,124 +1025,68 @@
         <translation locale="en">30 days</translation>
         <translation locale="ar">30 يوماً</translation>
     </string>
-    <string name="gboard_patches_clipboard_history_duration_never">
-        <translation locale="en">Never (Unlimited / Manual deletion only)</translation>
-        <translation locale="ar">أبداً (غير محدود / الحذف اليدوي فقط)</translation>
-    </string>
     <string name="gboard_patches_clipboard_history_section_behavior">
         <translation locale="en">Retention behavior</translation>
         <translation locale="ar">سلوك الاحتفاظ</translation>
     </string>
-    <string name="gboard_patches_update_title">
-        <translation locale="en">PixelBoard updates</translation>
-        <translation locale="ar">تحديثات PixelBoard</translation>
+    <string name="gboard_patches_calculator_title">
+        <translation locale="en">Simple Calculator</translation>
+        <translation locale="es">Calculadora simple</translation>
+        <translation locale="zh-Hant">簡易計算機</translation>
     </string>
-    <string name="gboard_patches_update_summary">
-        <translation locale="en">Check for updates, view changelog &amp; download APK</translation>
-        <translation locale="ar">التحقق من وجود تحديثات وعرض سجل التغييرات وتنزيل APK</translation>
+    <string name="gboard_patches_calculator_summary">
+        <translation locale="en">Type an arithmetic expression in any text field. Its result appears in Gboard’s suggestion row and can replace the expression with one tap.</translation>
+        <translation locale="es">Escribe una operación matemática en cualquier campo de texto. Su resultado aparece en la barra de sugerencias de Gboard y puede reemplazar la expresión con un toque.</translation>
+        <translation locale="zh-Hant">直接在任何文字欄輸入算式，答案會出現在 Gboard 推薦列；點一下即可用答案取代算式。</translation>
     </string>
-    <string name="gboard_patches_update_header_title">
-        <translation locale="en">Updates</translation>
-        <translation locale="ar">التحديثات</translation>
+    <string name="gboard_patches_calculator_enable_title">
+        <translation locale="en">Enable Simple Calculator</translation>
+        <translation locale="es">Activar Calculadora simple</translation>
+        <translation locale="zh-Hant">啟用簡易計算機</translation>
     </string>
-    <string name="gboard_patches_update_header_summary">
-        <translation locale="en">Direct updates, changelogs &amp; APK downloads from GitHub</translation>
-        <translation locale="ar">تحديثات مباشرة وسجلات التغيير وتنزيل APK من GitHub</translation>
+    <string name="gboard_patches_calculator_enable_summary">
+        <translation locale="en">Shows results for complete arithmetic expressions the next time the keyboard opens.</translation>
+        <translation locale="es">Muestra resultados para operaciones aritméticas completas la próxima vez que se abra el teclado.</translation>
+        <translation locale="zh-Hant">下一次開啟鍵盤時，為完整四則算式顯示答案推薦。</translation>
     </string>
-    <string name="gboard_patches_update_status_checking_title">
-        <translation locale="en">Checking for updates...</translation>
-        <translation locale="ar">جارٍ التحقق من وجود تحديثات...</translation>
+    <string name="gboard_patches_calculator_section_feature">
+        <translation locale="en">Feature</translation>
+        <translation locale="es">Función</translation>
+        <translation locale="zh-Hant">功能</translation>
     </string>
-    <string name="gboard_patches_update_status_checking_summary">
-        <translation locale="en">Connecting to GitHub Releases repository...</translation>
-        <translation locale="ar">جارٍ الاتصال بمستودع إصدارات GitHub...</translation>
+    <string name="gboard_patches_calculator_section_usage">
+        <translation locale="en">Usage</translation>
+        <translation locale="es">Uso</translation>
+        <translation locale="zh-Hant">使用方式</translation>
     </string>
-    <string name="gboard_patches_update_status_available_title">
-        <translation locale="en">Update available</translation>
-        <translation locale="ar">التحديث متوفر</translation>
+    <string name="gboard_patches_calculator_usage_title">
+        <translation locale="en">Inline result suggestion</translation>
+        <translation locale="es">Sugerencia de resultado en línea</translation>
+        <translation locale="zh-Hant">行內答案推薦</translation>
     </string>
-    <string name="gboard_patches_update_status_available_summary">
-        <translation locale="en">A new version of PixelBoard is available for download.</translation>
-        <translation locale="ar">يتوفر إصدار جديد من PixelBoard للتنزيل.</translation>
+    <string name="gboard_patches_calculator_usage_summary">
+        <translation locale="en">Type a complete expression such as 2+3×4 in the current app. Tap the result above the keyboard to replace the expression with 14, or long-press the result to copy it.</translation>
+        <translation locale="es">Escribe una expresión completa como 2+3×4 en la app actual. Toca el resultado sobre el teclado para reemplazar la expresión por 14, o mantenlo presionado para copiarlo.</translation>
+        <translation locale="zh-Hant">在目前 App 輸入完整算式，例如 2+3×4。點選鍵盤上方的 14 會以答案取代算式；長按答案則可直接複製。</translation>
     </string>
-    <string name="gboard_patches_update_status_downloading_title">
-        <translation locale="en">Downloading update...</translation>
-        <translation locale="ar">جارٍ تنزيل التحديث...</translation>
+    <string name="gboard_patches_calculator_limits_title">
+        <translation locale="en">Supported range and limits</translation>
+        <translation locale="es">Rango admitido y límites</translation>
+        <translation locale="zh-Hant">支援範圍與限制</translation>
     </string>
-    <string name="gboard_patches_update_status_downloading_summary">
-        <translation locale="en">Downloading APK via Download Manager. Check notification bar for progress.</translation>
-        <translation locale="ar">جارٍ تنزيل APK عبر مدير التنزيل. تحقق من شريط الإشعارات لمعرفة التقدم.</translation>
+    <string name="gboard_patches_calculator_limits_summary">
+        <translation locale="en">Expression length: Up to 128 characters; rejected before normalization.\nBinary operations: Up to 63.\nParentheses depth: Up to 16 levels.\nInternal precision: 16 significant digits, HALF_EVEN.\nDisplay precision: Up to 3 decimal places, HALF_UP.\nLarge numbers: Scientific notation from 10¹².\nOperators: + - * / − × ÷\nParentheses: Supports () and full-width （） from Traditional Chinese Gboard.</translation>
+        <translation locale="es">Longitud de expresión: Hasta 128 caracteres.\nOperaciones binarias: Hasta 63.\nProfundidad de paréntesis: Hasta 16 niveles.\nPrecisión interna: 16 dígitos significativos, HALF_EVEN.\nPrecisión en pantalla: Hasta 3 decimales, HALF_UP.\nNúmeros grandes: Notación científica desde 10¹².\nOperadores: + - * / − × ÷\nParéntesis: Admite () y （）.</translation>
+        <translation locale="zh-Hant">算式長度：最多 128 字元，正規化前即拒絕\n二元運算：最多 63 次\n括號深度：最多 16 層\n內部精度：16 位有效數字，HALF_EVEN\n顯示精度：最多小數 3 位，HALF_UP\n大數顯示：達 10¹² 改用科學記號\n運算符號：+ - * / − × ÷\n括號：支援 () 與繁中 Gboard 實際輸出的 （）</translation>
     </string>
-    <string name="gboard_patches_update_status_downloaded_title">
-        <translation locale="en">Download completed</translation>
-        <translation locale="ar">اكتمل التنزيل</translation>
+    <string name="gboard_patches_calculator_error_title">
+        <translation locale="en">Calculator setting unavailable</translation>
+        <translation locale="es">Ajuste de calculadora no disponible</translation>
+        <translation locale="zh-Hant">計算機設定無法使用</translation>
     </string>
-    <string name="gboard_patches_update_status_downloaded_summary">
-        <translation locale="en">Update APK has been downloaded. Tap Install below.</translation>
-        <translation locale="ar">تم تنزيل ملف APK للتحديث. اضغط على تثبيت أدناه.</translation>
-    </string>
-    <string name="gboard_patches_update_status_uptodate_title">
-        <translation locale="en">You\'re up to date</translation>
-        <translation locale="ar">أنت على آخر تحديث</translation>
-    </string>
-    <string name="gboard_patches_update_status_uptodate_summary">
-        <translation locale="en">PixelBoard v%1$s is currently the latest release.</translation>
-        <translation locale="ar">PixelBoard v%1$s هو أحدث إصدار حالياً.</translation>
-    </string>
-    <string name="gboard_patches_update_status_error_title">
-        <translation locale="en">Unable to check for updates</translation>
-        <translation locale="ar">تعذر التحقق من وجود تحديثات</translation>
-    </string>
-    <string name="gboard_patches_update_status_error_summary">
-        <translation locale="en">Could not connect to GitHub. Please check your internet connection.</translation>
-        <translation locale="ar">تعذر الاتصال بـ GitHub. يرجى التحقق من اتصال الإنترنت الخاص بك.</translation>
-    </string>
-    <string name="gboard_patches_update_status_idle_summary">
-        <translation locale="en">Tap \'Check for updates\' to query the latest releases from GitHub.</translation>
-        <translation locale="ar">اضغط على \'التحقق من وجود تحديثات\' للاستعلام عن أحدث الإصدارات من GitHub.</translation>
-    </string>
-    <string name="gboard_patches_update_action_download">
-        <translation locale="en">Download &amp; Install APK</translation>
-        <translation locale="ar">تنزيل وتثبيت APK</translation>
-    </string>
-    <string name="gboard_patches_update_action_view_github">
-        <translation locale="en">View on GitHub</translation>
-        <translation locale="ar">عرض على GitHub</translation>
-    </string>
-    <string name="gboard_patches_update_action_view_github_summary">
-        <translation locale="en">Open the release page in your browser</translation>
-        <translation locale="ar">افتح صفحة الإصدار في متصفحك</translation>
-    </string>
-    <string name="gboard_patches_update_action_check_now">
-        <translation locale="en">Check for updates</translation>
-        <translation locale="ar">التحقق من وجود تحديثات</translation>
-    </string>
-    <string name="gboard_patches_update_action_view_all_releases">
-        <translation locale="en">View all releases on GitHub</translation>
-        <translation locale="ar">عرض جميع الإصدارات على GitHub</translation>
-    </string>
-    <string name="gboard_patches_update_action_view_all_releases_summary">
-        <translation locale="en">Open the releases page in your browser</translation>
-        <translation locale="ar">افتح صفحة الإصدارات في متصفحك</translation>
-    </string>
-    <string name="gboard_patches_update_section_actions">
-        <translation locale="en">Actions</translation>
-        <translation locale="ar">الإجراءات</translation>
-    </string>
-    <string name="gboard_patches_update_pref_autocheck_title">
-        <translation locale="en">Auto-check for updates</translation>
-        <translation locale="ar">التحقق التلقائي من التحديثات</translation>
-    </string>
-    <string name="gboard_patches_update_pref_autocheck_summary">
-        <translation locale="en">Check for new releases when opening PixelBoard settings</translation>
-        <translation locale="ar">التحقق من الإصدارات الجديدة عند فتح إعدادات PixelBoard</translation>
-    </string>
-    <string name="gboard_patches_update_section_preferences">
-        <translation locale="en">Preferences</translation>
-        <translation locale="ar">التفضيلات</translation>
-    </string>
-    <string name="gboard_patches_update_section_info">
-        <translation locale="en">Build Information</translation>
-        <translation locale="ar">معلومات البناء</translation>
+    <string name="gboard_patches_calculator_error_summary">
+        <translation locale="en">The calculator settings screen failed to load. Reopen Gboard settings and try again.</translation>
+        <translation locale="es">No se pudo cargar la pantalla de ajustes de la calculadora. Vuelve a abrir los ajustes de Gboard e inténtalo de nuevo.</translation>
+        <translation locale="zh-Hant">計算機設定畫面載入失敗。請重新開啟 Gboard 設定再試一次。</translation>
     </string>
 </settings-text>
