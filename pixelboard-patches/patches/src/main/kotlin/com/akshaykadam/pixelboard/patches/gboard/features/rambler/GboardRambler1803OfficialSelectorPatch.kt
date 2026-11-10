@@ -101,6 +101,28 @@ private val RAMBLER_1841_TARGETS = RamblerTargets(
     micActivation = method("Lmjz;", "B", listOf("Landroid/content/Context;"), "Z"),
 )
 
+private val RAMBLER_1863_TARGETS = RamblerTargets(
+    layout = method(VOICE_SETTINGS, "aA", emptyList(), "I"),
+    setup = method(VOICE_SETTINGS, "aa", emptyList(), "V"),
+    create = method(VOICE_SETTINGS, "e", listOf("Landroid/os/Bundle;"), "V"),
+    selectionWrite = method(
+        VOICE_SETTINGS,
+        "aC",
+        listOf(
+            "Z",
+            "Lqpn;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+            "Lcom/google/android/libraries/inputmethod/preferencewidgets/" +
+                "CustomSelectorWithWidgetPreference;",
+        ),
+        "V",
+    ),
+    selectionRead = method("Lmut;", "a", listOf("Landroid/content/Context;"), "Z"),
+    defaultSelection = method("Lffh;", "hV", emptyList(), "V"),
+    micActivation = method("Lmjj;", "C", listOf("Landroid/content/Context;"), "Z"),
+)
+
 private val RAMBLER_1853_TARGETS = RamblerTargets(
     layout = method(VOICE_SETTINGS, "aC", emptyList(), "I"),
     setup = method(VOICE_SETTINGS, "ac", emptyList(), "V"),
@@ -138,6 +160,7 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
 
     execute {
         val targets = when {
+            findMutableMethodOrNull(RAMBLER_1863_TARGETS.selectionRead) != null -> RAMBLER_1863_TARGETS
             findMutableMethodOrNull(RAMBLER_1853_TARGETS.selectionRead) != null -> RAMBLER_1853_TARGETS
             findMutableMethodOrNull(RAMBLER_1841_TARGETS.selectionRead) != null -> RAMBLER_1841_TARGETS
             findMutableMethodOrNull(RAMBLER_1831_TARGETS.selectionRead) != null -> RAMBLER_1831_TARGETS
@@ -176,6 +199,7 @@ internal val gboardRambler1803OfficialSelectorPatch = bytecodePatch(
 }
 
 private val ramblerFeedbackTargets = listOf(
+    method("Lfey;", "a", listOf("Landroid/content/Context;"), "Z"),
     method("Lfhm;", "a", listOf("Landroid/content/Context;"), "Z"),
     method("Lfcx;", "a", listOf("Landroid/content/Context;"), "Z"),
 )

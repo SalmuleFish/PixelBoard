@@ -59,7 +59,7 @@ def remove_all_injected_header_preferences(data):
                     raw_str = strings[araw] if (araw < len(strings)) else ''
                     name_s = strings[aname] if aname < len(strings) else ''
                     val_check = [data_str, raw_str, name_s]
-                    if any('gboard_patches_entry' in v or 'pixelboard_updates_entry' in v or 'GboardPatchesSettingsActivity' in v or 'action.UPDATES' in v for v in val_check):
+                    if any('pixelboard_updates_entry' in v or 'action.UPDATES' in v for v in val_check):
                         in_target = True
                         target_start = start_tag_pos
                         break
@@ -79,20 +79,20 @@ def remove_all_injected_header_preferences(data):
     return bytes(data)
 
 def sanitize_axml_preferences(apk_path):
-    print("🧹 Sanitizing preference headers (removing all third-party menu entries)...")
+    print("🧹 Sanitizing preference headers (removing update menu entries)...")
     temp_apk = apk_path + ".res_clean.apk"
     modified_count = 0
     with zipfile.ZipFile(apk_path, 'r') as zin, zipfile.ZipFile(temp_apk, 'w', compression=zipfile.ZIP_DEFLATED) as zout:
         for item in zin.infolist():
             content = zin.read(item.filename)
-            if item.filename.startswith('res/xml/') and (b'gboard_patches_entry' in content or b'pixelboard_updates_entry' in content or b'action.UPDATES' in content):
+            if item.filename.startswith('res/xml/') and (b'pixelboard_updates_entry' in content or b'action.UPDATES' in content):
                 sanitized = remove_all_injected_header_preferences(content)
                 if len(sanitized) != len(content):
                     content = sanitized
                     modified_count += 1
             zout.writestr(item, content)
     if modified_count > 0:
-        print(f"✅ Removed all third-party preference menu entries from {modified_count} XML file(s)")
+        print(f"✅ Removed update preference menu entries from {modified_count} XML file(s)")
         shutil.move(temp_apk, apk_path)
     else:
         if os.path.exists(temp_apk):
