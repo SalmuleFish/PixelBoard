@@ -17,7 +17,12 @@ import com.android.tools.smali.dexlib2.iface.reference.StringReference
 // 24 hours PixelBoard shows and advertises.
 private const val STOCK_DEFAULT_RETENTION_HOURS = "1"
 private const val DEFAULT_RETENTION_HOURS = "24"
-private const val CLIPBOARD_HISTORY_RETENTION_KEY = 0x7f140914 // "clipboard_history_retention"
+private const val CLIPBOARD_HISTORY_RETENTION_KEY = 0x7f140914 // "clipboard_history_retention" (18.5.3)
+private const val CLIPBOARD_HISTORY_RETENTION_KEY_1863 = 0x7f1408fb // "clipboard_history_retention" (18.6.3)
+private val CLIPBOARD_HISTORY_RETENTION_KEYS = setOf(
+    CLIPBOARD_HISTORY_RETENTION_KEY,
+    CLIPBOARD_HISTORY_RETENTION_KEY_1863,
+)
 
 // Gboard 18.5.3: fqr.a returns how long unpinned clips are kept, in milliseconds.
 private val CLIPBOARD_RETENTION_GETTER = GboardMethodTarget(
@@ -25,6 +30,17 @@ private val CLIPBOARD_RETENTION_GETTER = GboardMethodTarget(
     "a",
     listOf("Landroid/content/Context;"),
     "J",
+)
+// Gboard 18.6.3: fof.a returns how long unpinned clips are kept, in milliseconds.
+private val CLIPBOARD_RETENTION_GETTER_1863 = GboardMethodTarget(
+    "Lfof;",
+    "a",
+    listOf("Landroid/content/Context;"),
+    "J",
+)
+private val CLIPBOARD_RETENTION_GETTERS = listOf(
+    CLIPBOARD_RETENTION_GETTER,
+    CLIPBOARD_RETENTION_GETTER_1863,
 )
 
 internal val gboardClipboardDefaultRetentionPatch = bytecodePatch(
@@ -34,6 +50,7 @@ internal val gboardClipboardDefaultRetentionPatch = bytecodePatch(
 
     execute {
         findMutableMethodOrNull(CLIPBOARD_RETENTION_GETTER)?.useDefaultRetention()
+        findMutableMethodOrNull(CLIPBOARD_RETENTION_GETTER_1863)?.useDefaultRetention()
     }
 }
 
@@ -41,7 +58,7 @@ private fun MutableMethod.useDefaultRetention() {
     val instructions = implementation?.instructions ?: return
     val keyIndex = instructions.indexOfFirst {
         it.isOpcode("CONST") &&
-            (it as NarrowLiteralInstruction).narrowLiteral == CLIPBOARD_HISTORY_RETENTION_KEY
+            (it as NarrowLiteralInstruction).narrowLiteral in CLIPBOARD_HISTORY_RETENTION_KEYS
     }
     if (keyIndex == -1) return
     val fallback = instructions.getOrNull(keyIndex + 1) ?: return

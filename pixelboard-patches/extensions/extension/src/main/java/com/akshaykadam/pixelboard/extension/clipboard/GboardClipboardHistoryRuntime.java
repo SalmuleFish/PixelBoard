@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
  *   <li>24 hours ("24")</li>
  *   <li>7 days ("168")</li>
  *   <li>30 days ("720")</li>
+ *   <li>Never (Unlimited / Manual deletion only) ("876000", 100 years)</li>
  * </ol>
  */
 public final class GboardClipboardHistoryRuntime {
@@ -30,19 +31,22 @@ public final class GboardClipboardHistoryRuntime {
     private static final String TAG = "PixelBoardClipboard";
 
     public static final CharSequence[] RETENTION_LABELS = new CharSequence[] {
-            "1 hour (Default)",
+            "1 hour",
             "24 hours",
             "7 days",
-            "30 days"
+            "30 days",
+            "Never (Unlimited / Manual deletion only)"
     };
 
     public static final CharSequence[] RETENTION_VALUES = new CharSequence[] {
             GboardClipboardHistorySettings.DURATION_1_HOUR,
             GboardClipboardHistorySettings.DURATION_24_HOURS,
             GboardClipboardHistorySettings.DURATION_7_DAYS,
-            GboardClipboardHistorySettings.DURATION_30_DAYS
+            GboardClipboardHistorySettings.DURATION_30_DAYS,
+            GboardClipboardHistorySettings.DURATION_NEVER
     };
 
+    /** Slider position of {@link GboardClipboardHistorySettings#DEFAULT_DURATION} (24 hours). */
     static final int DEFAULT_INDEX = indexOf(GboardClipboardHistorySettings.DEFAULT_DURATION);
 
     private GboardClipboardHistoryRuntime() {
@@ -80,15 +84,16 @@ public final class GboardClipboardHistoryRuntime {
                 lField.set(preference, RETENTION_VALUES.clone());
             }
 
+            // "Use default" moves the slider to P, which Gboard reads from its own XML: 1 hour.
             Field pField = findField(preference.getClass(), "P");
             if (pField != null) {
                 pField.setAccessible(true);
                 pField.setInt(preference, DEFAULT_INDEX);
             }
 
-            int maxIndex = RETENTION_VALUES.length - 1; // 3
+            int maxIndex = RETENTION_VALUES.length - 1; // 4
 
-            // Determine target index from currently persisted string or fallback to DEFAULT_INDEX
+            // Determine target index from currently persisted string or fall back to the default (24 hours)
             int targetIndex = DEFAULT_INDEX;
             try {
                 Method wMethod = findMethod(preference.getClass(), "w", String.class);

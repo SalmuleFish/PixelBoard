@@ -22,6 +22,12 @@ public final class GboardClipboardRetentionTextRuntime {
     static final int EMPTY_SUBTITLE = 0x7f14019e;
     /** "Clipboard allows you to access your recent copy and paste history" */
     static final int DESCRIPTION = 0x7f1401a1;
+
+    // Gboard 18.6.3 resource ids.
+    static final int PIN_TIP_1863 = 0x7f1401a5;
+    static final int INTRO_CARD_1863 = 0x7f140191;
+    static final int EMPTY_SUBTITLE_1863 = 0x7f14019d;
+    static final int DESCRIPTION_1863 = 0x7f1401a0;
     /** The intro card's body TextView in layouts 0x7f0e0061 and 0x7f0e0062. */
     static final int INTRO_CARD_BODY_ID = 0x7f0b01ac;
     /** "Touch and hold a clip to pin it.", added to every locale by the resource patch. */
@@ -56,14 +62,17 @@ public final class GboardClipboardRetentionTextRuntime {
             }
             View body = card.findViewById(INTRO_CARD_BODY_ID);
             if (body instanceof TextView) {
-                ((TextView) body).setText(DESCRIPTION);
+                int descriptionRes = resolveDescriptionRes(card.getContext());
+                if (descriptionRes != 0) {
+                    ((TextView) body).setText(descriptionRes);
+                }
             }
         } catch (Throwable ignored) {
         }
     }
 
     static int replacementFor(Context context, int resId) {
-        if (resId == PIN_TIP) {
+        if (resId == PIN_TIP || resId == PIN_TIP_1863) {
             int tip = string(context, pinTipName(
                     GboardClipboardHistorySettings.readGboardDuration(context)));
             if (tip == 0) {
@@ -74,7 +83,21 @@ public final class GboardClipboardRetentionTextRuntime {
         if (resId == INTRO_CARD || resId == EMPTY_SUBTITLE) {
             return DESCRIPTION;
         }
+        if (resId == INTRO_CARD_1863 || resId == EMPTY_SUBTITLE_1863) {
+            return DESCRIPTION_1863;
+        }
         return resId;
+    }
+
+    static int resolveDescriptionRes(Context context) {
+        try {
+            if (context != null) {
+                context.getResources().getString(DESCRIPTION_1863);
+                return DESCRIPTION_1863;
+            }
+        } catch (Throwable ignored) {
+        }
+        return DESCRIPTION;
     }
 
     /** The pin tip naming {@code duration}, or the short tip when clips are never deleted. */

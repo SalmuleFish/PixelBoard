@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# PixelBoard - Build & Patch Automation Script
-# Maintainer: Akshay Kadam (@Akshayykadam)
-# Repository: https://github.com/Akshayykadam/PixelBoard
+# PixelBoard - Build & Patch Automation Script (Security Hardened Fork)
 # ==============================================================================
 
 set -euo pipefail
@@ -40,7 +38,7 @@ MPP_PATH="patches/PixelBoard.mpp"
 if [[ "$REBUILD_PATCH" == true ]] || [[ ! -f "$MPP_PATH" ]]; then
     echo "=== 🎹 Compiling PixelBoard Patch Bundle from Source ==="
     cd pixelboard-patches
-    ./gradlew :patches:buildAndroid
+    ./gradlew clean :patches:buildAndroid
     cd "$SCRIPT_DIR"
 
     COMPILED_MPP="pixelboard-patches/patches/build/libs/patches-${PATCH_VERSION}.mpp"
@@ -88,27 +86,52 @@ fi
 echo "☕ Using Java 21+: $JAVA_BIN"
 
 if [[ ! -f "$INPUT_APK" ]]; then
-    echo "⚠️ Note: Place stock Gboard APK at $INPUT_APK to generate output APK."
-    exit 0
+    CANDIDATE=$(ls input/*.apk input/*.apkm 2>/dev/null | head -n 1)
+    if [[ -n "$CANDIDATE" ]]; then
+        INPUT_APK="$CANDIDATE"
+    else
+        echo "⚠️ Note: Place stock Gboard APK at $INPUT_APK to generate output APK."
+        exit 0
+    fi
 fi
 
 echo "=== 🔨 Applying Patches to $INPUT_APK ==="
 mkdir -p output
 mkdir -p tools/patcher-data
 
-KEYSTORE_PATH="tools/patcher-data/pixelboard.keystore"
+KEYSTORE_PATH="tools/patcher-data/private-local.jks"
+KEYSTORE_PASS_FILE="tools/patcher-data/private-local.pass"
+KEYSTORE_ALIAS="pixelboard_local"
+
+if [[ ! -f "$KEYSTORE_PATH" ]] && [[ -f "tools/patcher-data/pixelboard.keystore" ]]; then
+    KEYSTORE_PATH="tools/patcher-data/pixelboard.keystore"
+    KEYSTORE_ALIAS="pixelboard"
+fi
+
 if [[ ! -f "$KEYSTORE_PATH" ]]; then
-    echo "🔑 Generating PixelBoard release keystore..."
+    echo "🔑 Generating secure local private key (RSA-4096)..."
+    RANDOM_PASS=$(head -c 32 /dev/urandom 2>/dev/null | xxd -p -c 32 2>/dev/null || openssl rand -hex 16 2>/dev/null || tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 24)
+    printf "%s" "$RANDOM_PASS" > "$KEYSTORE_PASS_FILE"
+    chmod 600 "$KEYSTORE_PASS_FILE" 2>/dev/null || true
+
     keytool -genkeypair \
         -keystore "$KEYSTORE_PATH" \
-        -alias pixelboard \
+        -storetype PKCS12 \
+        -alias "$KEYSTORE_ALIAS" \
         -keyalg RSA \
-        -keysize 2048 \
+        -keysize 4096 \
         -validity 10000 \
-        -storepass pixelboard \
-        -keypass pixelboard \
-        -dname "CN=PixelBoard, OU=PixelBoard, O=PixelBoard, L=Unknown, ST=Unknown, C=US" \
+        -storepass "$RANDOM_PASS" \
+        -keypass "$RANDOM_PASS" \
+        -dname "CN=PixelBoard Local Private Key, OU=Security Hardened, O=Private, L=Local, ST=Local, C=US" \
         >/dev/null 2>&1
+    echo "✅ Generated private key: $KEYSTORE_PATH"
+fi
+
+if [[ -f "$KEYSTORE_PASS_FILE" ]]; then
+    KEYSTORE_PASS=$(cat "$KEYSTORE_PASS_FILE")
+else
+    KEYSTORE_PASS="${KEYSTORE_PASSWORD:-pixelboard}"
 fi
 
 "$JAVA_BIN" -jar tools/patcher.jar patch \
@@ -117,13 +140,15 @@ fi
     --striplibs=arm64-v8a \
     --signer="PixelBoard" \
     --keystore="$KEYSTORE_PATH" \
-    --keystore-password=pixelboard \
-    --keystore-entry-alias=pixelboard \
-    --keystore-entry-password=pixelboard \
+    --keystore-password="$KEYSTORE_PASS" \
+    --keystore-entry-alias="$KEYSTORE_ALIAS" \
+    --keystore-entry-password="$KEYSTORE_PASS" \
     --temporary-files-path="tools/patcher-data/tmp" \
     -o=output/PixelBoard.apk \
     -r=output/patching-result.json \
     "$INPUT_APK"
+
+python3 tools/sanitize_apk_resources.py output/PixelBoard.apk "$INPUT_APK" "$KEYSTORE_PATH" "$KEYSTORE_PASS" "$KEYSTORE_ALIAS"
 
 if [[ -f "output/patching-result.json" ]]; then
     GBOARD_VER=$(grep -o '"packageVersion":"[^"]*"' output/patching-result.json | cut -d'"' -f4 | cut -d'-' -f1)

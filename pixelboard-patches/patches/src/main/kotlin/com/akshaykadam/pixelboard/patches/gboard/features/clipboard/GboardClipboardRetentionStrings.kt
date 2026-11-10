@@ -6,7 +6,8 @@ package com.akshaykadam.pixelboard.patches.gboard.features.clipboard
 //   24 hours, 7 days, 30 days: Google's tip with only its duration changed.
 //   Never, or a locale below has no duration for: just the tip's first sentence,
 //   "Touch and hold a clip to pin it."
-private const val PIN_TIP = "string_0x7f1401a6" // "Touch and hold a clip to pin it. Unpinned clips will be deleted after 1 hour."
+private const val PIN_TIP = "string_0x7f1401a6" // "Touch and hold a clip to pin it. Unpinned clips will be deleted after 1 hour." (18.5.3)
+private const val PIN_TIP_1863 = "string_0x7f1401a5" // (18.6.3)
 internal const val PIN_TIP_SHORT = "pixelboard_clipboard_pin_tip_short"
 internal const val PIN_TIP_24_HOURS = "pixelboard_clipboard_pin_tip_24h"
 internal const val PIN_TIP_7_DAYS = "pixelboard_clipboard_pin_tip_7d"
@@ -14,7 +15,7 @@ internal const val PIN_TIP_30_DAYS = "pixelboard_clipboard_pin_tip_30d"
 
 private val SENTENCE_ENDS = listOf("。", "।", "။", "።", "։", "۔", "។")
 private val PERIOD_BEFORE_SPACE = Regex("""\.(?=\s)""")
-private val PIN_TIP_REGEX = Regex("""<string name="$PIN_TIP">(.*?)</string>""")
+private val PIN_TIP_REGEX = Regex("""<string name="(?:$PIN_TIP|$PIN_TIP_1863)">(.*?)</string>""")
 
 /** Google's duration in a locale's pin tip, and what it becomes at each longer retention. */
 internal class PinTipDurations(
