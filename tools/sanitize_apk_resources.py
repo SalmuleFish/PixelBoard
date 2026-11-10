@@ -9,7 +9,94 @@ import sys
 import os
 import glob
 import shutil
+import struct
 import subprocess
+import zipfile
+import tempfile
+
+def remove_updates_header_preference(data):
+    data = bytearray(data)
+    tag, header_size, size, str_count, style_count, flags, str_offset, style_offset = struct.unpack_from('<HHIIIIII', data, 8)
+    offsets = struct.unpack_from(f'<{str_count}I', data, 8 + 28)
+    is_utf8 = (flags & (1 << 8)) != 0
+    str_data = data[8 + str_offset:]
+    strings = []
+    for off in offsets:
+        if is_utf8:
+            u16len = str_data[off]
+            idx = off + (1 if u16len < 0x80 else 2)
+            u8len = str_data[idx]
+            idx += (1 if u8len < 0x80 else 2)
+            s = str_data[idx:idx+u8len].decode('utf-8', errors='replace')
+        else:
+            u16len = struct.unpack_from('<H', str_data, off)[0]
+            s = str_data[off+2:off+2+u16len*2].decode('utf-16le', errors='replace')
+        strings.append(s)
+
+    pos = 8 + size
+    tag, header_size, size = struct.unpack_from('<HHI', data, pos)
+    if tag == 0x0180:
+        pos += size
+
+    start_tag_pos = None
+    target_start = None
+    target_end = None
+    in_target_block = False
+
+    while pos < len(data):
+        chunk_pos = pos
+        tag, header_size, size = struct.unpack_from('<HHI', data, pos)
+        if tag == 0x0102: # START_TAG
+            line_num, comment, ns, name, attr_start, attr_size, attr_count, id_idx, class_idx, style_idx = struct.unpack_from('<IIIIHHHHHH', data, pos + 8)
+            tag_name = strings[name] if name < len(strings) else ''
+            
+            if 'HeaderPreference' in tag_name:
+                start_tag_pos = chunk_pos
+                in_target_block = False
+
+            for a in range(attr_count):
+                raw = data[pos + 8 + attr_start + a * 20 : pos + 8 + attr_start + (a + 1) * 20]
+                ans, aname, araw, asize, ares, atype, adata = struct.unpack('<IIIHBBI', raw)
+                val = strings[adata] if atype == 3 and adata < len(strings) else (strings[araw] if araw < len(strings) else '')
+                name_s = strings[aname] if aname < len(strings) else ''
+                if 'pixelboard_updates_entry' in val or 'action.UPDATES' in val or 'pixelboard_updates_entry' in name_s or 'action.UPDATES' in name_s:
+                    in_target_block = True
+                    target_start = start_tag_pos
+                    break
+
+        elif tag == 0x0103: # END_TAG
+            line_num, comment, ns, name = struct.unpack_from('<IIII', data, pos + 8)
+            tag_name = strings[name] if name < len(strings) else ''
+            if 'HeaderPreference' in tag_name and in_target_block:
+                target_end = chunk_pos + size
+                break
+        pos += size
+
+    if target_start is not None and target_end is not None:
+        mod_data = data[:target_start] + data[target_end:]
+        struct.pack_into('<I', mod_data, 4, len(mod_data))
+        return bytes(mod_data)
+    return bytes(data)
+
+def sanitize_axml_preferences(apk_path):
+    print("🧹 Sanitizing preference headers (removing updates entry)...")
+    temp_apk = apk_path + ".res_clean.apk"
+    modified_count = 0
+    with zipfile.ZipFile(apk_path, 'r') as zin, zipfile.ZipFile(temp_apk, 'w', compression=zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            content = zin.read(item.filename)
+            if item.filename.startswith('res/xml/') and (b'pixelboard_updates_entry' in content or b'action.UPDATES' in content):
+                sanitized = remove_updates_header_preference(content)
+                if len(sanitized) != len(content):
+                    content = sanitized
+                    modified_count += 1
+            zout.writestr(item, content)
+    if modified_count > 0:
+        print(f"✅ Removed updates preference entry from {modified_count} XML file(s)")
+        shutil.move(temp_apk, apk_path)
+    else:
+        if os.path.exists(temp_apk):
+            os.remove(temp_apk)
 
 def find_sdk_tool(tool_name):
     env_dirs = [
@@ -53,6 +140,9 @@ def sanitize_apk(target_apk, input_apk, keystore_path, keystore_pass=None, keyst
 
     if not keystore_alias:
         keystore_alias = "pixelboard_local" if "private-local" in keystore_path else "pixelboard"
+
+    # Sanitize XML preference headers before aligning and signing
+    sanitize_axml_preferences(target_apk)
 
     zipalign = find_sdk_tool('zipalign')
     apksigner = find_sdk_tool('apksigner')

@@ -32,3 +32,6 @@ input/*
 
 # Scratch directory
 scratch/
+
+__pycache__/
+*.pyc
