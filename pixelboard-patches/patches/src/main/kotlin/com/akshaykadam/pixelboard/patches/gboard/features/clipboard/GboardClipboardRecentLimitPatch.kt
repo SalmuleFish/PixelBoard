@@ -35,6 +35,22 @@ private val CLIPBOARD_LEGACY_LIST_BUILDER = GboardMethodTarget(
 )
 private val CLIPBOARD_LIVE_TRIM = GboardMethodTarget("Lfqn;", "F", emptyList(), "V")
 
+// Gboard 18.6.3: fof.k builds the clip list, fnb.call is the older list builder,
+// and fob.F trims the open clipboard after a copy.
+private val CLIPBOARD_LIST_BUILDER_1863 = GboardMethodTarget(
+    "Lfof;",
+    "k",
+    listOf("Landroid/content/Context;", "Z"),
+    "Lwhe;",
+)
+private val CLIPBOARD_LEGACY_LIST_BUILDER_1863 = GboardMethodTarget(
+    "Lfnb;",
+    "call",
+    emptyList(),
+    "Ljava/lang/Object;",
+)
+private val CLIPBOARD_LIVE_TRIM_1863 = GboardMethodTarget("Lfob;", "F", emptyList(), "V")
+
 internal val gboardClipboardRecentLimitPatch = bytecodePatch(
     description = "Show unpinned clips from the last 100 copies instead of the last 5.",
 ) {
@@ -44,6 +60,10 @@ internal val gboardClipboardRecentLimitPatch = bytecodePatch(
         findMutableMethodOrNull(CLIPBOARD_LIST_BUILDER)?.raiseLimitReusedByArray()
         findMutableMethodOrNull(CLIPBOARD_LEGACY_LIST_BUILDER)?.raiseLimitBeforeCompare("IF_GT")
         findMutableMethodOrNull(CLIPBOARD_LIVE_TRIM)?.raiseLimitBeforeCompare("IF_GT")
+
+        findMutableMethodOrNull(CLIPBOARD_LIST_BUILDER_1863)?.raiseLimitReusedByArray()
+        findMutableMethodOrNull(CLIPBOARD_LEGACY_LIST_BUILDER_1863)?.raiseLimitBeforeCompare("IF_GT")
+        findMutableMethodOrNull(CLIPBOARD_LIVE_TRIM_1863)?.raiseLimitBeforeCompare("IF_GT")
     }
 }
 

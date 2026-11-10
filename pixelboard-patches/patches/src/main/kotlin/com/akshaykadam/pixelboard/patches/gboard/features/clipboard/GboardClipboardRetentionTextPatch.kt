@@ -20,6 +20,10 @@ private const val PIN_TIP_STRING = 0x7f1401a6 // "...Unpinned clips will be dele
 private const val EMPTY_SUBTITLE_STRING = 0x7f14019e // "No items copied within the last hour"
 private const val INTRO_CARD_LAYOUT = 0x7f0e0061 // card with "...keeping them for 1 hour..."
 
+// Gboard 18.6.3 resource ids of the texts that say clips last 1 hour.
+private const val PIN_TIP_STRING_1863 = 0x7f1401a5
+private const val EMPTY_SUBTITLE_STRING_1863 = 0x7f14019d
+
 // fpk.f returns the string id a clipboard tip shows, fss.apply builds the empty clipboard
 // search result, and ClipboardKeyboard.Z inflates the "Copy more for faster pasting" card.
 private val CLIPBOARD_TIP_TEXT = GboardMethodTarget("Lfpk;", "f", emptyList(), "I")
@@ -35,6 +39,26 @@ private val CLIPBOARD_INTRO_CARD = GboardMethodTarget(
     emptyList(),
     "V",
 )
+
+// Gboard 18.6.3 targets.
+private val CLIPBOARD_TIP_TEXT_1863_ADAPTER = GboardMethodTarget(
+    "Lfob;",
+    "d",
+    listOf("Landroid/view/ViewGroup;", "I"),
+    "Lks;",
+)
+private val CLIPBOARD_TIP_TEXT_1863_TRIM = GboardMethodTarget(
+    "Lfob;",
+    "N",
+    emptyList(),
+    "V",
+)
+private val CLIPBOARD_EMPTY_STATE_1863 = GboardMethodTarget(
+    "Lfqg;",
+    "d",
+    listOf("Ljvb;", "Ljux;", "Landroid/view/ViewGroup;", "Z"),
+    "Lxkb;",
+)
 private const val INFLATE =
     "Landroid/view/LayoutInflater;->inflate(ILandroid/view/ViewGroup;Z)Landroid/view/View;"
 
@@ -48,6 +72,10 @@ internal val gboardClipboardRetentionTextPatch = bytecodePatch(
         findMutableMethodOrNull(CLIPBOARD_TIP_TEXT)?.resolveStringAfterLoad(PIN_TIP_STRING)
         findMutableMethodOrNull(CLIPBOARD_EMPTY_STATE)?.resolveStringAfterLoad(EMPTY_SUBTITLE_STRING)
         findMutableMethodOrNull(CLIPBOARD_INTRO_CARD)?.applyIntroCardTextAfterInflate()
+
+        findMutableMethodOrNull(CLIPBOARD_TIP_TEXT_1863_ADAPTER)?.resolveStringAfterLoad(PIN_TIP_STRING_1863)
+        findMutableMethodOrNull(CLIPBOARD_TIP_TEXT_1863_TRIM)?.resolveStringAfterLoad(PIN_TIP_STRING_1863)
+        findMutableMethodOrNull(CLIPBOARD_EMPTY_STATE_1863)?.resolveStringAfterLoad(EMPTY_SUBTITLE_STRING_1863)
     }
 }
 

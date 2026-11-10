@@ -1,6 +1,7 @@
 package com.akshaykadam.pixelboard.patches.gboard.shared.runtimeabi
 
 internal enum class RuntimeCallId(internal val encodedAbi: String) {
+
     ADVANCED_VOICE_RUNTIME_AFTER_FLAG_VALUE("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->afterFlagValue(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
     ADVANCED_VOICE_RUNTIME_AFTER_1803_NATIVE_SPLIT_READINESS("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardAdvancedVoice1803Runtime;->after1803NativeSplitReadiness(Z)Z"),
     LANGUAGE_DOWNLOAD_GUARD_SHOULD_SKIP("Lcom/akshaykadam/pixelboard/extension/advancedvoice/GboardLanguageDownloadGuard;->shouldSkip(Ljava/lang/String;Ljava/lang/Object;)Z"),
@@ -28,13 +29,11 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     CLIPBOARD_HISTORY_RUNTIME_CONFIGURE_SLIDER("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardHistoryRuntime;->configureClipboardHistorySlider(Ljava/lang/Object;Landroid/content/Context;)V"),
     CLIPBOARD_RETENTION_TEXT_RUNTIME_RESOLVE_TEXT("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardRetentionTextRuntime;->resolveText(I)I"),
     CLIPBOARD_RETENTION_TEXT_RUNTIME_APPLY_INTRO_CARD_TEXT("Lcom/akshaykadam/pixelboard/extension/clipboard/GboardClipboardRetentionTextRuntime;->applyIntroCardText(Landroid/view/View;)V"),
-    RAMBLER_DICTATION_RUNTIME_FILTER_VOICE_TEXT("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerDictationRuntime;->filterVoiceText(Ljava/lang/Object;)V"),
+    RAMBLER_DICTATION_RUNTIME_FILTER_VOICE_TEXT("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerDictationRuntime;->filterVoiceText(Ljava/lang/Object;Ljava/lang/Object;)V"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_PLACE_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->placeMinimizeKey()I"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_CLEAR_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->clearMinimizeKey()I"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_REVEAL_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->revealMinimizeKey(Landroid/view/ViewGroup;)V"),
-    CALCULATOR_RUNTIME_ON_INPUT_VIEW_STARTED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputViewStarted(Ljava/lang/Object;)V"),
-    CALCULATOR_RUNTIME_ON_SELECTION_UPDATED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onSelectionUpdated(Ljava/lang/Object;Landroid/view/View;II)V"),
-    CALCULATOR_RUNTIME_ON_INPUT_WINDOW_HIDDEN("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputWindowHidden()V"),
+    KEYBOARD_RUNTIME_SANITIZE_KEY_LABEL("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardKeyboardRuntime;->sanitizeKeyLabel(Ljava/lang/CharSequence;)Ljava/lang/CharSequence;"),
 }
 
 internal data class RuntimeAbi(
