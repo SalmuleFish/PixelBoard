@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # PixelBoard - Build & Patch Automation Script (Windows PowerShell)
 # ==============================================================================
 
@@ -63,15 +63,18 @@ if (-not (Test-Path $KeystorePath)) {
     Write-Host "🔑 Generando nueva clave privada local RSA-4096..." -ForegroundColor Yellow
     $pass = [System.Guid]::NewGuid().ToString("N")
     Set-Content -Path $PassFile -Value $pass
-    & keytool -genkeypair `
-        -alias $KeystoreAlias `
-        -keyalg RSA `
-        -keysize 4096 `
-        -validity 10000 `
-        -keystore $KeystorePath `
-        -storepass $pass `
-        -keypass $pass `
-        -dname "CN=PixelBoard Local Private Key, OU=Security Hardened, O=Private, L=Local, ST=Local, C=US"
+    $keytoolArgs = @(
+        "-genkeypair",
+        "-alias", $KeystoreAlias,
+        "-keyalg", "RSA",
+        "-keysize", "4096",
+        "-validity", "10000",
+        "-keystore", $KeystorePath,
+        "-storepass", $pass,
+        "-keypass", $pass,
+        "-dname", "CN=PixelBoard Local Private Key, OU=Security Hardened, O=Private, L=Local, ST=Local, C=US"
+    )
+    & keytool $keytoolArgs
     Write-Host "✅ Clave generada exitosamente en $KeystorePath" -ForegroundColor Green
 }
 
@@ -86,15 +89,19 @@ $UnsignedApk = Join-Path $TempFolder "PixelBoard-unsigned.apk"
 $FinalApk = Join-Path $OutputFolder "PixelBoard.apk"
 
 Write-Host "=== 🔨 Aplicando parches offline con Morphe Patcher ===" -ForegroundColor Cyan
-& java -jar $PatcherJar patch `
-    -p $MppPath `
-    -o $UnsignedApk `
-    -t $TempFolder `
-    --options-file options.json `
-    --striplibs=arm64-v8a `
-    --unsigned `
-    -f `
+$patchArgs = @(
+    "-jar", $PatcherJar,
+    "patch",
+    "-p", $MppPath,
+    "-o", $UnsignedApk,
+    "-t", $TempFolder,
+    "--options-file", "options.json",
+    "--striplibs=arm64-v8a",
+    "--unsigned",
+    "-f",
     $InputApk
+)
+& java $patchArgs
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Error durante la aplicación de parches." -ForegroundColor Red
