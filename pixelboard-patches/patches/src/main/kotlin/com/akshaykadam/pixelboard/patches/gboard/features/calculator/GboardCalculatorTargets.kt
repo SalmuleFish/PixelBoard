@@ -55,10 +55,13 @@ internal class GboardCalculatorTargets(
         const val INPUT_VIEW_TYPE =
             "Lcom/google/android/libraries/inputmethod/inputview/InputView;"
 
+        /** IME service class verified against Gboard 18.6.3. */
+        const val KNOWN_IME_1863_CLASS_TYPE = "Lpbk;"
+
         /** IME service class verified against Gboard 18.5.4 / 18.5.3. */
         const val KNOWN_IME_CLASS_TYPE = "Lphr;"
 
-        /** InputView field name verified against Gboard 18.5.4 / 18.5.3. */
+        /** InputView field name verified against Gboard 18.5.4 / 18.5.3 / 18.6.3. */
         const val KNOWN_INPUT_VIEW_FIELD_NAME = "i"
     }
 }

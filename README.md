@@ -2,13 +2,13 @@
 
 # PixelBoard — Security & Privacy Hardened Fork (v1.4.0)
 
-**Versión auditada y endurecida en seguridad y privacidad de PixelBoard (Mod de Gboard v18.5.3 con Rambler Voice Typing, AI Writing Tools y Simple Calculator) [Sin Root].**
+**Versión auditada y endurecida en seguridad y privacidad de PixelBoard (Mod de Gboard v18.5.3 y v18.6.3 con Rambler Voice Typing, AI Writing Tools y Simple Calculator) [Sin Root].**
 
 <p>
   <img src="https://img.shields.io/badge/Version-v1.4.0--hardened-2E7D32?style=flat-square&logo=shield&logoColor=white" alt="Hardened Release"/>
   <img src="https://img.shields.io/badge/Android-10%20to%2016-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android Support"/>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-blue?style=flat-square" alt="Arch Support"/>
-  <img src="https://img.shields.io/badge/Base%20App-Gboard%20v18.5.3-orange?style=flat-square&logo=google" alt="Base Gboard"/>
+  <img src="https://img.shields.io/badge/Base%20App-Gboard%20v18.5.3%20%7C%20v18.6.3-orange?style=flat-square&logo=google" alt="Base Gboard"/>
   <img src="https://img.shields.io/badge/Root-Not%20Required-success?style=flat-square" alt="No Root"/>
   <img src="https://img.shields.io/badge/License-GPL--3.0-lightgrey?style=flat-square" alt="License"/>
 </p>
@@ -29,7 +29,9 @@ Un teclado móvil es uno de los componentes más críticos de privacidad en Andr
 | **Contexto de pantalla (`screen_context_opt_in`)** | Activado por defecto (`true`) al inicializar preferencias. | **Desactivado por defecto (`false`).** Solo se activa si el usuario lo habilita manualmente. |
 | **Retención del historial del portapapeles** | Permite la opción `Never` (`876000` horas = 100 años) guardando recortes en texto plano indefinidamente, con `24 horas` por defecto. | **Acotado.** Se eliminó la retención de 100 años (`DURATION_NEVER`). Opciones seguras: `1 hora` (por defecto), `24 horas`, `7 días` y `30 días`. |
 | **Verificación de Speech Services de Google** | Comprueba únicamente la existencia del nombre de paquete `com.google.android.tts`. | **Verificación criptográfica SHA-256.** `GboardSpeechServicesDetector` valida la huella del certificado oficial de Google LLC antes de enlazar con el motor de voz. |
-| **Calculadora integrada (`Simple Calculator` v1.4.0)** | Lee los últimos 256 caracteres antes del cursor en cualquier campo de texto. | **Protección de campos sensibles.** `GboardCalculatorRuntime` detecta y omite campos de contraseña (`TYPE_TEXT_VARIATION_PASSWORD`, `WEB_PASSWORD`, `NUMBER_VARIATION_PASSWORD`). |
+| **Calculadora integrada (`Simple Calculator`)** | Desactivada o ausente en el menú de parches para Gboard 18.6.3. | **Activa y protegida.** Adaptada a Gboard 18.5.3 y 18.6.3 (`Lpbk;`). Detección y omisión estricta de campos de contraseñas (`TYPE_TEXT_VARIATION_PASSWORD`, `WEB_PASSWORD`, `NUMBER_VARIATION_PASSWORD`). Ejecución 100% matemática local offline sin conexión de red. |
+| **Controles de voz Gemini Rambler** | Disposición incómoda sin botón de cancelar en versiones recientes. | **Restaurados ergonómicamente.** Botón de cancelar `✕` a la izquierda y botón de minimizar `⌄⌄` en el extremo derecho junto a la tecla de grabación, compatibles con Gboard 18.5.3 y 18.6.3. |
+| **Pantalla de Ajustes Avanzados** | Intentaba descargar actualizaciones por red y dependía de recursos XML que causaban cierres forzados. | **Endurecida y offline.** Sin llamadas a APIs externas. Catálogo de textos incrustado en memoria (`GboardSettingsTextCatalog`) con soporte para 19 idiomas (Español, Inglés, etc.) y protección contra excepciones. |
 | **Claves criptográficas de firma (Keystores)** | Incluye `morphe.keystore` e `imported.keystore` públicos en el repositorio con contraseñas conocidas. | **Eliminados del repositorio.** Cada usuario genera y utiliza su propia llave privada local RSA-4096 en `tools/patcher-data/` (ignorada por Git). |
 
 ---
@@ -65,7 +67,7 @@ PixelBoard/
 
 ### Paso 1: Descargar el APK base oficial de Gboard y colocarlo en `input/`
 
-1. Descarga la versión oficial sin modificar de **Google Gboard `18.5.3.993608717-release-arm64-v8a`** desde [APKMirror](https://www.apkmirror.com/apk/google-inc/gboard/gboard-the-google-keyboard-18-5-3-993608717-release/) (puede ser el archivo `.apk` o el paquete `.apkm`).
+1. Descarga la versión oficial sin modificar de **Google Gboard (`18.6.3.1002251336-release-arm64-v8a` o `18.5.3.993608717-release-arm64-v8a`)** desde [APKMirror](https://www.apkmirror.com/apk/google-inc/gboard/) (puede ser el archivo `.apk` o el paquete `.apkm`).
 2. Coloca el archivo descargado dentro de la carpeta **`input/`**:
    - Ejemplo: `input/gboard.apkm` (o `input/gboard.apk`).
 
@@ -121,9 +123,17 @@ keytool -genkeypair \
 
 ### Paso 3: Aplicar los Parches y Generar el APK en `output/PixelBoard.apk`
 
-Ejecuta el parcheador usando el paquete precompilado `patches/PixelBoard.mpp` y firma el resultado con tu llave privada:
+> [!TIP]
+> **Método Automático en 1 Solo Paso (Recomendado en Windows):**
+> Simplemente ejecuta en PowerShell:
+> ```powershell
+> .\build.ps1
+> ```
+> El script detectará el APK de `input/`, creará tu clave privada local si aún no existe, aplicará los 5 parches offline, desinfectará menús externos, alineará y firmará el APK en `output/PixelBoard.apk`.
 
-#### En Windows (PowerShell):
+Si prefieres ejecutar el proceso manualmente paso a paso:
+
+#### En Windows (PowerShell Manual):
 ```powershell
 $inputFile = (Get-ChildItem "input\*" -Include *.apk, *.apkm | Select-Object -First 1).FullName
 $ksPass = (Get-Content "tools\patcher-data\private-local.pass" -Raw).Trim()
