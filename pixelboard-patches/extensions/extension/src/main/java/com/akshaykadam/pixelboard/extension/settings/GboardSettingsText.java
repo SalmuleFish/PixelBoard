@@ -17,7 +17,11 @@ public final class GboardSettingsText {
         if (stableText != null) {
             return stableText;
         }
-        return requireContext(context).getString(resId);
+        try {
+            return requireContext(context).getString(resId);
+        } catch (Throwable ignored) {
+            return "";
+        }
     }
 
     public static String format(Context context, int resId, Object... args) {
@@ -25,7 +29,11 @@ public final class GboardSettingsText {
         if (stableText != null) {
             return stableText;
         }
-        return requireContext(context).getString(resId, args);
+        try {
+            return requireContext(context).getString(resId, args);
+        } catch (Throwable ignored) {
+            return "";
+        }
     }
 
     public static String quantity(Context context, int resId, int quantity) {
@@ -33,7 +41,11 @@ public final class GboardSettingsText {
         if (stableQuantity != null) {
             return stableQuantity;
         }
-        return requireContext(context).getResources().getQuantityString(resId, quantity, quantity);
+        try {
+            return requireContext(context).getResources().getQuantityString(resId, quantity, quantity);
+        } catch (Throwable ignored) {
+            return "";
+        }
     }
 
     static String resolveStableTextForTesting(int resId, String languageTag, Object... args) {

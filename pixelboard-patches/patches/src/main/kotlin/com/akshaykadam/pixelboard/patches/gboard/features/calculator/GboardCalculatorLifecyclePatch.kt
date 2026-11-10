@@ -79,18 +79,22 @@ internal val gboardCalculatorLifecyclePatch = bytecodePatch(
 }
 
 private fun BytecodePatchContext.resolveCalculatorTargets(): GboardCalculatorTargets? {
-    // Fast path: class and field names verified against Gboard 18.5.4, whose
-    // obfuscation map matches 18.5.3 for the IME service (Lphr;).
-    val known = GboardCalculatorTargets(
+    // Fast path: class and field names verified against Gboard 18.6.3 (Lpbk;) and 18.5.3/18.5.4 (Lphr;).
+    for (knownClass in listOf(
+        GboardCalculatorTargets.KNOWN_IME_1863_CLASS_TYPE,
         GboardCalculatorTargets.KNOWN_IME_CLASS_TYPE,
-        GboardCalculatorTargets.KNOWN_INPUT_VIEW_FIELD_NAME,
-    )
-    if (findMutableMethodOrNull(known.onStartInputView) != null &&
-        findMutableMethodOrNull(known.onUpdateSelection) != null &&
-        findMutableMethodOrNull(known.onWindowHidden) != null &&
-        known.inputView.resolveOrNull(this) != null
-    ) {
-        return known
+    )) {
+        val known = GboardCalculatorTargets(
+            knownClass,
+            GboardCalculatorTargets.KNOWN_INPUT_VIEW_FIELD_NAME,
+        )
+        if (findMutableMethodOrNull(known.onStartInputView) != null &&
+            findMutableMethodOrNull(known.onUpdateSelection) != null &&
+            findMutableMethodOrNull(known.onWindowHidden) != null &&
+            known.inputView.resolveOrNull(this) != null
+        ) {
+            return known
+        }
     }
 
     // Fallback: find the IME service class by its framework lifecycle

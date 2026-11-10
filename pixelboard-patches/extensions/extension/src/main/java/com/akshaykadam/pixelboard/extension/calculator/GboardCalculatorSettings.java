@@ -7,7 +7,7 @@ import com.akshaykadam.pixelboard.extension.settings.GboardPatchesSettings;
 
 public final class GboardCalculatorSettings {
     public static final String PREF_KEY_ENABLED = "pref_simple_calculator_enabled";
-    public static final boolean DEFAULT_ENABLED = false;
+    public static final boolean DEFAULT_ENABLED = true;
 
     private GboardCalculatorSettings() {
     }

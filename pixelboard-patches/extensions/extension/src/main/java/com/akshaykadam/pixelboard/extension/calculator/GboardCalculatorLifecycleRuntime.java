@@ -10,7 +10,7 @@ public final class GboardCalculatorLifecycleRuntime {
     // Kept local so the feature-scoped RVE never links against shared settings classes.
     private static final String PREF_FILE = "gboard_patches_settings";
     private static final String PREF_KEY_ENABLED = "pref_simple_calculator_enabled";
-    private static final boolean DEFAULT_ENABLED = false;
+    private static final boolean DEFAULT_ENABLED = true;
 
     private GboardCalculatorLifecycleRuntime() {
     }

@@ -34,6 +34,9 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     RAMBLER_MINIMIZE_KEY_RUNTIME_CLEAR_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->clearMinimizeKey()I"),
     RAMBLER_MINIMIZE_KEY_RUNTIME_REVEAL_MINIMIZE_KEY("Lcom/akshaykadam/pixelboard/extension/rambler/GboardRamblerMinimizeKeyRuntime;->revealMinimizeKey(Landroid/view/ViewGroup;)V"),
     KEYBOARD_RUNTIME_SANITIZE_KEY_LABEL("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardKeyboardRuntime;->sanitizeKeyLabel(Ljava/lang/CharSequence;)Ljava/lang/CharSequence;"),
+    CALCULATOR_RUNTIME_ON_INPUT_VIEW_STARTED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputViewStarted(Ljava/lang/Object;)V"),
+    CALCULATOR_RUNTIME_ON_SELECTION_UPDATED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onSelectionUpdated(Ljava/lang/Object;Landroid/view/View;II)V"),
+    CALCULATOR_RUNTIME_ON_INPUT_WINDOW_HIDDEN("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputWindowHidden()V"),
 }
 
 internal data class RuntimeAbi(

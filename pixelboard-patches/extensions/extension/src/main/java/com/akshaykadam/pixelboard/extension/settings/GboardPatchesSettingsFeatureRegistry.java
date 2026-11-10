@@ -26,8 +26,16 @@ public final class GboardPatchesSettingsFeatureRegistry {
     public static List<GboardPatchesSettingsContract.Feature> features(Context context) {
         List<GboardPatchesSettingsContract.Feature> features =
                 new ArrayList<GboardPatchesSettingsContract.Feature>();
-        addIfAvailable(context, features, new GboardAiVoiceSettingsGroupFeature(context));
-        addIfAvailable(context, features, new GboardCalculatorSettingsFeature(context));
+        try {
+            addIfAvailable(context, features, new GboardAiVoiceSettingsGroupFeature(context));
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed to instantiate AI voice feature", t);
+        }
+        try {
+            addIfAvailable(context, features, new GboardCalculatorSettingsFeature(context));
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed to instantiate calculator feature", t);
+        }
         return Collections.unmodifiableList(features);
     }
 

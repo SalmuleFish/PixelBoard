@@ -16,6 +16,7 @@ internal object GboardTargetAdmission {
         "advanced_voice_typing" to setOf("advanced_voice_typing.bytecode", "advanced_voice_typing.flag"),
         "ai_writing_tools" to setOf("ai_writing_tools.flag"),
         "package_rename" to setOf("package_rename.resources"),
+        "simple_calculator" to setOf("simple_calculator.lifecycle"),
     )
 
     fun admittedContributions(featureId: String): Set<String> =
