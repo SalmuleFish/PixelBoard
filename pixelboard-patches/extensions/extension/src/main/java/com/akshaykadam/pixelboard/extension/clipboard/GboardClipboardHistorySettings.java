@@ -38,29 +38,24 @@ public final class GboardClipboardHistorySettings {
     public static final String DURATION_24_HOURS  = "24";
     public static final String DURATION_7_DAYS    = "168";
     public static final String DURATION_30_DAYS   = "720";
-    public static final String DURATION_NEVER     = "876000";
 
-    /** Default duration: 24 hours (matches Gboard's built-in maximum). */
-    public static final String DEFAULT_DURATION = DURATION_24_HOURS;
+    /** Default duration: 1 hour (safe privacy default). */
+    public static final String DEFAULT_DURATION = DURATION_1_HOUR;
 
     /**
      * Duration in milliseconds for each token.
-     * 100 years for {@link #DURATION_NEVER} (3,153,600,000,000 ms) guarantees
-     * (now - retention) < 0, so SQLite timestamp comparison matches 0 rows.
      */
     public static final long DURATION_MS_1_HOUR   = 60L * 60L * 1_000L;
     public static final long DURATION_MS_24_HOURS = 24L * DURATION_MS_1_HOUR;
     public static final long DURATION_MS_7_DAYS   = 7L  * 24L * DURATION_MS_1_HOUR;
     public static final long DURATION_MS_30_DAYS  = 30L * 24L * DURATION_MS_1_HOUR;
-    public static final long DURATION_MS_NEVER    = 876_000L * DURATION_MS_1_HOUR;
 
     /** Ordered list of all valid duration values (matches slider step order). */
     public static final String[] ALL_DURATIONS = {
             DURATION_1_HOUR,
             DURATION_24_HOURS,
             DURATION_7_DAYS,
-            DURATION_30_DAYS,
-            DURATION_NEVER
+            DURATION_30_DAYS
     };
 
     private GboardClipboardHistorySettings() {
@@ -181,15 +176,14 @@ public final class GboardClipboardHistorySettings {
      */
     public static long toMillis(String duration) {
         if (duration == null) {
-            return DURATION_MS_24_HOURS;
+            return DURATION_MS_1_HOUR;
         }
         switch (sanitize(duration)) {
-            case DURATION_1_HOUR:   return DURATION_MS_1_HOUR;
+            case DURATION_24_HOURS: return DURATION_MS_24_HOURS;
             case DURATION_7_DAYS:   return DURATION_MS_7_DAYS;
             case DURATION_30_DAYS:  return DURATION_MS_30_DAYS;
-            case DURATION_NEVER:    return DURATION_MS_NEVER;
-            case DURATION_24_HOURS: // fall-through
-            default:                return DURATION_MS_24_HOURS;
+            case DURATION_1_HOUR:   // fall-through
+            default:                return DURATION_MS_1_HOUR;
         }
     }
 
@@ -200,7 +194,6 @@ public final class GboardClipboardHistorySettings {
             if ("24h".equals(duration)) return DURATION_24_HOURS;
             if ("7d".equals(duration)) return DURATION_7_DAYS;
             if ("30d".equals(duration)) return DURATION_30_DAYS;
-            if ("never".equals(duration)) return DURATION_NEVER;
             for (String valid : ALL_DURATIONS) {
                 if (valid.equals(duration)) {
                     return duration;

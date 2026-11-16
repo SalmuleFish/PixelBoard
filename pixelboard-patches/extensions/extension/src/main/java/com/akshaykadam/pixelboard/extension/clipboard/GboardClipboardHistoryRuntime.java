@@ -34,19 +34,17 @@ public final class GboardClipboardHistoryRuntime {
             "1 hour",
             "24 hours",
             "7 days",
-            "30 days",
-            "Never (Unlimited / Manual deletion only)"
+            "30 days"
     };
 
     public static final CharSequence[] RETENTION_VALUES = new CharSequence[] {
             GboardClipboardHistorySettings.DURATION_1_HOUR,
             GboardClipboardHistorySettings.DURATION_24_HOURS,
             GboardClipboardHistorySettings.DURATION_7_DAYS,
-            GboardClipboardHistorySettings.DURATION_30_DAYS,
-            GboardClipboardHistorySettings.DURATION_NEVER
+            GboardClipboardHistorySettings.DURATION_30_DAYS
     };
 
-    /** Slider position of {@link GboardClipboardHistorySettings#DEFAULT_DURATION} (24 hours). */
+    /** Slider position of {@link GboardClipboardHistorySettings#DEFAULT_DURATION} (1 hour). */
     static final int DEFAULT_INDEX = indexOf(GboardClipboardHistorySettings.DEFAULT_DURATION);
 
     private GboardClipboardHistoryRuntime() {
