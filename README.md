@@ -36,6 +36,18 @@ Un teclado móvil es uno de los componentes más críticos de privacidad en Andr
 
 ---
 
+## ✨ Novedades sincronizadas con Upstream (v1.3.5)
+
+Además del endurecimiento de seguridad y privacidad, este fork incluye las últimas mejoras de [Akshayykadam/PixelBoard](https://github.com/Akshayykadam/PixelBoard) (`v1.3.5`) para **Gboard 18.6.3**:
+
+- **Dictado continuo al rotar la pantalla:** Rambler mantiene la sesión de dictado activa sin cortarse al cambiar entre vertical y horizontal (`GboardRamblerRotationGrace`).
+- **Sin duplicación de texto al dictar / edición a mitad de oración:** Se preserva correctamente el *diff* en reemplazos por voz y ediciones en medio del texto.
+- **Bloqueo estricto de idioma:** Evita cambios de idioma no deseados durante el dictado.
+- **Conexión reparada en AI Writing Tools:** Se fuerza el backend de servidor de Gboard y se ajustan las flags v2 y `PI_OVERRIDE` para evitar fallos de conectividad.
+- **Seguridad de carga y limpieza de teclas:** Verificación de disponibilidad del *split* nativo en 18.6.3 (*readiness gate*) antes de activar Advanced Voice y limpieza del parche de etiquetas de teclas.
+
+---
+
 ## 📂 Estructura de Carpetas Clave / Key Directories
 
 ```text
@@ -43,8 +55,7 @@ PixelBoard/
 ├── input/                     # 📥 AQUÍ colocas el APK o bundle .apkm original de Gboard (descargado de APKMirror)
 ├── output/                    # 📤 AQUÍ se genera tu APK final listo para instalar: output/PixelBoard.apk
 ├── patches/
-│   ├── PixelBoard.mpp         # 📦 Paquete de parches precompilado (v1.4.0 endurecido, sin actualizador)
-│   └── patches-1.4.0.mpp      # 📦 Copia versionada del paquete de parches
+│   └── PixelBoard.mpp         # 📦 Paquete de parches compilado (endurecido + mejoras v1.3.5, sin actualizador)
 ├── tools/
 │   ├── patcher.jar            # 🛠️ Herramienta CLI offline para aplicar los parches
 │   └── patcher-data/          # 🔑 AQUÍ se guarda tu clave privada local (private-local.jks, ignorada por .gitignore)
