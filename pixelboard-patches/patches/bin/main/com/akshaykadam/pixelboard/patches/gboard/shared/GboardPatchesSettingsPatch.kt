@@ -130,7 +130,6 @@ internal fun applyGboardPatchesSettings(
     ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.CAMERA")
     ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.READ_MEDIA_IMAGES")
     ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.READ_EXTERNAL_STORAGE")
-    ensureManifestUsesPermission(manifestDocument, manifest, "android.permission.REQUEST_INSTALL_PACKAGES")
 
     val activity = application.childElements("activity").firstOrNull {
         it.getAttributeNS(ANDROID_NS, "name") == GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS ||
@@ -140,7 +139,7 @@ internal fun applyGboardPatchesSettings(
     }
 
     activity.setAndroidAttribute("name", GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS)
-    activity.setAndroidAttribute("exported", "true")
+    activity.setAndroidAttribute("exported", "false")
     val settingsActivity = application.childElements("activity").firstOrNull {
         it.getAttributeNS(ANDROID_NS, "name") == GBOARD_SETTINGS_ACTIVITY_CLASS ||
             it.getAttribute("android:name") == GBOARD_SETTINGS_ACTIVITY_CLASS
@@ -166,7 +165,7 @@ internal fun applyGboardPatchesSettings(
         packageName + GBOARD_PATCHES_SETTINGS_PROVIDER_AUTHORITY_SUFFIX,
     )
     provider.setAndroidAttribute("exported", "false")
-    provider.setAndroidAttribute("grantUriPermissions", "true")
+    provider.setAndroidAttribute("grantUriPermissions", "false")
 
     settingsDocuments.forEach { document ->
         val root = document.documentElement
@@ -231,70 +230,15 @@ internal fun applyGboardPatchesSettings(
         intent.setAndroidAttribute("targetPackage", packageName)
         intent.setAndroidAttribute("targetClass", GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS)
 
-        val existingUpdatesEntry = candidateEntries.firstOrNull {
-            it.androidAttribute("key") == UPDATES_SETTINGS_ENTRY_KEY
-        }
-        val updatesEntry = existingUpdatesEntry?.takeIf { it.tagName == HEADER_PREFERENCE_TAG }
-            ?: document.createElement(HEADER_PREFERENCE_TAG).also { createdPreference ->
-                if (existingUpdatesEntry != null) {
-                    existingUpdatesEntry.parentNode.replaceChild(createdPreference, existingUpdatesEntry)
-                } else if (targetCategory != null) {
-                    targetCategory.appendChild(createdPreference)
-                } else if (footerPreference != null) {
-                    root.insertBefore(createdPreference, footerPreference)
-                } else {
-                    root.appendChild(createdPreference)
-                }
-            }
-
-        updatesEntry.setAndroidAttribute("persistent", "false")
-        updatesEntry.setAndroidAttribute("title", UPDATES_SETTINGS_ENTRY_TITLE)
-        updatesEntry.setAndroidAttribute("selectable", "true")
-        updatesEntry.setAndroidAttribute("key", UPDATES_SETTINGS_ENTRY_KEY)
-        updatesEntry.removeAndroidAttribute("summary")
-        updatesEntry.setAndroidAttribute("icon", "@drawable/ic_pixelboard_updates")
-
-        val updatesIntent = updatesEntry.childElements("intent").firstOrNull()
-            ?: document.createElement("intent").also { createdIntent ->
-                updatesEntry.appendChild(createdIntent)
-            }
-        updatesIntent.setAndroidAttribute("action", "com.akshaykadam.pixelboard.action.UPDATES")
-        updatesIntent.setAndroidAttribute("targetPackage", packageName)
-        updatesIntent.setAndroidAttribute("targetClass", GBOARD_PATCHES_SETTINGS_ACTIVITY_CLASS)
-
         if (targetCategory != null) {
             if (patchesEntry.parentNode != targetCategory) {
                 patchesEntry.parentNode?.removeChild(patchesEntry)
                 targetCategory.appendChild(patchesEntry)
             }
-            if (updatesEntry.parentNode != targetCategory) {
-                updatesEntry.parentNode?.removeChild(updatesEntry)
-                targetCategory.appendChild(updatesEntry)
-            } else {
-                targetCategory.removeChild(updatesEntry)
-                val nextSibling = patchesEntry.nextSibling
-                if (nextSibling != null) {
-                    targetCategory.insertBefore(updatesEntry, nextSibling)
-                } else {
-                    targetCategory.appendChild(updatesEntry)
-                }
-            }
         } else if (footerPreference != null) {
             if (patchesEntry.parentNode != root) {
                 patchesEntry.parentNode?.removeChild(patchesEntry)
                 root.insertBefore(patchesEntry, footerPreference)
-            }
-            if (updatesEntry.parentNode != root) {
-                updatesEntry.parentNode?.removeChild(updatesEntry)
-                root.insertBefore(updatesEntry, footerPreference)
-            } else {
-                root.removeChild(updatesEntry)
-                val nextSibling = patchesEntry.nextSibling
-                if (nextSibling != null && nextSibling != updatesEntry) {
-                    root.insertBefore(updatesEntry, nextSibling)
-                } else {
-                    root.insertBefore(updatesEntry, footerPreference)
-                }
             }
         }
     }

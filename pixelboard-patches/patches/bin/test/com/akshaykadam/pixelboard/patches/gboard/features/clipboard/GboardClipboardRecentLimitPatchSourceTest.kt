@@ -79,12 +79,12 @@ class GboardClipboardRecentLimitPatchSourceTest {
         )
         assertTrue(settings.contains("        gboardClipboardDefaultRetentionPatch,\n"))
 
-        // The extension's default must match, so the settings page and keyboard agree.
+        // The extension's default must match the hardened 1-hour privacy policy.
         val extensionSettings = read(
             "extensions/extension/src/main/java/com/akshaykadam/pixelboard/extension/" +
                 "clipboard/GboardClipboardHistorySettings.java",
         )
-        assertTrue(extensionSettings.contains("DEFAULT_DURATION = DURATION_24_HOURS;"))
+        assertTrue(extensionSettings.contains("DEFAULT_DURATION = DURATION_1_HOUR;"))
     }
 
     private fun read(relativePath: String): String =
