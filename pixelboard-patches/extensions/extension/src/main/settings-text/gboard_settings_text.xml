@@ -1089,4 +1089,12 @@
         <translation locale="es">No se pudo cargar la pantalla de ajustes de la calculadora. Vuelve a abrir los ajustes de Gboard e inténtalo de nuevo.</translation>
         <translation locale="zh-Hant">計算機設定畫面載入失敗。請重新開啟 Gboard 設定再試一次。</translation>
     </string>
+    <string name="gboard_patches_up_flick_uppercase_title">
+        <translation locale="en">Up-Flick Uppercase</translation>
+        <translation locale="es">Mayúsculas al deslizar arriba</translation>
+    </string>
+    <string name="gboard_patches_up_flick_uppercase_summary">
+        <translation locale="en">Flick up on a letter key to toggle uppercase or lowercase</translation>
+        <translation locale="es">Desliza hacia arriba en una letra para alternar entre mayúscula y minúscula</translation>
+    </string>
 </settings-text>

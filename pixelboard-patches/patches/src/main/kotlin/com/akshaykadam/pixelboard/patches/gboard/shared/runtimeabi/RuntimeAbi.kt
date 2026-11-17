@@ -37,6 +37,10 @@ internal enum class RuntimeCallId(internal val encodedAbi: String) {
     CALCULATOR_RUNTIME_ON_INPUT_VIEW_STARTED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputViewStarted(Ljava/lang/Object;)V"),
     CALCULATOR_RUNTIME_ON_SELECTION_UPDATED("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onSelectionUpdated(Ljava/lang/Object;Landroid/view/View;II)V"),
     CALCULATOR_RUNTIME_ON_INPUT_WINDOW_HIDDEN("Lcom/akshaykadam/pixelboard/extension/calculator/GboardCalculatorLifecycleRuntime;->onInputWindowHidden()V"),
+    ENGLISH_UPPERCASE_TOGGLE_RUNTIME_IS_ENABLED("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardEnglishUppercaseToggleRuntime;->isEnabled()Z"),
+    ENGLISH_UPPERCASE_TOGGLE_RUNTIME_IS_PATCHED_METADATA("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardEnglishUppercaseToggleRuntime;->isPatchedMetadata(Ljava/lang/Object;)Z"),
+    ENGLISH_UPPERCASE_TOGGLE_RUNTIME_GET_CACHED_PATCHED_METADATA("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardEnglishUppercaseToggleRuntime;->getCachedPatchedMetadata(Ljava/lang/Object;)Ljava/lang/Object;"),
+    ENGLISH_UPPERCASE_TOGGLE_RUNTIME_CACHE_PATCHED_METADATA("Lcom/akshaykadam/pixelboard/extension/keyboard/GboardEnglishUppercaseToggleRuntime;->cachePatchedMetadata(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"),
 }
 
 internal data class RuntimeAbi(

@@ -45,6 +45,7 @@ Además del endurecimiento de seguridad y privacidad, este fork incluye las últ
 - **Bloqueo estricto de idioma:** Evita cambios de idioma no deseados durante el dictado.
 - **Conexión reparada en AI Writing Tools:** Se fuerza el backend de servidor de Gboard y se ajustan las flags v2 y `PI_OVERRIDE` para evitar fallos de conectividad.
 - **Seguridad de carga y limpieza de teclas:** Verificación de disponibilidad del *split* nativo en 18.6.3 (*readiness gate*) antes de activar Advanced Voice y limpieza del parche de etiquetas de teclas.
+- **Mayúsculas al deslizar arriba (*Up-Flick Uppercase*):** Desliza hacia arriba sobre cualquier letra en teclados latinos (`a` ↔ `A`) para alternar mayúscula/minúscula al instante (portado y adaptado a Gboard 18.6.3 desde `jasonwu1994/Gboard-patches`, 100% local sin registro ni red, configurable en *Ajustes avanzados*).
 
 ---
 

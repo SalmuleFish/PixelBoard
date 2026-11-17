@@ -18,6 +18,9 @@
             },
             "Simple Calculator": {
                 "enabled": true
+            },
+            "Up-Flick Uppercase": {
+                "enabled": true
             }
         }
     }

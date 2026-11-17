@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import com.akshaykadam.pixelboard.patches.gboard.features.advancedvoice.gboardAdvancedVoiceFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorFeatureMarkerPatch
 import com.akshaykadam.pixelboard.patches.gboard.features.calculator.gboardCalculatorLifecyclePatch
+import com.akshaykadam.pixelboard.patches.gboard.features.keyboard.gboardUpFlickUppercaseBytecodePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.applyGboardApplicationDisplayName
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.gboardPackageRenameResourcePatch
 import com.akshaykadam.pixelboard.patches.gboard.features.packagerename.isValidGboardAppDisplayName
@@ -78,6 +79,19 @@ val gboardSimpleCalculatorPatch = gboardPublicResourcePatch(
         gboardPatchesSettingsPatch,
         gboardCalculatorFeatureMarkerPatch,
         gboardCalculatorLifecyclePatch,
+    )
+}
+
+val gboardUpFlickUppercasePatch = resourcePatch(
+    name = "Up-Flick Uppercase",
+    description = "Flick up on a letter key to toggle uppercase or lowercase.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_GBOARD)
+
+    dependsOn(
+        gboardPatchesSettingsPatch,
+        gboardUpFlickUppercaseBytecodePatch,
     )
 }
 
